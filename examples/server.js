@@ -269,21 +269,76 @@ if (params.h || params.help) {
         }
 
         console.log();
-        console.log(bold("Simple Server"));
+        console.log(bold("Stockfish Demo Server"));
         console.log();
         console.log("Usage: ./server.js " + highlight("[options]"));
         console.log();
         console.log("Options:");
-        console.log("  " + note("--dir") + "      Which director to serve files from (default " + highlight(__dirname) + ")");
+        console.log("  " + note("--coep") + "     Adds Cross-Origin-Embedder-Policy header");
+        console.log("  " + note("--coop") + "     Adds Cross-Origin-Opener-Policy header");
+        console.log("  " + note("--cors") + "     Enable headers for Cross-Origin Resource Sharing (alias of " + note("--coop") + " and " + note("--coep") + ")");
+        console.log("  " + note("--dir") + "      Which director to serve files from (default " + highlight("cwd") + ")");
+        console.log("  " + note("-h") + " " + note("--help") + "  Print this help message");
+        console.log("  " + note("--list") + "     List directory contents instead of returning 404");
         console.log("  " + note("-p") + " " + note("--port") + "  Which port to listen to (default " + highlight("8080") + " or " + highlight("443") + " for SSL)");
         console.log("  " + note("--ssl") + "      Enable SSL encryption (a random key is generated)");
-        console.log("  " + note("--list") + "     List directory contents instead of returning 404");
-        console.log("  " + note("--coop") + "     Adds Cross-Origin-Opener-Policy header");
-        console.log("  " + note("--coep") + "     Adds Cross-Origin-Embedder-Policy header");
-        console.log("  " + note("--cors") + "     Enable headers for Cross-Origin Resource Sharing (alias of " + note("--coop") + " and " + note("--coep") + ")");
-        console.log("  " + note("-h") + " " + note("--help") + "  Print this help message");
+        console.log("  " + note("--throttle") + " Limit requests to a maximum kilobytes per second");
         console.log();
     }());
+}
+
+if (params.throttle) {
+    (function initThrottle()
+    {
+        fs.origCreateReadStream = fs.createReadStream;
+
+        var Transform = require("stream").Transform;
+
+        function createThrottle(kilobytesPerSecond) {
+            var bytesPerSecond = kilobytesPerSecond * 1024;
+            var totalBytes = 0;
+            var startTime = Date.now();
+            var MIN_DELAY_MS = 1;
+
+            var throttleStream = new Transform({
+                transform: function transform(chunk, encoding, callback) {
+                    totalBytes += chunk.length;
+
+                    var expectedTime = (totalBytes / bytesPerSecond) * 1000;
+                    var elapsed = Date.now() - startTime;
+                    var delay = Math.max(0, expectedTime - elapsed);
+
+                    /// Skip delay if below setTimeout resolution
+                    if (delay < MIN_DELAY_MS) {
+                        throttleStream.push(chunk);
+                        callback();
+                    } else {
+                        setTimeout(function () {
+                            throttleStream.push(chunk);
+                            callback();
+                        }, delay);
+                    }
+                }
+            });
+            return throttleStream;
+        }
+
+        fs.createReadStream = function (filename, streamOptions) {
+            if (!streamOptions) {
+                streamOptions = {};
+            }
+
+            /// Scale chunk size with throttle speed to reduce setTimeout overhead
+            var baseChunkSize = 1024;
+            var scaledChunkSize = Math.min(65536, baseChunkSize * Math.max(1, Math.floor(params.throttle)));
+            streamOptions.highWaterMark = scaledChunkSize;
+
+            var nativeStream = fs.origCreateReadStream(filename, streamOptions);
+            var throttleStream = createThrottle(Number(params.throttle));
+
+            return nativeStream.pipe(throttleStream);
+        };
+    })();
 }
 
 createServer(function(req, res)
@@ -341,7 +396,7 @@ createServer(function(req, res)
         {
             var resHeaders = {};
             var range;
-            var streamOptions = {"bufferSize": 4096};
+            var streamOptions = {};
             var code = 200;
             
             if (err) {
