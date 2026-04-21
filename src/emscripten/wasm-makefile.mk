@@ -74,6 +74,7 @@ endif
 
 ifneq ($(ASMJS),yes)
 	ifeq ($(SPLIT_WASM),yes)
+		#NOTE: The enginePartsTotalBytes variable will be added in by build.js.
 		WASM_SPLIT_TEM := $(shell echo "var enginePartsCount = $(WASM_SPLIT_COUNT);" > emscripten/extern-pre-split.js)
 		EM_LDFLAGS  += --extern-pre-js emscripten/extern-pre-split.js
 	endif

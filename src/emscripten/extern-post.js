@@ -258,26 +258,66 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
             (function ()
             {
                 var wasmBlob;
+                var progressPort;
                 
                 function loadBinary(onLoaded)
                 {
-                    function fetchBinary(path, cb)
+                    function fetchBinary(path, cb, onProg)
                     {
-                        fetch(new Request(path)).then(function (response)
+                        var req = new XMLHttpRequest();
+                        
+                        req.open("GET", path);
+                        req.setRequestHeader("Content-Type", "application/octet-stream");
+                        req.responseType = "blob";
+                        
+                        req.send();
+                        
+                        req.onload = function ()
                         {
-                            return response.blob();
-                        }).then(function (wasmData)
+                            if (req.status >= 400) {
+                                throw new Error("ERROR " + req.status + ": Unable to download " + path);
+                            } else {
+                                cb(req.response);
+                            }
+                        };
+                        req.onerror = function (err)
                         {
-                            cb(wasmData);
-                        });
+                            throw err;
+                        };
+                        
+                        req.onprogress = onProg;
                     }
-                    function loadParts(total)
+                    function loadParts(totalParts)
                     {
                         var doneCount = 0;
                         var i;
                         var parts = [];
                         var ext = wasmPath.slice((wasmPath.lastIndexOf(".") - 1 >>> 0) + 1);
                         var basename = wasmPath.slice(0, -ext.length);
+                        var progress = [];
+                        var startTime = Date.now();
+                        
+                        function formatSpeed(bytesPerSec)
+                        {
+                            if (bytesPerSec < 1024) {
+                                return Math.round(bytesPerSec) + " B/s";
+                            } else if (bytesPerSec < 1048576) {
+                                return (bytesPerSec / 1024).toFixed(1) + " KB/s";
+                            } else {
+                                return (bytesPerSec / 1048576).toFixed(1) + " MB/s";
+                            }
+                        }
+                        
+                        function formatEta(s)
+                        {
+                            if (!s || s < 0) {
+                                return "";
+                            }
+                            if (s < 60) {
+                                return Math.ceil(s) + " sec";
+                            }
+                            return Math.round(s / 60) + " min";
+                        }
                         
                         function createOnDownload(num)
                         {
@@ -286,21 +326,91 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                                 var wasmBlob;
                                 ++doneCount;
                                 parts[num] = data;
-                                if (doneCount === total) {
+                                if (doneCount === totalParts) {
                                     wasmBlob = URL.createObjectURL(new Blob(parts, {type: "application/wasm"}));
                                     onLoaded(wasmBlob);
                                 }
                             };
                         }
-                        for (i = 0; i < total; ++i) {
-                            fetchBinary(basename + "-part-" + i + ext, createOnDownload(i));
+                        
+                        function updateProgress()
+                        {
+                            var total = 0;
+                            var loaded = 0;
+                            var hasAllTotal = true;
+                            var speedBytesPerSec = 0;
+                            var eta = 0;
+                            var speedText = "";
+                            var etaText = "";
+                            var elapsed;
+                            var percent;
+                            
+                            progress.forEach(function (el)
+                            {
+                                if (!el.total) {
+                                    hasAllTotal = false;
+                                }
+                                total += el.total;
+                                loaded += el.loaded;
+                            });
+                            if (!hasAllTotal && typeof enginePartsTotalBytes === "number") {
+                                total = enginePartsTotalBytes;
+                                hasAllTotal = true;
+                            }
+                            if (hasAllTotal) {
+                                /// To avoid dividing by zero, we round up to 1 ms.
+                                elapsed = (Date.now() - startTime) || 1;
+                                
+                                speedBytesPerSec = loaded / (elapsed / 1000);
+                                
+                                if (speedBytesPerSec > 0 && loaded < total) {
+                                    eta = (total - loaded) / speedBytesPerSec;
+                                }
+                                percent = loaded / total;
+                                progressPort.postMessage({
+                                    percent: percent,
+                                    loaded: loaded,
+                                    total: total,
+                                    speedBytesPerSec: speedBytesPerSec,
+                                    speedText: formatSpeed(speedBytesPerSec),
+                                    eta: eta,
+                                    etaText: formatEta(eta),
+                                });
+                                if (percent === 1) {
+                                    progressPort.close();
+                                    progressPort = null;
+                                }
+                            }
+                        }
+                        
+                        function createOnProgress(num)
+                        {
+                            progress[num] = {
+                                total: 0,
+                                loaded: 0,
+                            };
+                            return function onProg(e)
+                            {
+                                //console.log(num, e);
+                                if (e.lengthComputable) {
+                                    progress[num].total = e.total;
+                                    progress[num].loaded = e.loaded;
+                                }
+                                if (progressPort) {
+                                    updateProgress();
+                                }
+                            }
+                        }
+                        if (totalParts === 0) {
+                            totalParts = 1;
+                            fetchBinary(basename + ext, createOnDownload(0), createOnProgress(0));
+                        } else {
+                            for (i = 0; i < totalParts; ++i) {
+                                fetchBinary(basename + "-part-" + i + ext, createOnDownload(i), createOnProgress(i));
+                            }
                         }
                     }
-                    if (typeof enginePartsCount === "number") {
-                        loadParts(enginePartsCount);
-                    } else {
-                        onLoaded();
-                    }
+                    loadParts(typeof enginePartsCount === "number" ? enginePartsCount : 0);
                 }
                 
                 var args = self.location.hash.substr(1).split(",");
@@ -343,17 +453,23 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                 if (!onmessage) {
                     onmessage = function (event)
                     {
-                        if (engine.processCommand) {
-                            engine.processCommand(event.data);
+                        /// For backwards compatibility, the engine can inform the frontend of the ability to output download progress.
+                        if (event.data === "setoption name CanOutputEngineDownloadProgress") {
+                            postMessage("info WillOutputEngineDownloadProgress");
+                        } else if (event.data.progressPort) {
+                            progressPort = event.data.progressPort;
                         } else {
-                            startUpQueue.push(event.data);
-                        }
-                        ///NOTE: We check this here, not just in engine.processCommand, because the engine might never finish loading.
-                        if (event.data === "quit") {
-                            /// Exit the Web Worker.
-                            try {
-                                self.close();
-                            } catch (e) {}
+                            if (engine.processCommand) {
+                                engine.processCommand(event.data);
+                            } else {
+                                startUpQueue.push(event.data);
+                            }
+                            ///NOTE: We check this here, not just in engine.processCommand, because the engine might never finish loading.
+                            if (event.data === "quit") {
+                                try {
+                                    self.close();
+                                } catch (e) {}
+                            }
                         }
                     };
                 }

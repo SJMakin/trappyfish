@@ -431,6 +431,7 @@ function fixUpWASMBuild()
     var stockfishWASMLoaderData;
     var hashParts;
     var finalWasmPath = stockfishWASMPath;
+    var finalLoaderPath = stockfishWASMLoaderPath;
     
     if (!params["single-threaded"]) {
         workerData = fs.readFileSync(stockfishWorkerThreadPath, "utf8") + workerExternPostData;
@@ -451,7 +452,8 @@ function fixUpWASMBuild()
         /// That way, we don't have to tell the JS where the WASM file is located.
         hashParts = getHashPart([stockfishWASMLoaderPath, stockfishWASMPath]);
         finalWasmPath = p.join(srcPath, basename + hashParts + ".wasm");
-        renameAndSymlink(stockfishWASMLoaderPath, p.join(srcPath, basename + hashParts) + ".js");
+        finalLoaderPath = p.join(srcPath, basename + hashParts) + ".js";
+        renameAndSymlink(stockfishWASMLoaderPath, finalLoaderPath);
         renameAndSymlink(stockfishWASMPath, finalWasmPath);
         if (params["debug-wasm"]) {
             try {
@@ -465,26 +467,28 @@ function fixUpWASMBuild()
         }
     }
     if (params.split && !params["no-split"]) {
-        splitFile(finalWasmPath, params.split);
+        splitFile(finalWasmPath, params.split, finalLoaderPath);
         try {
             fs.unlinkSync(p.join(stockfishWASMPath));
         } catch (e) {}
     }
     
-    console.log("Built " + note(p.basename(finalWasmPath, ".wasm") + ".js"));
+    console.log("Built " + note(p.basename(finalLoaderPath)));
 }
 
-function splitFile(path, count)
+function splitFile(wasmPath, count, jsPath)
 {
-    var data = fs.readFileSync(path);
+    var data = fs.readFileSync(wasmPath);
+    var total = data.byteLength;
     ///NOTE: We round up to make sure we get all of the bytes on the last parts
-    var chunkSize = Math.ceil(data.byteLength / count);
+    var chunkSize = Math.ceil(total / count);
     var i;
     var at;
-    var ext = p.extname(path);
-    var basename = path.slice(0, -ext.length);
+    var ext = p.extname(wasmPath);
+    var basename = wasmPath.slice(0, -ext.length);
     var newPath;
     var origPath;
+    var wasmSize = fs.lstatSync(wasmPath).size;
     
     for (i = 0; i < count; ++i) {
         at = i * chunkSize;
@@ -503,9 +507,11 @@ function splitFile(path, count)
             makeSymLink(newPath, origPath);
         }
     }
-    fs.unlinkSync(path);
-    if (builtFiles.indexOf(path) > -1) {
-        builtFiles.splice(builtFiles.indexOf(path), 1);
+    ///NOTE: wasm-makefile.mk inserts in enginePartsCount.
+    fs.writeFileSync(jsPath, fs.readFileSync(jsPath, "utf8").replace("enginePartsCount", "enginePartsTotalBytes=" + wasmSize + ";var enginePartsCount"));
+    fs.unlinkSync(wasmPath);
+    if (builtFiles.indexOf(wasmPath) > -1) {
+        builtFiles.splice(builtFiles.indexOf(wasmPath), 1);
     }
 }
 
