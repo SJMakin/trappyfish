@@ -95,7 +95,9 @@ function getParams(options, argv)
 
 function minify(code)
 {
+    var minified;
     var initComment;
+    
     if (params["no-minify"] || params["debug-wasm"]) {
         return code;
     }
@@ -103,7 +105,13 @@ function minify(code)
     initComment = code.match(/\/\*![\s\S]*?\*\//)[0];
     
     try {
-        code = initComment + require("uglify-js").minify(code).code;
+        minified = require("uglify-js").minify(code);
+        if (minified && minified.code) {
+            code = initComment + minified.code;
+        } else {
+            console.error(minified);
+            throw new Error("Unable to minify JS code.");
+        }
     } catch (e) {
         warn("Unable to minify JS");
     }

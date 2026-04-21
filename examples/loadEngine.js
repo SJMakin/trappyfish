@@ -69,6 +69,37 @@ var loadEngine = (function ()
         return worker;
     }
     
+    function spawnWebWorker(path, options)
+    {
+        var worker = new Worker(path);
+        var channel;
+        /// If Message Channels are supported, try to create a progress channel.
+        if (options && options.onProgress && typeof MessageChannel === "function") {
+            channel = new MessageChannel();
+            channel.port1.onmessage = function (ev)
+            {
+                options.onProgress(ev.data);
+                /// When we're done downloading, we can close this.
+                if (ev.data.percent === 1) {
+                    channel.port1.close();
+                    channel = null;
+                }
+            };
+            /// For backwards compatibility, we check to see if the engine supports download progress.
+            worker.postMessage("setoption name CanOutputEngineDownloadProgress");
+            worker.addEventListener("message", function (e)
+            {
+                if (e.data === "info WillOutputEngineDownloadProgress") {
+                    /// Although the response is harmless as it is a valid a uci message, we might as well stop from polluting the engine messages if it we can.
+                    e.stopImmediatePropagation();
+                    /// If the engine supports download progress, we need to send it a special port.
+                    worker.postMessage({progressPort: channel.port2}, [channel.port2]);
+                }
+            }, {once: true});
+        }
+        return worker;
+    }
+    
     function new_worker(path, options)
     {
         /// Is this Node.js?
@@ -79,7 +110,7 @@ var loadEngine = (function ()
         path = path || "stockfish.js";
         
         if (typeof Worker === "function") {
-            return new Worker(path);
+            return spawnWebWorker(path, options);
         }
     }
     
@@ -94,8 +125,12 @@ var loadEngine = (function ()
         return line.substr(0, space_index);
     }
     
-    return function loadEngine(path, options)
+    return function loadEngine(path, options, cb)
     {
+        if (typeof options === "function") {
+            cb = options;
+            options = {};
+        }
         var worker = new_worker(path, options),
             engine = {started: Date.now()},
             queue = [],
@@ -294,6 +329,13 @@ var loadEngine = (function ()
                 engine.ready = undefined;
             }
         };
+        
+        if (cb) {
+            engine.send("isready", function ()
+            {
+                cb(engine);
+            });
+        }
         
         return engine;
     };
