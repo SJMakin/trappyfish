@@ -135,9 +135,31 @@ console.info = function (a)
         } catch (e) {}
     }
     
+    function getEnginePaths()
+    {
+        var enginePaths = {
+            js: "/src/stockfish.js",
+            wasm: "/src/stockfish.wasm"
+        };
+        if (typeof params.engine === "string") {
+            enginePaths.js = params.engine;
+            if (!/\.js$/i.test(enginePaths.js)) {
+                enginePaths.js += ".js";
+            }
+            if (typeof params.engineWasm === "string") {
+                enginePaths.wasm = params.engineWasm;
+                if (!/\.wasm$/i.test(enginePaths.wasm)) {
+                    enginePaths.wasm+= ".wasm";
+                }
+            } else {
+                enginePaths.wasm = enginePaths.js.replace(/\.js$/, "") + ".wasm";
+            }
+        }
+        return enginePaths;
+    }
     
     var params = getParams();
-    var engineBasename = params.engine && typeof params.engine === "string" ? params.engine.replace(/\.(?:js|wasm)$/, "") : "stockfish";
+    var enginePaths = getEnginePaths();
     var input = document.getElementById("input");
     var output = document.getElementById("output");
     var first = true;
@@ -145,11 +167,17 @@ console.info = function (a)
     var lastCmdsIndex = lastCmds.length;
     var tmpCmd = getConfig("tmpCmd", "");
     
-    var engine = loadEngine("/src/" + engineBasename + ".js#/src/" + engineBasename + ".wasm", function ()
+    function onProgress(data)
     {
-        /// Engine is running.
-        console.log("__up__")
+        console.log("Loading engine: " + (Math.round(data.loaded / 1024 / 1024 * 100) / 100) + " MB", Math.floor(data.percent * 100) + "%" +  (data.etaText ? " (Speed: " + data.speedText + ", Time remaining: " + data.etaText + ")" : ""));
+    }
+    
+    var engine = loadEngine(enginePaths.js + "#" + enginePaths.wasm, {onProgress: onProgress}, function ()
+    {
+        var time = performance.now();
+        console.log("Engine is ready: " + time);
     });
+    
     function writeOutput(data)
     {
         if (first) {
@@ -215,7 +243,6 @@ console.info = function (a)
             }
         }
     }
-    engine.stream = writeOutput;
     
     function setTmpCmd(val)
     {
@@ -230,6 +257,8 @@ console.info = function (a)
             el.selectionStart = el.selectionEnd = el.value.length;
         }, 1);
     }
+    
+    engine.stream = writeOutput;
     
     input.onkeydown = function keypress(e)
     {
@@ -262,6 +291,7 @@ console.info = function (a)
             }
         }
     };
+    
     document.getElementById("send").onclick = function ()
     {
         sendCommand(input.value);
@@ -269,6 +299,7 @@ console.info = function (a)
         setTmpCmd("");
         input.focus();
     };
+    
     function setupSamples()
     {
         var selectBox = document.getElementById("selection");

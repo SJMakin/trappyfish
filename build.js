@@ -441,11 +441,17 @@ function fixUpWASMBuild()
     }
     stockfishWASMLoaderData = fs.readFileSync(stockfishWASMLoaderPath, "utf8").replace(/\/\/\/ Insert worker here/, workerData);
     stockfishWASMLoaderData = fillInBlanks(stockfishWASMLoaderData);
+    stockfishWASMLoaderData = insertTotalBytesVar(stockfishWASMPath, stockfishWASMLoaderData);
+    if (params.split && !params["no-split"]) {
+        stockfishWASMLoaderData = insertSplitCount(stockfishWASMLoaderData);
+    }
+    
     stockfishWASMLoaderData = minify(stockfishWASMLoaderData);
     fs.writeFileSync(stockfishWASMLoaderPath, stockfishWASMLoaderData);
     if (!basename && params.hash) {
         basename = "stockfish";
     }
+    
     if (basename) {
         /// The hash for all files is the combined hash of both the JS and the WASM.
         /// This makes it clear where the WASM file is located based on the JS file's string.
@@ -466,8 +472,9 @@ function fixUpWASMBuild()
             builtFiles.push(stockfishWASMLoaderPath, stockfishPath + ".wasm.map");
         }
     }
+    
     if (params.split && !params["no-split"]) {
-        splitFile(finalWasmPath, params.split, finalLoaderPath);
+        splitFile(finalWasmPath, params.split);
         try {
             fs.unlinkSync(p.join(stockfishWASMPath));
         } catch (e) {}
@@ -476,7 +483,7 @@ function fixUpWASMBuild()
     console.log("Built " + note(p.basename(finalLoaderPath)));
 }
 
-function splitFile(wasmPath, count, jsPath)
+function splitFile(wasmPath, count)
 {
     var data = fs.readFileSync(wasmPath);
     var total = data.byteLength;
@@ -488,7 +495,7 @@ function splitFile(wasmPath, count, jsPath)
     var basename = wasmPath.slice(0, -ext.length);
     var newPath;
     var origPath;
-    var wasmSize = fs.lstatSync(wasmPath).size;
+    
     
     for (i = 0; i < count; ++i) {
         at = i * chunkSize;
@@ -507,12 +514,21 @@ function splitFile(wasmPath, count, jsPath)
             makeSymLink(newPath, origPath);
         }
     }
-    ///NOTE: wasm-makefile.mk inserts in enginePartsCount.
-    fs.writeFileSync(jsPath, fs.readFileSync(jsPath, "utf8").replace("enginePartsCount", "enginePartsTotalBytes=" + wasmSize + ";var enginePartsCount"));
+    
     fs.unlinkSync(wasmPath);
     if (builtFiles.indexOf(wasmPath) > -1) {
         builtFiles.splice(builtFiles.indexOf(wasmPath), 1);
     }
+}
+
+function insertTotalBytesVar(wasmPath, code)
+{
+    var wasmSize = fs.lstatSync(wasmPath).size;
+    return code.replace(/(var engineTotalBytes);/, "$1=" + wasmSize + ";");
+}
+function insertSplitCount(code)
+{
+    return code.replace(/(var enginePartsCount);/, "$1=" + params.split + ";");
 }
 
 function fixUpASMJSBuild()
@@ -520,6 +536,7 @@ function fixUpASMJSBuild()
     var enginePath = p.join(srcPath, "stockfish.js");
     var engineData = fs.readFileSync(enginePath, "utf8");
     engineData = fillInBlanks(engineData);
+    engineData = engineData.replace(/(var isASMEngine)/, "$1=1");
     engineData = minify(engineData);
     fs.writeFileSync(enginePath, engineData);
     if (basename) {
@@ -638,7 +655,10 @@ if (params["asm-js"]) {
 }
 
 if (params.split && typeof params.split === "boolean") {
-    params.split = 6;
+    params.split = "6";
+}
+if (params.split && !Number(params.split)) {
+    delete params.split;
 }
 
 if (params.help || params["help-all"] || params.h) {
@@ -917,16 +937,10 @@ if (buildWithEmscripten) {
     }
 }
 
-if (params.split && !params["no-split"]) {
-    args.push("SPLIT_WASM=yes");
-    args.push("WASM_SPLIT_COUNT=" + params.split);
-}
-
 ///
 /// Build
 ///
 child = spawnSync(params.make, args, {stdio: [0,1,2], env: process.env, cwd: srcPath});
-
 
 /// `make` does not throw an error when encountering errors, so we need to do that manually.
 if (Number(child.status) !== 0) {

@@ -2,7 +2,8 @@ return Stockfish;
 }
 
 if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker" || typeof global !== "undefined" && Object.prototype.toString.call(global.process) === "[object process]" && !require("worker_threads").isMainThread) {
-    (function() {
+    (function ()
+    {
         /// Insert worker here
     })();
 /// Is it a web worker?
@@ -181,20 +182,6 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                 {
                     var p = require("path");
                     
-                    function assembleWASM(count)
-                    {
-                        var fs = require("fs");
-                        var ext = p.extname(wasmPath);
-                        var basename = wasmPath.slice(0, -ext.length);
-                        var i;
-                        var buffers = [];
-                        
-                        for (i = 0; i < count; ++i) {
-                            buffers.push(fs.readFileSync(basename + "-part-" + i + ".wasm"));
-                        }
-                        
-                        return Buffer.concat(buffers);
-                    }
                     wasmPath = p.join(__dirname, p.basename(__filename, p.extname(__filename)) + ".wasm");
                     engine = {
                         locateFile: function (path)
@@ -219,7 +206,20 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                     
                     if (typeof enginePartsCount === "number") {
                         /// Prepare the wasm data because it is in parts.
-                        engine.wasmBinary = assembleWASM(enginePartsCount);
+                        engine.wasmBinary = (function assembleWASM()
+                        {
+                            var fs = require("fs");
+                            var ext = p.extname(wasmPath);
+                            var basename = wasmPath.slice(0, -ext.length);
+                            var i;
+                            var buffers = [];
+                            
+                            for (i = 0; i < enginePartsCount; ++i) {
+                                buffers.push(fs.readFileSync(basename + "-part-" + i + ".wasm"));
+                            }
+                            
+                            return Buffer.concat(buffers);
+                        }());
                     }
                 }());
                 
@@ -257,10 +257,53 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
         } else {
             (function ()
             {
-                var wasmBlob;
                 var progressPort;
                 
-                function loadBinary(onLoaded)
+                function formatSpeed(bytesPerSec)
+                {
+                    if (bytesPerSec < 1024) {
+                        return Math.round(bytesPerSec) + " B/s";
+                    }
+                    if (bytesPerSec < 1048576) {
+                        return (bytesPerSec / 1024).toFixed(1) + " KB/s";
+                    }
+                    return (bytesPerSec / 1048576).toFixed(1) + " MB/s";
+                }
+                
+                function formatEta(s)
+                {
+                    if (!s || s < 0) {
+                        return "";
+                    }
+                    if (s < 60) {
+                        return Math.ceil(s) + " sec";
+                    }
+                    return Math.round(s / 60) + " min";
+                }
+                
+                function calcProgressData(loaded, total, startTime)
+                {
+                    /// To avoid dividing by zero, we round up to 1 ms.
+                    var elapsed = (Date.now() - startTime) || 1;
+                    var speedBytesPerSec = loaded / (elapsed / 1000);
+                    var eta = 0;
+                    
+                    if (speedBytesPerSec > 0 && loaded < total) {
+                        eta = (total - loaded) / speedBytesPerSec;
+                    }
+                    
+                    return {
+                        percent: loaded / total,
+                        loaded: loaded,
+                        total: total,
+                        speedBytesPerSec: speedBytesPerSec,
+                        speedText: formatSpeed(speedBytesPerSec),
+                        eta: eta,
+                        etaText: formatEta(eta),
+                    };
+                }
+                
+                function loadSplitEngine(onLoaded)
                 {
                     function fetchBinary(path, cb, onProg)
                     {
@@ -287,6 +330,7 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                         
                         req.onprogress = onProg;
                     }
+                    
                     function loadParts(totalParts)
                     {
                         var doneCount = 0;
@@ -296,28 +340,6 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                         var basename = wasmPath.slice(0, -ext.length);
                         var progress = [];
                         var startTime = Date.now();
-                        
-                        function formatSpeed(bytesPerSec)
-                        {
-                            if (bytesPerSec < 1024) {
-                                return Math.round(bytesPerSec) + " B/s";
-                            } else if (bytesPerSec < 1048576) {
-                                return (bytesPerSec / 1024).toFixed(1) + " KB/s";
-                            } else {
-                                return (bytesPerSec / 1048576).toFixed(1) + " MB/s";
-                            }
-                        }
-                        
-                        function formatEta(s)
-                        {
-                            if (!s || s < 0) {
-                                return "";
-                            }
-                            if (s < 60) {
-                                return Math.ceil(s) + " sec";
-                            }
-                            return Math.round(s / 60) + " min";
-                        }
                         
                         function createOnDownload(num)
                         {
@@ -335,51 +357,16 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                         
                         function updateProgress()
                         {
-                            var total = 0;
                             var loaded = 0;
-                            var hasAllTotal = true;
-                            var speedBytesPerSec = 0;
-                            var eta = 0;
-                            var speedText = "";
-                            var etaText = "";
-                            var elapsed;
-                            var percent;
-                            
                             progress.forEach(function (el)
                             {
-                                if (!el.total) {
-                                    hasAllTotal = false;
-                                }
-                                total += el.total;
                                 loaded += el.loaded;
                             });
-                            if (!hasAllTotal && typeof enginePartsTotalBytes === "number") {
-                                total = enginePartsTotalBytes;
-                                hasAllTotal = true;
-                            }
-                            if (hasAllTotal) {
-                                /// To avoid dividing by zero, we round up to 1 ms.
-                                elapsed = (Date.now() - startTime) || 1;
-                                
-                                speedBytesPerSec = loaded / (elapsed / 1000);
-                                
-                                if (speedBytesPerSec > 0 && loaded < total) {
-                                    eta = (total - loaded) / speedBytesPerSec;
-                                }
-                                percent = loaded / total;
-                                progressPort.postMessage({
-                                    percent: percent,
-                                    loaded: loaded,
-                                    total: total,
-                                    speedBytesPerSec: speedBytesPerSec,
-                                    speedText: formatSpeed(speedBytesPerSec),
-                                    eta: eta,
-                                    etaText: formatEta(eta),
-                                });
-                                if (percent === 1) {
-                                    progressPort.close();
-                                    progressPort = null;
-                                }
+                            var data = calcProgressData(loaded, engineTotalBytes, startTime);
+                            progressPort.postMessage(data);
+                            if (data.percent === 1) {
+                                progressPort.close();
+                                progressPort = null;
                             }
                         }
                         
@@ -391,32 +378,30 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                             };
                             return function onProg(e)
                             {
-                                //console.log(num, e);
-                                if (e.lengthComputable) {
-                                    progress[num].total = e.total;
-                                    progress[num].loaded = e.loaded;
-                                }
+                                progress[num].total = e.total;
+                                progress[num].loaded = e.loaded;
                                 if (progressPort) {
                                     updateProgress();
                                 }
                             }
                         }
-                        if (totalParts === 0) {
-                            totalParts = 1;
-                            fetchBinary(basename + ext, createOnDownload(0), createOnProgress(0));
-                        } else {
-                            for (i = 0; i < totalParts; ++i) {
-                                fetchBinary(basename + "-part-" + i + ext, createOnDownload(i), createOnProgress(i));
-                            }
+                        for (i = 0; i < totalParts; ++i) {
+                            fetchBinary(basename + "-part-" + i + ext, createOnDownload(i), createOnProgress(i));
                         }
                     }
-                    loadParts(typeof enginePartsCount === "number" ? enginePartsCount : 0);
+                    loadParts(enginePartsCount);
                 }
                 
                 var args = self.location.hash.substr(1).split(",");
                 wasmPath = decodeURIComponent(args[0] || location.origin + location.pathname.replace(/\.js$/i, ".wasm"));
                 
-                loadBinary(function (wasmBlob)
+                if (typeof enginePartsCount === "number") {
+                    loadSplitEngine(beginEngineInitialization);
+                } else {
+                    beginEngineInitialization();
+                }
+                
+                function beginEngineInitialization(wasmBlob)
                 {
                     engine = {
                         locateFile: function (path)
@@ -436,18 +421,131 @@ if (typeof self !== "undefined" && self.location.hash.split(",")[1] === "worker"
                         {
                             postMessage(line);
                         },
+                    };
+                    
+                    /// If the WASM file is not split, we can process the bytecode while streaming it with WebAssembly.instantiateStreaming().
+                    if (typeof enginePartsCount !== "number") {
+                        var updateTimer;
+                        var updateData;
+                        
+                        function updateDelayed(data)
+                        {
+                            updateData = data;
+                            if (!updateTimer) {
+                                updateTimer = setTimeout(function ()
+                                {
+                                    updateTimer = null;
+                                    progressPort.postMessage(updateData);
+                                    
+                                    if (updateData.percent >= 1) {
+                                        progressPort.close();
+                                        progressPort = null;
+                                    }
+                                }, 4);
+                            }
+                        }
+                        
+                        function fetchWasmWithProgress(url, onProgress, onError)
+                        {
+                            return fetch(url).then(function onFetch(response)
+                            {
+                                var startTime = Date.now();
+                                
+                                if (!response.ok) {
+                                    throw new Error("HTTP " + response.status + ": " + response.statusText);
+                                }
+                                
+                                var totalBytes = engineTotalBytes;
+                                
+                                var loadedBytes = 0;
+                                var reader = response.body.getReader();
+                                
+                                var progressStream = new ReadableStream({
+                                    start: function (controller)
+                                    {
+                                        function push()
+                                        {
+                                            reader.read().then(function onRead(result)
+                                            {
+                                                var done = result.done;
+                                                var value = result.value;
+                                                
+                                                if (done) {
+                                                    onProgress(startTime, totalBytes, totalBytes);
+                                                    controller.close();
+                                                    return;
+                                                }
+                                                loadedBytes += value.byteLength;
+                                                onProgress(startTime, loadedBytes, totalBytes);
+                                                controller.enqueue(value);
+                                                push();
+                                            }).catch(function onError(err)
+                                            {
+                                                controller.error(err);
+                                                if (typeof onError === "function") {
+                                                    onError(err);
+                                                }
+                                            });
+                                        }
+                                        push();
+                                    }
+                                });
+                                
+                                /// Preserve original headers (Wasm compilation is strict about content-type)
+                                var headers = new Headers(response.headers);
+                                
+                                return new Response(progressStream, {
+                                    status: response.status,
+                                    statusText: response.statusText,
+                                    headers: headers
+                                });
+                            });
+                        }
+                        
+                        function createProgressHandler()
+                        {
+                            return function onProgress(startTime, loaded, total)
+                            {
+                                if (progressPort) {
+                                    updateDelayed(calcProgressData(loaded, total, startTime));
+                                }
+                            };
+                        }
+                        
+                        if (!isASMEngine) {
+                            engine.instantiateWasm = function (info, receiveInstance)
+                            {
+                                var onProgress = createProgressHandler();
+                                
+                                return fetchWasmWithProgress(wasmPath, onProgress).then(function onFetch(response)
+                                {
+                                    /// Stream directly to WebAssembly
+                                    return WebAssembly.instantiateStreaming(response, info);
+                                }).then(function onInstantiate(result)
+                                {
+                                    /// Hand off to Emscripten
+                                    receiveInstance(result.instance, result.module);
+                                    return result.instance.exports;
+                                }).catch(function onError(e)
+                                {
+                                    console.error("WASM streaming failed:", e);
+                                    throw e;
+                                });
+                            };
+                        }
                     }
+                    
                     Stockfish = INIT_ENGINE();
-                
+                    
                     Stockfish(engine).then(checkIfReady).catch(function (e)
                     {
-                        /// Sadly, Web Workers will not trigger the error event when errors occur in promises, so we need to create a new context and throw an error there.
+                        /// Web Workers will not trigger the error event when errors occur in promises, so we need to create a new context and throw an error there.
                         setTimeout(function throwError()
                         {
                             throw e;
                         }, 1);
                     });
-                });
+                }
                 
                 /// Make sure that this is only added once.
                 if (!onmessage) {
