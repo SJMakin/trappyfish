@@ -13,8 +13,8 @@ function hasEngines()
     var moduleConfig;
     var installedModuleConfig;
     try {
-        installedModuleConfig = require(p.join(basedir, "package.json"));
-        moduleConfig = require(p.join(__dirname, "..", "package.json"));
+        installedModuleConfig = JSON.parse(fs.readFileSync(p.join(basedir, "package.json"), "utf8"));
+        moduleConfig = JSON.parse(fs.readFileSync(p.join(__dirname, "..", "package.json"), "utf8"));
     } catch (e) {}
     
     if (moduleConfig) {
