@@ -30,10 +30,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install JavaScript dependencies
-        run: npm ci
+        run: npm install
 
       - name: Setup Emscripten
         uses: emscripten-core/setup-emsdk@v15
