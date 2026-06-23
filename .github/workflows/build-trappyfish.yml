@@ -63,8 +63,21 @@ jobs:
           cp Copying.txt "${ARTIFACT_DIR}/Copying.txt"
 
           if [ "${{ steps.build.outputs.status }}" = "0" ]; then
-            cp bin/stockfish-18-lite-single.js "${ARTIFACT_DIR}/stockfish/trappyfish-lite-single.js"
-            cp bin/stockfish-18-lite-single.wasm "${ARTIFACT_DIR}/stockfish/trappyfish-lite-single.wasm"
+            js_file="$(find src -maxdepth 1 -type f -name 'stockfish-18-lite-single*.js' | head -n 1)"
+            wasm_file="$(find src -maxdepth 1 -type f -name 'stockfish-18-lite-single*.wasm' | head -n 1)"
+
+            if [ -z "${js_file}" ] || [ -z "${wasm_file}" ]; then
+              {
+                echo ""
+                echo "ERROR: could not find lite-single build outputs."
+                echo "Candidate files:"
+                find src -maxdepth 1 -type f \( -name 'stockfish-*.js' -o -name 'stockfish-*.wasm' \) -print
+              } >> "${RUNNER_TEMP}/trappyfish-build.log"
+              exit 1
+            fi
+
+            cp "${js_file}" "${ARTIFACT_DIR}/stockfish/trappyfish-lite-single.js"
+            cp "${wasm_file}" "${ARTIFACT_DIR}/stockfish/trappyfish-lite-single.wasm"
           fi
 
           cat > "${ARTIFACT_DIR}/README.md" <<EOF
