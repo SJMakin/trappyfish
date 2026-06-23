@@ -6,17 +6,16 @@ Trappyfish is the patched Stockfish.js target for the Trappy Chess app.
 
 Use `.github/workflows/build-trappyfish.yml`.
 
-For a public repository, standard GitHub-hosted runners are free. The workflow installs Emscripten 3.1.7, runs the Stockfish.js lite single-threaded build, and uploads:
+For a public repository, standard GitHub-hosted runners are free. The workflow installs Emscripten 3.1.7, runs the Stockfish.js lite single-threaded build, uploads an Actions artifact, and force-publishes the browser assets to the `build-artifacts` branch:
 
 - `trappyfish-lite-single.js`
 - `trappyfish-lite-single.wasm`
 - `Copying.txt`
 
-After downloading the workflow artifact, copy the JS/WASM pair into the app:
+In the app repo, update local assets with:
 
 ```powershell
-Copy-Item trappyfish-lite-single.js C:\Users\Sam\Documents\trappy\public\stockfish\trappyfish-lite-single.js
-Copy-Item trappyfish-lite-single.wasm C:\Users\Sam\Documents\trappy\public\stockfish\trappyfish-lite-single.wasm
+npm run update:trappyfish
 ```
 
 Then open the app with the Trappyfish engine query flag:

@@ -13,6 +13,9 @@ on:
       - "TRAPPYFISH.md"
       - ".github/workflows/build-trappyfish.yml"
 
+permissions:
+  contents: write
+
 jobs:
   build-lite-single:
     name: Build lite single-threaded engine
@@ -46,14 +49,37 @@ jobs:
 
       - name: Rename Trappyfish artifacts
         run: |
-          mkdir -p artifacts
-          cp bin/stockfish-18-lite-single.js artifacts/trappyfish-lite-single.js
-          cp bin/stockfish-18-lite-single.wasm artifacts/trappyfish-lite-single.wasm
-          cp Copying.txt artifacts/Copying.txt
+          ARTIFACT_DIR="${RUNNER_TEMP}/trappyfish-artifacts"
+          rm -rf "${ARTIFACT_DIR}"
+          mkdir -p "${ARTIFACT_DIR}/stockfish"
+          cp bin/stockfish-18-lite-single.js "${ARTIFACT_DIR}/stockfish/trappyfish-lite-single.js"
+          cp bin/stockfish-18-lite-single.wasm "${ARTIFACT_DIR}/stockfish/trappyfish-lite-single.wasm"
+          cp Copying.txt "${ARTIFACT_DIR}/Copying.txt"
+          cat > "${ARTIFACT_DIR}/README.md" <<EOF
+          # Trappyfish Build Artifacts
+
+          Built from \`${GITHUB_SHA}\`.
+
+          Browser assets:
+
+          - \`stockfish/trappyfish-lite-single.js\`
+          - \`stockfish/trappyfish-lite-single.wasm\`
+          EOF
 
       - name: Upload Trappyfish artifact
         uses: actions/upload-artifact@v4
         with:
           name: trappyfish-lite-single
-          path: artifacts/
+          path: ${{ runner.temp }}/trappyfish-artifacts/
           if-no-files-found: error
+
+      - name: Publish build-artifacts branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan build-artifacts
+          git rm -rf .
+          cp -R "${RUNNER_TEMP}/trappyfish-artifacts/." .
+          git add .
+          git commit -m "Build Trappyfish ${GITHUB_SHA}"
+          git push --force origin build-artifacts
