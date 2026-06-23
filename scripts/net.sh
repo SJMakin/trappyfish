@@ -7,12 +7,14 @@ wget_or_curl=$( (command -v wget > /dev/null 2>&1 && echo "wget -qO-") || \
 sha256sum=$( (command -v shasum > /dev/null 2>&1 && echo "shasum -a 256") || \
              (command -v sha256sum > /dev/null 2>&1 && echo "sha256sum"))
 
+net_header="${NET_HEADER:-evaluate.h}"
+
 if [ -z "$sha256sum" ]; then
   >&2 echo "sha256sum not found, NNUE files will be assumed valid."
 fi
 
 get_nnue_filename() {
-  grep "$1" evaluate.h | grep "#define" | sed "s/.*\(nn-[a-z0-9]\{12\}.nnue\).*/\1/"
+  grep "$1" "$net_header" | grep "#define" | sed -n "s/.*\(nn-[a-z0-9]\{12\}.nnue\).*/\1/p"
 }
 
 validate_network() {
@@ -29,8 +31,8 @@ fetch_network() {
   _filename="$(get_nnue_filename "$1")"
 
   if [ -z "$_filename" ]; then
-    >&2 echo "NNUE file name not found for: $1"
-    return 1
+    echo "No NNUE file name found for $1 in $net_header, skipping"
+    return 0
   fi
 
   if [ -f "$_filename" ]; then

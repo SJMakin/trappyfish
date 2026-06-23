@@ -1076,9 +1076,11 @@ profileclean:
 # evaluation network (nnue)
 net:
 ifeq ($(LITE_NET),yes)
+	@NET_HEADER=lite_nets.h $(SHELL) ../scripts/net.sh
 else ifeq ($(ULTRA_LITE_NET),yes)
+	@NET_HEADER=ultra_lite_nets.h $(SHELL) ../scripts/net.sh
 else
-	@$(SHELL) ../scripts/net.sh
+	@NET_HEADER=evaluate.h $(SHELL) ../scripts/net.sh
 endif
 
 format:
