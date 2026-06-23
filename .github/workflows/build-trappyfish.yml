@@ -10,6 +10,7 @@ on:
       - "src/**"
       - "build.js"
       - "package.json"
+      - "TRAPPYFISH.md"
       - ".github/workflows/build-trappyfish.yml"
 
 jobs:
