@@ -1,0 +1,98 @@
+
+> stockfish@18.0.8 build-single-lite /home/runner/work/trappyfish/trappyfish
+> node build.js --single-threaded --lite -f
+
+Embedding nn-9067e33176e8.nnue
+make: [Makefile:1215: .depend] Error 1 (ignored)
+Existing nn-9067e33176e8.nnue validated, skipping download
+No NNUE file name found for EvalFileDefaultNameSmall in lite_nets.h, skipping
+
+Config:
+debug: 'no'
+sanitize: 'none'
+optimize: 'yes'
+arch: 'wasm'
+bits: '64'
+kernel: 'Linux'
+os: 'GNU/Linux'
+prefetch: 'no'
+popcnt: 'yes'
+pext: 'no'
+sse: 'yes'
+mmx: 'no'
+sse2: 'yes'
+ssse3: 'yes'
+sse41: 'yes'
+avx2: 'no'
+avxvnni: 'no'
+avx512: 'no'
+vnni256: 'no'
+vnni512: 'no'
+avx512icl: 'no'
+altivec: 'no'
+vsx: 'no'
+neon: 'no'
+dotprod: 'no'
+arm_version: '0'
+lsx: 'no'
+lasx: 'no'
+target_windows: ''
+
+Flags:
+CXX: em++
+CXXFLAGS: -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__="18 Lite WASM" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full
+LDFLAGS:  --closure 1 -s NO_FILESYSTEM=1 --pre-js emscripten/pre.js --extern-pre-js emscripten/credits-lite.js --extern-pre-js emscripten/extern-pre.js --extern-post-js emscripten/extern-post.js -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=134217728 -s MAXIMUM_MEMORY=2147483648 -Wno-pthreads-mem-growth -s ENVIRONMENT=web,worker,node -s EXIT_RUNTIME=0 -s MODULARIZE=1 -s EXPORT_NAME=Stockfish -s EXPORTED_RUNTIME_METHODS=ccall -s LLD_REPORT_UNDEFINED -s USE_PTHREADS=0 -s ASYNCIFY=1 -s ASYNCIFY_STACK_SIZE=10485760 -s EXPORTED_FUNCTIONS=[_main,_command,_isSearching] --extern-pre-js emscripten/extern-pre-async.js -lpthread -lrt -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__="18 Lite WASM" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full
+
+Testing config sanity. If this fails, try 'make help' ...
+
+make ARCH=wasm COMP=em++ all
+make[1]: Entering directory '/home/runner/work/trappyfish/trappyfish/src'
+make[1]: [Makefile:1215: .depend] Error 1 (ignored)
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o benchmark.o benchmark.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o bitboard.o bitboard.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o evaluate.o evaluate.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o main.o main.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o misc.o misc.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o movegen.o movegen.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o movepick.o movepick.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o position.o position.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o search.o search.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o thread.o thread.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o timeman.o timeman.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o tt.o tt.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o uci.o uci.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o ucioption.o ucioption.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o tune.o tune.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o nnue_accumulator.o nnue/nnue_accumulator.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o nnue_misc.o nnue/nnue_misc.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o network.o nnue/network.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o half_ka_v2_hm.o nnue/features/half_ka_v2_hm.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o full_threats.o nnue/features/full_threats.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o engine.o engine.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o score.o score.cpp
+em++ -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full   -c -o memory.o memory.cpp
+em++ -o stockfish.js benchmark.o bitboard.o evaluate.o main.o misc.o movegen.o movepick.o position.o search.o thread.o timeman.o tt.o uci.o ucioption.o tune.o nnue_accumulator.o nnue_misc.o network.o half_ka_v2_hm.o full_threats.o engine.o score.o memory.o  --closure 1 -s NO_FILESYSTEM=1 --pre-js emscripten/pre.js --extern-pre-js emscripten/credits-lite.js --extern-pre-js emscripten/extern-pre.js --extern-post-js emscripten/extern-post.js -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=134217728 -s MAXIMUM_MEMORY=2147483648 -Wno-pthreads-mem-growth -s ENVIRONMENT=web,worker,node -s EXIT_RUNTIME=0 -s MODULARIZE=1 -s EXPORT_NAME="Stockfish" -s EXPORTED_RUNTIME_METHODS=ccall -s LLD_REPORT_UNDEFINED -s USE_PTHREADS=0 -s ASYNCIFY=1 -s ASYNCIFY_STACK_SIZE=10485760 -s EXPORTED_FUNCTIONS="['_main','_command','_isSearching']" --extern-pre-js emscripten/extern-pre-async.js -lpthread -lrt -D__NO_SYZYGY__ -Wall -Wcast-qual -fno-exceptions -std=c++17 -msimd128 -DPOSIXALIGNEDALLOC -D__LITE_NET__ -Wno-pthreads-mem-growth -D__EMSCRIPTEN_SINGLE_THREADED__ -D__ENGINE_VERSION__=\""18 Lite WASM"\" -DUSE_PTHREADS -DNDEBUG -O3 -funroll-loops -fexperimental-new-pass-manager -DIS_64BIT -DNO_PREFETCH -msse3 -DUSE_POPCNT -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DGIT_SHA=7981e598 -DGIT_DATE=20260623 -DARCH=wasm -flto=full
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libGL.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libGL.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libal.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libal.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libhtml5.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libhtml5.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libstubs.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libstubs.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libnoexit.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libnoexit.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libc.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libc.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libdlmalloc.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libdlmalloc.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libcompiler_rt.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libcompiler_rt.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libc++-noexcept.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libc++-noexcept.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libc++abi-noexcept.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libc++abi-noexcept.a" for subsequent builds)
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libsockets.a... (this will be cached in "/home/runner/work/trappyfish/trappyfish/emsdk-cache/emsdk-main/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/lto/libsockets.a" for subsequent builds)
+cache:INFO:  - ok
+make[1]: Leaving directory '/home/runner/work/trappyfish/trappyfish/src'
+Built stockfish-18-lite-single.js
