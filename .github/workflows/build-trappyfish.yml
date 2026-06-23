@@ -31,8 +31,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install JavaScript dependencies
-        run: npm install
+      - name: Verify JavaScript build dependencies
+        run: node -e "require('uglify-js'); console.log('uglify-js available')"
 
       - name: Setup Emscripten
         uses: emscripten-core/setup-emsdk@v15

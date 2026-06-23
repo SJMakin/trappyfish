@@ -31,6 +31,5 @@ The app keeps plain Stockfish as the default while the Trappyfish artifact is ab
 Local builds require Emscripten `3.1.7` on `PATH`. This Windows workspace currently does not have `emcc`, so GitHub Actions is the intended build path.
 
 ```bash
-npm install
 npm run build-single-lite
 ```
