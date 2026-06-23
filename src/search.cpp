@@ -159,6 +159,73 @@ bool is_shuffling(Move move, Stack* const ss, const Position& pos) {
         && (ss - 2)->currentMove.from_sq() == (ss - 4)->currentMove.to_sq();
 }
 
+bool trappyfish_enabled(const OptionsMap& options) { return bool(options["Trappyfish"]); }
+
+size_t trappyfish_candidate_count(const OptionsMap& options, size_t rootMoveCount) {
+    return std::min(rootMoveCount, size_t(std::max(1, int(options["Trappyfish Candidates"]))));
+}
+
+Value trappyfish_best_shallow_score(const RootMove& rm, Depth completedDepth) {
+    Value best = -VALUE_INFINITE;
+
+    for (Depth d = 2; d < completedDepth && d < Depth(rm.trappyScores.size()); ++d)
+        if (rm.trappyScores[d] != VALUE_NONE)
+            best = std::max(best, rm.trappyScores[d]);
+
+    return best;
+}
+
+int trappyfish_bonus(const RootMove& rm,
+                     Value           bestScore,
+                     Depth           completedDepth,
+                     const OptionsMap& options) {
+    if (rm.score == -VALUE_INFINITE || rm.score == VALUE_NONE)
+        return 0;
+
+    Value shallow = trappyfish_best_shallow_score(rm, completedDepth);
+    if (shallow == -VALUE_INFINITE)
+        return 0;
+
+    int aggression = std::max(0, int(options["Trappyfish Aggression"]));
+    int riskLimit  = int(options["Trappyfish Max Risk"]) * std::max(100, aggression) / 100;
+    int minDrop    = int(options["Trappyfish Min Drop"]) * 100 / std::max(50, aggression);
+    int bonusCap   = int(options["Trappyfish Bonus Cap"]) * std::max(100, aggression) / 100;
+
+    int risk = std::max(0, int(bestScore - rm.score));
+    int drop = int(shallow - rm.score);
+
+    if (risk > riskLimit || drop < minDrop)
+        return 0;
+
+    return std::clamp(drop * aggression / 100, 0, bonusCap);
+}
+
+size_t trappyfish_pick(const RootMoves& rootMoves,
+                       Depth            completedDepth,
+                       const OptionsMap& options) {
+    if (rootMoves.empty() || completedDepth < 3 || rootMoves[0].score == -VALUE_INFINITE)
+        return 0;
+
+    size_t candidateCount = trappyfish_candidate_count(options, rootMoves.size());
+    Value  bestScore      = rootMoves[0].score;
+    int    bestAdjusted   = int(bestScore);
+    size_t bestIdx        = 0;
+
+    for (size_t i = 0; i < candidateCount; ++i)
+    {
+        int bonus    = trappyfish_bonus(rootMoves[i], bestScore, completedDepth, options);
+        int adjusted = int(rootMoves[i].score) + bonus;
+
+        if (adjusted > bestAdjusted)
+        {
+            bestAdjusted = adjusted;
+            bestIdx      = i;
+        }
+    }
+
+    return bestIdx;
+}
+
 }  // namespace
 
 Search::Worker::Worker(SharedState&                    sharedState,
@@ -247,7 +314,7 @@ void Search::Worker::start_searching() {
       Skill(options["Skill Level"], options["UCI_LimitStrength"] ? int(options["UCI_Elo"]) : 0);
 
     if (int(options["MultiPV"]) == 1 && !limits.depth && !limits.mate && !skill.enabled()
-        && rootMoves[0].pv[0] != Move::none())
+        && !trappyfish_enabled(options) && rootMoves[0].pv[0] != Move::none())
         bestThread = threads.get_best_thread()->worker.get();
 
     main_manager()->bestPreviousScore        = bestThread->rootMoves[0].score;
@@ -315,11 +382,15 @@ void Search::Worker::iterative_deepening() {
 
     size_t multiPV = size_t(options["MultiPV"]);
     Skill skill(options["Skill Level"], options["UCI_LimitStrength"] ? int(options["UCI_Elo"]) : 0);
+    bool trappyfish = mainThread && trappyfish_enabled(options);
 
     // When playing with strength handicap enable MultiPV search that we will
     // use behind-the-scenes to retrieve a set of possible moves.
     if (skill.enabled())
         multiPV = std::max(multiPV, size_t(4));
+
+    if (trappyfish)
+        multiPV = std::max(multiPV, trappyfish_candidate_count(options, rootMoves.size()));
 
     multiPV = std::min(multiPV, rootMoves.size());
 
@@ -452,7 +523,14 @@ void Search::Worker::iterative_deepening() {
         }
 
         if (!threads.stop)
+        {
             completedDepth = rootDepth;
+
+            if (trappyfish)
+                for (RootMove& rm : rootMoves)
+                    if (rm.score != -VALUE_INFINITE)
+                        rm.trappyScores[rootDepth] = rm.score;
+        }
 
         // We make sure not to pick an unproven mated-in score,
         // in case this thread prematurely stopped search (aborted-search).
@@ -555,6 +633,19 @@ void Search::Worker::iterative_deepening() {
         std::swap(rootMoves[0],
                   *std::find(rootMoves.begin(), rootMoves.end(),
                              skill.best ? skill.best : skill.pick_best(rootMoves, multiPV)));
+
+    if (trappyfish)
+    {
+        size_t trappyIdx = trappyfish_pick(rootMoves, completedDepth, options);
+        if (trappyIdx != 0)
+        {
+            std::cout << "info string Trappyfish selected "
+                      << UCIEngine::move(rootMoves[trappyIdx].pv[0], rootPos.is_chess960())
+                      << " over " << UCIEngine::move(rootMoves[0].pv[0], rootPos.is_chess960())
+                      << std::endl;
+            std::swap(rootMoves[0], rootMoves[trappyIdx]);
+        }
+    }
 }
 
 

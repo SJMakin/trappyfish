@@ -1,0 +1,58 @@
+name: Build Trappyfish WASM
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "src/**"
+      - "build.js"
+      - "package.json"
+      - ".github/workflows/build-trappyfish.yml"
+
+jobs:
+  build-lite-single:
+    name: Build lite single-threaded engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Setup Emscripten
+        uses: emscripten-core/setup-emsdk@v15
+        with:
+          version: 3.1.7
+          actions-cache-folder: emsdk-cache
+
+      - name: Verify Emscripten
+        run: emcc --version
+
+      - name: Build Stockfish.js lite single-threaded WASM
+        run: npm run build-single-lite
+
+      - name: Rename Trappyfish artifacts
+        run: |
+          mkdir -p artifacts
+          cp bin/stockfish-18-lite-single.js artifacts/trappyfish-lite-single.js
+          cp bin/stockfish-18-lite-single.wasm artifacts/trappyfish-lite-single.wasm
+          cp Copying.txt artifacts/Copying.txt
+
+      - name: Upload Trappyfish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trappyfish-lite-single
+          path: artifacts/
+          if-no-files-found: error

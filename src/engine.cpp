@@ -134,6 +134,13 @@ Engine::Engine(std::optional<std::string> path) :
 
     options.add("UCI_ShowWDL", Option(false));
 
+    options.add("Trappyfish", Option(false));
+    options.add("Trappyfish Aggression", Option(140, 0, 300));
+    options.add("Trappyfish Candidates", Option(12, 1, MAX_MOVES));
+    options.add("Trappyfish Max Risk", Option(160, 0, 1200));
+    options.add("Trappyfish Min Drop", Option(50, 0, 1200));
+    options.add("Trappyfish Bonus Cap", Option(220, 0, 1200));
+
 #ifndef __NO_SYZYGY__
     options.add(  //
       "SyzygyPath", Option("", [](const Option& o) {

@@ -85,7 +85,9 @@ struct Stack {
 struct RootMove {
 
     explicit RootMove(Move m) :
-        pv(1, m) {}
+        pv(1, m) {
+        trappyScores.fill(VALUE_NONE);
+    }
     bool extract_ponder_from_tt(const TranspositionTable& tt, Position& pos);
     bool operator==(const Move& m) const { return pv[0] == m; }
     // Sort in descending order
@@ -104,6 +106,7 @@ struct RootMove {
     int               selDepth         = 0;
     int               tbRank           = 0;
     Value             tbScore;
+    std::array<Value, MAX_PLY + 1> trappyScores;
     std::vector<Move> pv;
 };
 
