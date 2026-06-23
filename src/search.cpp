@@ -159,7 +159,7 @@ bool is_shuffling(Move move, Stack* const ss, const Position& pos) {
         && (ss - 2)->currentMove.from_sq() == (ss - 4)->currentMove.to_sq();
 }
 
-bool trappyfish_enabled(const OptionsMap& options) { return bool(options["Trappyfish"]); }
+bool trappyfish_enabled(const OptionsMap& options) { return int(options["Trappyfish"]) != 0; }
 
 size_t trappyfish_candidate_count(const OptionsMap& options, size_t rootMoveCount) {
     return std::min(rootMoveCount, size_t(std::max(1, int(options["Trappyfish Candidates"]))));
@@ -379,6 +379,9 @@ void Search::Worker::iterative_deepening() {
         else
             mainThread->iterValue.fill(mainThread->bestPreviousScore);
     }
+
+    for (RootMove& rm : rootMoves)
+        rm.trappyScores.fill(VALUE_NONE);
 
     size_t multiPV = size_t(options["MultiPV"]);
     Skill skill(options["Skill Level"], options["UCI_LimitStrength"] ? int(options["UCI_Elo"]) : 0);
