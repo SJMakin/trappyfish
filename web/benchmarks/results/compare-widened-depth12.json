@@ -1,0 +1,4169 @@
+{
+  "phase": "compare",
+  "startedAt": "2026-10-13T18:14:01.313Z",
+  "depth": 12,
+  "engine": "Stockfish 18 lite single-thread WASM (stockfish npm 18.0.8)",
+  "stockfishWasmSha256": "A8FBC05EC6920B56D7485826DCB02C5FFD2826BCBF751CF973046F237A9096F1",
+  "originalSourceSha256": "F599E54ED4443BB5260FA617AE745344B32F5272F9DDD81A88BE76138B08AB28",
+  "frozenLegacySha256": "639B7DA7C27923553CC79CFD2FC3CAAB333D8E00685B13B700F94144E2DFAFDB",
+  "productionHashAtStart": "F599E54ED4443BB5260FA617AE745344B32F5272F9DDD81A88BE76138B08AB28",
+  "sourceWasUnchangedAtStart": true,
+  "legacySettings": {
+    "rootDepth": 12,
+    "trapDepth": 12,
+    "candidateCount": 6,
+    "replyCount": 6,
+    "aggression": 1.45,
+    "maxRiskCp": 170,
+    "bonusCapCp": 240,
+    "minProfitCp": 25,
+    "minDropCp": 35,
+    "method": "median"
+  },
+  "practicalSettings": {
+    "rootDepth": 12,
+    "trapDepth": 12,
+    "candidateCount": 10,
+    "replyCount": 10,
+    "aggression": 1,
+    "maxRiskCp": 100,
+    "opponentRating": 1500,
+    "engineRating": 2000,
+    "replyCoverage": 0.95
+  },
+  "positions": [
+    {
+      "id": "legal-sound",
+      "name": "Légal after h3 / Bh5",
+      "setup": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bc4",
+        "d6",
+        "Nc3",
+        "Bg4",
+        "h3",
+        "Bh5"
+      ],
+      "candidate": "Nxe5",
+      "temptingReply": "Bxd1",
+      "continuation": [
+        "Bxf7+",
+        "Ke7",
+        "Nd5#"
+      ],
+      "source": "https://www.thechesswebsite.com/legal/",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p2b/2B1P3/2N2N1P/PPPP1PP1/R1BQK2R w KQkq - 1 6",
+      "legacy": {
+        "move": "f3e5",
+        "san": "Nxe5",
+        "mode": "standard",
+        "rootBestMove": "f3e5",
+        "rootBestSan": "Nxe5",
+        "rootBestScoreCp": 158,
+        "candidates": [
+          {
+            "move": "f3e5",
+            "san": "Nxe5",
+            "rootScoreCp": 158,
+            "adjustedScoreCp": 158,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "g2g4",
+            "san": "g4",
+            "rootScoreCp": 95,
+            "adjustedScoreCp": 111.67291666666667,
+            "riskCp": 63,
+            "bonusCp": 16.672916666666666,
+            "trap": {
+              "reply": "c6a5",
+              "replySan": "Na5",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -217
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -139
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -146
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -155
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -155
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -173
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -177
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -140
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -242
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -272
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -261
+                }
+              ],
+              "shallowScoreCp": -155,
+              "finalScoreCp": -261,
+              "opponentBestScoreCp": -110,
+              "trappiness": 0.3045977011494253,
+              "profitCp": 151,
+              "qualityCp": 11.498563218390805
+            }
+          },
+          {
+            "move": "a2a4",
+            "san": "a4",
+            "rootScoreCp": 79,
+            "adjustedScoreCp": 103.45654878048781,
+            "riskCp": 79,
+            "bonusCp": 24.456548780487804,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -20
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -29
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -43
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -52
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -93
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -97
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -154
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -154
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -167
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -164
+                }
+              ],
+              "shallowScoreCp": -52,
+              "finalScoreCp": -164,
+              "opponentBestScoreCp": -75,
+              "trappiness": 0.5121951219512195,
+              "profitCp": 89,
+              "qualityCp": 16.86658536585366
+            }
+          },
+          {
+            "move": "a2a3",
+            "san": "a3",
+            "rootScoreCp": 90,
+            "adjustedScoreCp": 96.69724832214766,
+            "riskCp": 68,
+            "bonusCp": 6.697248322147651,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -29
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -36
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -30
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -114
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -95
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -110
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -109
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -146
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -143
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -149
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -149
+                }
+              ],
+              "shallowScoreCp": -109,
+              "finalScoreCp": -149,
+              "opponentBestScoreCp": -87,
+              "trappiness": 0.20134228187919462,
+              "profitCp": 62,
+              "qualityCp": 4.618791946308725
+            }
+          },
+          {
+            "move": "c4b3",
+            "san": "Bb3",
+            "rootScoreCp": 61,
+            "adjustedScoreCp": 87.34627692307693,
+            "riskCp": 97,
+            "bonusCp": 26.346276923076925,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -5
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -25
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -17
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -82
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -99
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -120
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -110
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -213
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -213
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -195
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -195
+                }
+              ],
+              "shallowScoreCp": -99,
+              "finalScoreCp": -195,
+              "opponentBestScoreCp": -62,
+              "trappiness": 0.36923076923076925,
+              "profitCp": 133,
+              "qualityCp": 18.169846153846155
+            }
+          },
+          {
+            "move": "d2d3",
+            "san": "d3",
+            "rootScoreCp": 54,
+            "adjustedScoreCp": 74.25875748502995,
+            "riskCp": 104,
+            "bonusCp": 20.25875748502994,
+            "trap": {
+              "reply": "a7a6",
+              "replySan": "a6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -34
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -72
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -40
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -83
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -69
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -67
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -56
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -65
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -62
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -166
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -167
+                }
+              ],
+              "shallowScoreCp": -65,
+              "finalScoreCp": -167,
+              "opponentBestScoreCp": -45,
+              "trappiness": 0.45808383233532934,
+              "profitCp": 122,
+              "qualityCp": 13.971556886227544
+            }
+          },
+          {
+            "move": "e1g1",
+            "san": "O-O",
+            "rootScoreCp": 48,
+            "adjustedScoreCp": 68.3786171875,
+            "riskCp": 110,
+            "bonusCp": 20.3786171875,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -14
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -14
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -36
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -35
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -124
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -147
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -172
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -172
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -181
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -189
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -192
+                }
+              ],
+              "shallowScoreCp": -124,
+              "finalScoreCp": -192,
+              "opponentBestScoreCp": -49,
+              "trappiness": 0.265625,
+              "profitCp": 143,
+              "qualityCp": 14.05421875
+            }
+          },
+          {
+            "move": "c3d5",
+            "san": "Nd5",
+            "rootScoreCp": 51,
+            "adjustedScoreCp": 54.2625,
+            "riskCp": 107,
+            "bonusCp": 3.2625000000000006,
+            "trap": {
+              "reply": "c6d4",
+              "replySan": "Nd4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 8
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 22
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 28
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 41
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -60
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -45
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -71
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -69
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -65
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -65
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -75
+                }
+              ],
+              "shallowScoreCp": -45,
+              "finalScoreCp": -75,
+              "opponentBestScoreCp": -45,
+              "trappiness": 0.30000000000000004,
+              "profitCp": 30,
+              "qualityCp": 2.2500000000000004
+            }
+          },
+          {
+            "move": "c4b5",
+            "san": "Bb5",
+            "rootScoreCp": 45,
+            "adjustedScoreCp": 50.11125,
+            "riskCp": 113,
+            "bonusCp": 5.11125,
+            "trap": {
+              "reply": "a7a6",
+              "replySan": "a6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -7
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -7
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -13
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -30
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -25
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -25
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -64
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": -64
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": -62
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": -62
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": -72
+                }
+              ],
+              "shallowScoreCp": -25,
+              "finalScoreCp": -72,
+              "opponentBestScoreCp": -42,
+              "trappiness": 0.47000000000000003,
+              "profitCp": 30,
+              "qualityCp": 3.5250000000000004
+            }
+          },
+          {
+            "move": "c4f7",
+            "san": "Bxf7+",
+            "rootScoreCp": -321,
+            "adjustedScoreCp": -321,
+            "riskCp": 479,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "h5f7",
+              "replySan": "Bxf7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 474
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 349
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 372
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 349
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 349
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 288
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 327
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 320
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 320
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 329
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 302
+                }
+              ],
+              "shallowScoreCp": 349,
+              "finalScoreCp": 302,
+              "opponentBestScoreCp": 329,
+              "trappiness": 0.11672185430463575,
+              "profitCp": 27,
+              "qualityCp": 2.710281456953642
+            }
+          }
+        ],
+        "selected": {
+          "move": "f3e5",
+          "san": "Nxe5",
+          "rootScoreCp": 158,
+          "adjustedScoreCp": 158,
+          "riskCp": 0,
+          "bonusCp": 0
+        }
+      },
+      "elapsedMs": 15424,
+      "practical": {
+        "move": "f3e5",
+        "san": "Nxe5",
+        "mode": "trappy",
+        "rootBestMove": "f3e5",
+        "rootBestSan": "Nxe5",
+        "rootBestScoreCp": 172,
+        "candidates": [
+          {
+            "move": "f3e5",
+            "san": "Nxe5",
+            "rootScoreCp": 166,
+            "adjustedScoreCp": 373.229510110348,
+            "riskCp": 6,
+            "bonusCp": 201.22951011034797,
+            "expectedScoreCp": 373.229510110348,
+            "expectedScore": 0.8660118873267996,
+            "objectiveScore": 0.6963549298238342,
+            "policyCoverage": 0.9796138633274404,
+            "replies": [
+              {
+                "move": "h5d1",
+                "probability": 0.5569502728916738,
+                "san": "Bxd1",
+                "scoreCp": 99800,
+                "expectedScore": 1,
+                "lossCp": 99634,
+                "punishment": [
+                  "c4f7",
+                  "e8e7",
+                  "c3d5"
+                ]
+              },
+              {
+                "move": "c6e5",
+                "probability": 0.27468158551067706,
+                "san": "Nxe5",
+                "scoreCp": 161,
+                "expectedScore": 0.6910430124157229,
+                "lossCp": 0,
+                "punishment": [
+                  "d1h5",
+                  "g8f6",
+                  "h5e2",
+                  "e5c4",
+                  "e2c4",
+                  "c7c6",
+                  "d2d3",
+                  "f8e7",
+                  "c4b3",
+                  "d8d7",
+                  "c1e3",
+                  "d6d5",
+                  "e4d5"
+                ]
+              },
+              {
+                "move": "d6e5",
+                "probability": 0.13709470836582577,
+                "san": "dxe5",
+                "scoreCp": 180,
+                "expectedScore": 0.7109495026250039,
+                "lossCp": 14,
+                "punishment": [
+                  "d1h5",
+                  "d8d7",
+                  "c3e2",
+                  "f8c5",
+                  "c2c3",
+                  "a7a6",
+                  "b2b4",
+                  "c5a7",
+                  "d2d3"
+                ]
+              },
+              {
+                "move": "d8g5",
+                "probability": 0.010887296559263753,
+                "san": "Qg5",
+                "scoreCp": 166,
+                "expectedScore": 0.6963549298238342,
+                "lossCp": 0,
+                "punishment": [
+                  "e5g4",
+                  "g5h4",
+                  "c4e2",
+                  "c6d4",
+                  "d2d3",
+                  "d4e2",
+                  "d1e2",
+                  "e8c8",
+                  "c1e3"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "h5d1",
+              "replySan": "Bxd1",
+              "probability": 0.5569502728916738,
+              "profitCp": 99634,
+              "scoreCp": 99800,
+              "punishment": [
+                "c4f7",
+                "e8e7",
+                "c3d5"
+              ]
+            }
+          },
+          {
+            "move": "g2g4",
+            "san": "g4",
+            "rootScoreCp": 98,
+            "adjustedScoreCp": 98.00000000000001,
+            "riskCp": 74,
+            "bonusCp": -6.999999999999986,
+            "expectedScoreCp": 98.00000000000001,
+            "expectedScore": 0.6201064323430902,
+            "objectiveScore": 0.6201064323430902,
+            "policyCoverage": 0.9824672965407948,
+            "replies": [
+              {
+                "move": "h5g6",
+                "probability": 0.9824672965407948,
+                "san": "Bg6",
+                "scoreCp": 98,
+                "expectedScore": 0.6201064323430902,
+                "lossCp": 0,
+                "punishment": [
+                  "d2d4",
+                  "e5d4",
+                  "f3d4",
+                  "g8f6",
+                  "d4f5",
+                  "h7h5",
+                  "d1e2",
+                  "h5g4",
+                  "c1g5",
+                  "d8d7"
+                ]
+              }
+            ]
+          },
+          {
+            "move": "a2a3",
+            "san": "a3",
+            "rootScoreCp": 81,
+            "adjustedScoreCp": 95.60880160458574,
+            "riskCp": 91,
+            "bonusCp": 14.608801604585736,
+            "expectedScoreCp": 95.60880160458574,
+            "expectedScore": 0.6172858894927061,
+            "objectiveScore": 0.5998883688639983,
+            "policyCoverage": 0.9545523022214517,
+            "replies": [
+              {
+                "move": "c6d4",
+                "probability": 0.34742716290488224,
+                "san": "Nd4",
+                "scoreCp": 88,
+                "expectedScore": 0.6082590307465144,
+                "lossCp": 7,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d3",
+                  "h7h5",
+                  "g4g5",
+                  "c7c6",
+                  "f3d4",
+                  "e5d4",
+                  "c3e2",
+                  "d6d5"
+                ]
+              },
+              {
+                "move": "g8f6",
+                "probability": 0.3109224532911821,
+                "san": "Nf6",
+                "scoreCp": 88,
+                "expectedScore": 0.6082590307465144,
+                "lossCp": 7,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d3",
+                  "f8e7",
+                  "c1e3",
+                  "a7a6",
+                  "c4a2",
+                  "e8g8",
+                  "c3d5"
+                ]
+              },
+              {
+                "move": "d8f6",
+                "probability": 0.06793408550507761,
+                "san": "Qf6",
+                "scoreCp": 126,
+                "expectedScore": 0.6524894621927444,
+                "lossCp": 45,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d4",
+                  "c6d4",
+                  "f3d4",
+                  "e5d4",
+                  "c3d5",
+                  "f6d8",
+                  "d1d4",
+                  "c7c6",
+                  "c1e3",
+                  "g8f6"
+                ]
+              },
+              {
+                "move": "h5f3",
+                "probability": 0.06440500003248054,
+                "san": "Bxf3",
+                "scoreCp": 95,
+                "expectedScore": 0.6165665045213193,
+                "lossCp": 14,
+                "punishment": [
+                  "d1f3",
+                  "d8f6",
+                  "f3d1",
+                  "g8e7",
+                  "e1g1",
+                  "c6d4",
+                  "b2b4"
+                ]
+              },
+              {
+                "move": "f8e7",
+                "probability": 0.05693757930360406,
+                "san": "Be7",
+                "scoreCp": 101,
+                "expectedScore": 0.623633628298226,
+                "lossCp": 20,
+                "punishment": [
+                  "d2d3",
+                  "h5f3",
+                  "d1f3",
+                  "g8f6",
+                  "c1e3",
+                  "a7a6",
+                  "c4a2"
+                ]
+              },
+              {
+                "move": "h7h6",
+                "probability": 0.038148584324095264,
+                "san": "h6",
+                "scoreCp": 184,
+                "expectedScore": 0.7150421057009897,
+                "lossCp": 103,
+                "punishment": [
+                  "f3e5",
+                  "d6e5",
+                  "d1h5",
+                  "d8d7",
+                  "h5d1",
+                  "g8f6",
+                  "d2d3",
+                  "c6d4",
+                  "c3e2",
+                  "f8c5",
+                  "e2d4"
+                ]
+              },
+              {
+                "move": "a7a6",
+                "probability": 0.02727604685764091,
+                "san": "a6",
+                "scoreCp": 87,
+                "expectedScore": 0.6070669880717036,
+                "lossCp": 6,
+                "punishment": [
+                  "d2d3",
+                  "f8e7",
+                  "c1e3",
+                  "h7h6",
+                  "g2g4",
+                  "h5g6",
+                  "c4a2",
+                  "d8d7",
+                  "d3d4",
+                  "e5d4"
+                ]
+              },
+              {
+                "move": "d8d7",
+                "probability": 0.026961613717021455,
+                "san": "Qd7",
+                "scoreCp": 86,
+                "expectedScore": 0.6058736684317606,
+                "lossCp": 5,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d4",
+                  "e5d4",
+                  "f3d4",
+                  "g8f6",
+                  "f2f3",
+                  "e8c8",
+                  "c4b5",
+                  "d6d5",
+                  "e4e5",
+                  "d7e8",
+                  "d4c6",
+                  "b7c6",
+                  "b5a6",
+                  "c8b8"
+                ]
+              },
+              {
+                "move": "g8e7",
+                "probability": 0.014539776285467482,
+                "san": "Nge7",
+                "scoreCp": 149,
+                "expectedScore": 0.6780882495516275,
+                "lossCp": 68,
+                "punishment": [
+                  "f3e5",
+                  "c6e5",
+                  "d1h5",
+                  "e5c4",
+                  "h5b5",
+                  "d8d7",
+                  "b5c4",
+                  "d6d5",
+                  "c3d5",
+                  "e7d5",
+                  "c4d5",
+                  "d7d5"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "h7h6",
+              "replySan": "h6",
+              "probability": 0.038148584324095264,
+              "profitCp": 103,
+              "scoreCp": 184,
+              "punishment": [
+                "f3e5",
+                "d6e5",
+                "d1h5",
+                "d8d7",
+                "h5d1",
+                "g8f6",
+                "d2d3",
+                "c6d4",
+                "c3e2",
+                "f8c5",
+                "e2d4"
+              ]
+            }
+          },
+          {
+            "move": "a2a4",
+            "san": "a4",
+            "rootScoreCp": 68,
+            "adjustedScoreCp": 84.68624228160844,
+            "riskCp": 104,
+            "bonusCp": 7.686242281608443,
+            "expectedScoreCp": 84.68624228160844,
+            "expectedScore": 0.6043040163811242,
+            "objectiveScore": 0.5841905229354073,
+            "policyCoverage": 0.949861518541838,
+            "replies": [
+              {
+                "move": "c6d4",
+                "probability": 0.3340395083688078,
+                "san": "Nd4",
+                "scoreCp": 94,
+                "expectedScore": 0.6153837563911821,
+                "lossCp": 26,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d3",
+                  "h7h5",
+                  "g4g5",
+                  "c7c6",
+                  "c1e3",
+                  "d4f3",
+                  "d1f3",
+                  "h5h4",
+                  "f3g2",
+                  "g8e7",
+                  "d3d4",
+                  "e5d4",
+                  "e3d4",
+                  "d6d5",
+                  "e4d5"
+                ]
+              },
+              {
+                "move": "g8f6",
+                "probability": 0.3020427104890686,
+                "san": "Nf6",
+                "scoreCp": 68,
+                "expectedScore": 0.5841905229354073,
+                "lossCp": 0,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d3",
+                  "f8e7",
+                  "a4a5",
+                  "a7a6",
+                  "c1e3",
+                  "e8g8",
+                  "h1g1",
+                  "c6b4"
+                ]
+              },
+              {
+                "move": "d8f6",
+                "probability": 0.06294339061123923,
+                "san": "Qf6",
+                "scoreCp": 102,
+                "expectedScore": 0.6248064744684293,
+                "lossCp": 34,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "a4a5",
+                  "a7a6",
+                  "d2d4",
+                  "e5d4",
+                  "c3d5",
+                  "f6d8",
+                  "f3d4",
+                  "g6e4",
+                  "d4c6",
+                  "b7c6"
+                ]
+              },
+              {
+                "move": "h5f3",
+                "probability": 0.06173078247003875,
+                "san": "Bxf3",
+                "scoreCp": 81,
+                "expectedScore": 0.5998883688639983,
+                "lossCp": 13,
+                "punishment": [
+                  "d1f3",
+                  "d8d7",
+                  "e1g1",
+                  "c6d4",
+                  "f3d3",
+                  "c7c6",
+                  "b2b4",
+                  "g8f6",
+                  "c1b2",
+                  "f8e7",
+                  "f2f4"
+                ]
+              },
+              {
+                "move": "f8e7",
+                "probability": 0.05439862343812431,
+                "san": "Be7",
+                "scoreCp": 64,
+                "expectedScore": 0.5793242521487495,
+                "lossCp": 0,
+                "punishment": [
+                  "a4a5",
+                  "a7a6",
+                  "g2g4",
+                  "h5g6",
+                  "d2d3",
+                  "h7h5"
+                ]
+              },
+              {
+                "move": "a7a6",
+                "probability": 0.048832975135939524,
+                "san": "a6",
+                "scoreCp": 72,
+                "expectedScore": 0.5890404340586651,
+                "lossCp": 4,
+                "punishment": [
+                  "d2d3",
+                  "g8f6",
+                  "g2g4",
+                  "h5g6",
+                  "c1e3",
+                  "h7h5",
+                  "g4g5",
+                  "f6d7",
+                  "a4a5"
+                ]
+              },
+              {
+                "move": "h7h6",
+                "probability": 0.031531343996477786,
+                "san": "h6",
+                "scoreCp": 178,
+                "expectedScore": 0.7088901725661199,
+                "lossCp": 110,
+                "punishment": [
+                  "f3e5",
+                  "d8g5",
+                  "e5g4",
+                  "c6d4",
+                  "d2d3",
+                  "g5h4",
+                  "c3d5",
+                  "h5g4",
+                  "d1g4",
+                  "d4c2"
+                ]
+              },
+              {
+                "move": "d8d7",
+                "probability": 0.02492945790979887,
+                "san": "Qd7",
+                "scoreCp": 86,
+                "expectedScore": 0.6058736684317606,
+                "lossCp": 18,
+                "punishment": [
+                  "g2g4",
+                  "h5g6",
+                  "d2d4",
+                  "e5d4",
+                  "f3d4",
+                  "g8f6",
+                  "f2f3",
+                  "f8e7",
+                  "a4a5",
+                  "e8g8",
+                  "a5a6",
+                  "b7a6",
+                  "d4c6",
+                  "d7c6"
+                ]
+              },
+              {
+                "move": "a7a5",
+                "probability": 0.01569943808379753,
+                "san": "a5",
+                "scoreCp": 77,
+                "expectedScore": 0.595078473866134,
+                "lossCp": 9,
+                "punishment": [
+                  "d2d3",
+                  "h7h6",
+                  "g2g4",
+                  "h5g6",
+                  "d3d4",
+                  "f8e7",
+                  "c1e3",
+                  "g8f6",
+                  "d4d5",
+                  "c6b4"
+                ]
+              },
+              {
+                "move": "g8e7",
+                "probability": 0.013713288038545607,
+                "san": "Nge7",
+                "scoreCp": 167,
+                "expectedScore": 0.6974111143958823,
+                "lossCp": 99,
+                "punishment": [
+                  "f3e5",
+                  "c6e5",
+                  "d1h5",
+                  "e5c4",
+                  "h5b5",
+                  "d8d7",
+                  "b5c4",
+                  "d6d5",
+                  "e4d5"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "h7h6",
+              "replySan": "h6",
+              "probability": 0.031531343996477786,
+              "profitCp": 110,
+              "scoreCp": 178,
+              "punishment": [
+                "f3e5",
+                "d8g5",
+                "e5g4",
+                "c6d4",
+                "d2d3",
+                "g5h4",
+                "c3d5",
+                "h5g4",
+                "d1g4",
+                "d4c2"
+              ]
+            }
+          },
+          {
+            "move": "c4b3",
+            "san": "Bb3",
+            "rootScoreCp": 63,
+            "adjustedScoreCp": 63,
+            "riskCp": 109,
+            "bonusCp": 0,
+            "expectedScoreCp": 63,
+            "expectedScore": 0.5781052328843092,
+            "objectiveScore": 0.5781052328843092,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "d2d3",
+            "san": "d3",
+            "rootScoreCp": 59,
+            "adjustedScoreCp": 59,
+            "riskCp": 113,
+            "bonusCp": 0,
+            "expectedScoreCp": 59,
+            "expectedScore": 0.5732197726798349,
+            "objectiveScore": 0.5732197726798349,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "c3d5",
+            "san": "Nd5",
+            "rootScoreCp": 54,
+            "adjustedScoreCp": 54,
+            "riskCp": 118,
+            "bonusCp": 0,
+            "expectedScoreCp": 54,
+            "expectedScore": 0.5670929049654543,
+            "objectiveScore": 0.5670929049654543,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "c4b5",
+            "san": "Bb5",
+            "rootScoreCp": 54,
+            "adjustedScoreCp": 54,
+            "riskCp": 118,
+            "bonusCp": 0,
+            "expectedScoreCp": 54,
+            "expectedScore": 0.5670929049654543,
+            "objectiveScore": 0.5670929049654543,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "b2b4",
+            "san": "b4",
+            "rootScoreCp": 48,
+            "adjustedScoreCp": 48,
+            "riskCp": 124,
+            "bonusCp": 0,
+            "expectedScoreCp": 48,
+            "expectedScore": 0.5597136492671929,
+            "objectiveScore": 0.5597136492671929,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "e1g1",
+            "san": "O-O",
+            "rootScoreCp": 45,
+            "adjustedScoreCp": 45,
+            "riskCp": 127,
+            "bonusCp": 0,
+            "expectedScoreCp": 45,
+            "expectedScore": 0.5560138905446199,
+            "objectiveScore": 0.5560138905446199,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "c4e2",
+            "san": "Be2",
+            "rootScoreCp": 29,
+            "adjustedScoreCp": 29,
+            "riskCp": 143,
+            "bonusCp": 0,
+            "expectedScoreCp": 29,
+            "expectedScore": 0.5361866202317948,
+            "objectiveScore": 0.5361866202317948,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "c4f7",
+            "san": "Bxf7+",
+            "rootScoreCp": -310,
+            "adjustedScoreCp": -310,
+            "riskCp": 482,
+            "bonusCp": 0,
+            "expectedScoreCp": -310,
+            "expectedScore": 0.1750862681640398,
+            "objectiveScore": 0.1750862681640398,
+            "policyCoverage": 0,
+            "replies": []
+          }
+        ],
+        "selected": {
+          "move": "f3e5",
+          "san": "Nxe5",
+          "rootScoreCp": 166,
+          "adjustedScoreCp": 373.229510110348,
+          "riskCp": 6,
+          "bonusCp": 201.22951011034797,
+          "expectedScoreCp": 373.229510110348,
+          "expectedScore": 0.8660118873267996,
+          "objectiveScore": 0.6963549298238342,
+          "policyCoverage": 0.9796138633274404,
+          "replies": [
+            {
+              "move": "h5d1",
+              "probability": 0.5569502728916738,
+              "san": "Bxd1",
+              "scoreCp": 99800,
+              "expectedScore": 1,
+              "lossCp": 99634,
+              "punishment": [
+                "c4f7",
+                "e8e7",
+                "c3d5"
+              ]
+            },
+            {
+              "move": "c6e5",
+              "probability": 0.27468158551067706,
+              "san": "Nxe5",
+              "scoreCp": 161,
+              "expectedScore": 0.6910430124157229,
+              "lossCp": 0,
+              "punishment": [
+                "d1h5",
+                "g8f6",
+                "h5e2",
+                "e5c4",
+                "e2c4",
+                "c7c6",
+                "d2d3",
+                "f8e7",
+                "c4b3",
+                "d8d7",
+                "c1e3",
+                "d6d5",
+                "e4d5"
+              ]
+            },
+            {
+              "move": "d6e5",
+              "probability": 0.13709470836582577,
+              "san": "dxe5",
+              "scoreCp": 180,
+              "expectedScore": 0.7109495026250039,
+              "lossCp": 14,
+              "punishment": [
+                "d1h5",
+                "d8d7",
+                "c3e2",
+                "f8c5",
+                "c2c3",
+                "a7a6",
+                "b2b4",
+                "c5a7",
+                "d2d3"
+              ]
+            },
+            {
+              "move": "d8g5",
+              "probability": 0.010887296559263753,
+              "san": "Qg5",
+              "scoreCp": 166,
+              "expectedScore": 0.6963549298238342,
+              "lossCp": 0,
+              "punishment": [
+                "e5g4",
+                "g5h4",
+                "c4e2",
+                "c6d4",
+                "d2d3",
+                "d4e2",
+                "d1e2",
+                "e8c8",
+                "c1e3"
+              ]
+            }
+          ],
+          "trap": {
+            "reply": "h5d1",
+            "replySan": "Bxd1",
+            "probability": 0.5569502728916738,
+            "profitCp": 99634,
+            "scoreCp": 99800,
+            "punishment": [
+              "c4f7",
+              "e8e7",
+              "c3d5"
+            ]
+          }
+        },
+        "policySource": "maia"
+      },
+      "legacyCommonOracle": {
+        "move": "f3e5",
+        "san": "Nxe5",
+        "rootCp": 171,
+        "objectiveCp": 166,
+        "objectiveScore": 0.6963549298238342,
+        "expectedScore": 0.8660118873267996,
+        "coverage": 0.9796138633274406,
+        "residualProbability": 0.020386136672559396,
+        "replies": [
+          {
+            "move": "h5d1",
+            "san": "Bxd1",
+            "probability": 0.5569502728916739,
+            "outcomeCp": 99800,
+            "outcomeScore": 1
+          },
+          {
+            "move": "c6e5",
+            "san": "Nxe5",
+            "probability": 0.2746815855106771,
+            "outcomeCp": 161,
+            "outcomeScore": 0.6910430124157229
+          },
+          {
+            "move": "d6e5",
+            "san": "dxe5",
+            "probability": 0.1370947083658258,
+            "outcomeCp": 180,
+            "outcomeScore": 0.7109495026250039
+          },
+          {
+            "move": "d8g5",
+            "san": "Qg5",
+            "probability": 0.010887296559263755,
+            "outcomeCp": 166,
+            "outcomeScore": 0.6963549298238342
+          }
+        ]
+      },
+      "practicalCommonOracle": {
+        "move": "f3e5",
+        "san": "Nxe5",
+        "rootCp": 171,
+        "objectiveCp": 166,
+        "objectiveScore": 0.6963549298238342,
+        "expectedScore": 0.8660118873267996,
+        "coverage": 0.9796138633274406,
+        "residualProbability": 0.020386136672559396,
+        "replies": [
+          {
+            "move": "h5d1",
+            "san": "Bxd1",
+            "probability": 0.5569502728916739,
+            "outcomeCp": 99800,
+            "outcomeScore": 1
+          },
+          {
+            "move": "c6e5",
+            "san": "Nxe5",
+            "probability": 0.2746815855106771,
+            "outcomeCp": 161,
+            "outcomeScore": 0.6910430124157229
+          },
+          {
+            "move": "d6e5",
+            "san": "dxe5",
+            "probability": 0.1370947083658258,
+            "outcomeCp": 180,
+            "outcomeScore": 0.7109495026250039
+          },
+          {
+            "move": "d8g5",
+            "san": "Qg5",
+            "probability": 0.010887296559263755,
+            "outcomeCp": 166,
+            "outcomeScore": 0.6963549298238342
+          }
+        ]
+      },
+      "namedTrapOracle": {
+        "move": "f3e5",
+        "san": "Nxe5",
+        "rootCp": 171,
+        "objectiveCp": 166,
+        "objectiveScore": 0.6963549298238342,
+        "expectedScore": 0.8660118873267996,
+        "coverage": 0.9796138633274406,
+        "residualProbability": 0.020386136672559396,
+        "replies": [
+          {
+            "move": "h5d1",
+            "san": "Bxd1",
+            "probability": 0.5569502728916739,
+            "outcomeCp": 99800,
+            "outcomeScore": 1
+          },
+          {
+            "move": "c6e5",
+            "san": "Nxe5",
+            "probability": 0.2746815855106771,
+            "outcomeCp": 161,
+            "outcomeScore": 0.6910430124157229
+          },
+          {
+            "move": "d6e5",
+            "san": "dxe5",
+            "probability": 0.1370947083658258,
+            "outcomeCp": 180,
+            "outcomeScore": 0.7109495026250039
+          },
+          {
+            "move": "d8g5",
+            "san": "Qg5",
+            "probability": 0.010887296559263755,
+            "outcomeCp": 166,
+            "outcomeScore": 0.6963549298238342
+          }
+        ]
+      },
+      "namedReplyProbability": 0.5569502728916739,
+      "namedReplyRank": 1
+    },
+    {
+      "id": "englund",
+      "name": "Englund queen fork",
+      "setup": [
+        "d4",
+        "e5",
+        "dxe5",
+        "Nc6",
+        "Nf3",
+        "Qe7",
+        "Bf4"
+      ],
+      "candidate": "Qb4+",
+      "temptingReply": "Bd2",
+      "continuation": [
+        "Qxb2",
+        "Bc3",
+        "Bb4",
+        "Qd2",
+        "Bxc3",
+        "Qxc3",
+        "Qc1#"
+      ],
+      "caution": "Requires several later mistakes; the initial Bd2 reply is a correct defense, and a one-reply model should not count the full trap as certain.",
+      "source": "https://www.chess.com/openings/Englund-Gambit",
+      "fen": "r1b1kbnr/ppppqppp/2n5/4P3/5B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 4 4",
+      "legacy": {
+        "move": "d7d6",
+        "san": "d6",
+        "mode": "trappy",
+        "rootBestMove": "d7d6",
+        "rootBestSan": "d6",
+        "rootBestScoreCp": -124,
+        "candidates": [
+          {
+            "move": "d7d6",
+            "san": "d6",
+            "rootScoreCp": -124,
+            "adjustedScoreCp": -40.806250000000006,
+            "riskCp": 0,
+            "bonusCp": 83.19375,
+            "trap": {
+              "reply": "e5d6",
+              "replySan": "exd6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 154
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 171
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 202
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 203
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 199
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 196
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 181
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 200
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 119
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 109
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 106
+                }
+              ],
+              "shallowScoreCp": 196,
+              "finalScoreCp": 106,
+              "opponentBestScoreCp": 212,
+              "trappiness": 0.6367924528301887,
+              "profitCp": 106,
+              "qualityCp": 57.375
+            }
+          },
+          {
+            "move": "d7d5",
+            "san": "d5",
+            "rootScoreCp": -144,
+            "adjustedScoreCp": -134.88485869565218,
+            "riskCp": 20,
+            "bonusCp": 9.115141304347826,
+            "trap": {
+              "reply": "e5d6",
+              "replySan": "exd6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 154
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 171
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 202
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 203
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 199
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 196
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 181
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 200
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 133
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 129
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 115
+                }
+              ],
+              "shallowScoreCp": 196,
+              "finalScoreCp": 115,
+              "opponentBestScoreCp": 149,
+              "trappiness": 0.5282608695652175,
+              "profitCp": 34,
+              "qualityCp": 6.286304347826087
+            }
+          },
+          {
+            "move": "f7f6",
+            "san": "f6",
+            "rootScoreCp": -145,
+            "adjustedScoreCp": -145,
+            "riskCp": 21,
+            "bonusCp": 0
+          },
+          {
+            "move": "e7b4",
+            "san": "Qb4+",
+            "rootScoreCp": -165,
+            "adjustedScoreCp": -165,
+            "riskCp": 41,
+            "bonusCp": 0
+          },
+          {
+            "move": "e7c5",
+            "san": "Qc5",
+            "rootScoreCp": -189,
+            "adjustedScoreCp": -188.07874203821655,
+            "riskCp": 65,
+            "bonusCp": 0.9212579617834395,
+            "trap": {
+              "reply": "d1d2",
+              "replySan": "Qd2",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 235
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 185
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 185
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 185
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 185
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 187
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 187
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 171
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 175
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 165
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 157
+                }
+              ],
+              "shallowScoreCp": 185,
+              "finalScoreCp": 157,
+              "opponentBestScoreCp": 176,
+              "trappiness": 0.1337579617834395,
+              "profitCp": 19,
+              "qualityCp": 0.6353503184713376
+            }
+          },
+          {
+            "move": "b7b6",
+            "san": "b6",
+            "rootScoreCp": -209,
+            "adjustedScoreCp": -194.7918936567164,
+            "riskCp": 85,
+            "bonusCp": 14.208106343283578,
+            "trap": {
+              "reply": "e2e3",
+              "replySan": "e3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 231
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 265
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 227
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 184
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 207
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 195
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 139
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 139
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 131
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 126
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 134
+                }
+              ],
+              "shallowScoreCp": 195,
+              "finalScoreCp": 134,
+              "opponentBestScoreCp": 216,
+              "trappiness": 0.34141791044776115,
+              "profitCp": 82,
+              "qualityCp": 9.798694029850743
+            }
+          },
+          {
+            "move": "h7h6",
+            "san": "h6",
+            "rootScoreCp": -205,
+            "adjustedScoreCp": -202.118125,
+            "riskCp": 81,
+            "bonusCp": 2.8818750000000004,
+            "trap": {
+              "reply": "a2a3",
+              "replySan": "a3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 252
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 224
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 224
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 184
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 193
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 186
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 144
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 177
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 113
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 138
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 155
+                }
+              ],
+              "shallowScoreCp": 186,
+              "finalScoreCp": 155,
+              "opponentBestScoreCp": 208,
+              "trappiness": 0.15000000000000002,
+              "profitCp": 53,
+              "qualityCp": 1.9875000000000003
+            }
+          },
+          {
+            "move": "a7a6",
+            "san": "a6",
+            "rootScoreCp": -211,
+            "adjustedScoreCp": -208.93064285714286,
+            "riskCp": 87,
+            "bonusCp": 2.0693571428571427,
+            "trap": {
+              "reply": "b1c3",
+              "replySan": "Nc3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 253
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 267
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 278
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 250
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 256
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 230
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 243
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 255
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 201
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 215
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 217
+                }
+              ],
+              "shallowScoreCp": 253,
+              "finalScoreCp": 217,
+              "opponentBestScoreCp": 248,
+              "trappiness": 0.12442396313364056,
+              "profitCp": 31,
+              "qualityCp": 1.427142857142857
+            }
+          },
+          {
+            "move": "e7e6",
+            "san": "Qe6",
+            "rootScoreCp": -219,
+            "adjustedScoreCp": -208.93081097560975,
+            "riskCp": 95,
+            "bonusCp": 10.069189024390244,
+            "trap": {
+              "reply": "b1d2",
+              "replySan": "Nbd2",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 236
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 157
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 155
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 150
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 150
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 143
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 169
+                },
+                {
+                  "depth": 9,
+                  "scoreCp": 104
+                },
+                {
+                  "depth": 10,
+                  "scoreCp": 113
+                },
+                {
+                  "depth": 11,
+                  "scoreCp": 121
+                },
+                {
+                  "depth": 12,
+                  "scoreCp": 123
+                }
+              ],
+              "shallowScoreCp": 150,
+              "finalScoreCp": 123,
+              "opponentBestScoreCp": 237,
+              "trappiness": 0.16463414634146342,
+              "profitCp": 114,
+              "qualityCp": 6.944268292682927
+            }
+          },
+          {
+            "move": "e7e5",
+            "san": "Qxe5",
+            "rootScoreCp": -620,
+            "adjustedScoreCp": -620,
+            "riskCp": 496,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "d7d6",
+          "san": "d6",
+          "rootScoreCp": -124,
+          "adjustedScoreCp": -40.806250000000006,
+          "riskCp": 0,
+          "bonusCp": 83.19375,
+          "trap": {
+            "reply": "e5d6",
+            "replySan": "exd6",
+            "vector": [
+              {
+                "depth": 2,
+                "scoreCp": 154
+              },
+              {
+                "depth": 3,
+                "scoreCp": 171
+              },
+              {
+                "depth": 4,
+                "scoreCp": 202
+              },
+              {
+                "depth": 5,
+                "scoreCp": 203
+              },
+              {
+                "depth": 6,
+                "scoreCp": 199
+              },
+              {
+                "depth": 7,
+                "scoreCp": 196
+              },
+              {
+                "depth": 8,
+                "scoreCp": 181
+              },
+              {
+                "depth": 9,
+                "scoreCp": 200
+              },
+              {
+                "depth": 10,
+                "scoreCp": 119
+              },
+              {
+                "depth": 11,
+                "scoreCp": 109
+              },
+              {
+                "depth": 12,
+                "scoreCp": 106
+              }
+            ],
+            "shallowScoreCp": 196,
+            "finalScoreCp": 106,
+            "opponentBestScoreCp": 212,
+            "trappiness": 0.6367924528301887,
+            "profitCp": 106,
+            "qualityCp": 57.375
+          }
+        }
+      },
+      "elapsedMs": 9668,
+      "practical": {
+        "move": "e7b4",
+        "san": "Qb4+",
+        "mode": "trappy",
+        "rootBestMove": "d7d6",
+        "rootBestSan": "d6",
+        "rootBestScoreCp": -119,
+        "candidates": [
+          {
+            "move": "e7b4",
+            "san": "Qb4+",
+            "rootScoreCp": -198,
+            "adjustedScoreCp": -57.34007154560984,
+            "riskCp": 79,
+            "bonusCp": 76.65992845439015,
+            "expectedScoreCp": -57.34007154560984,
+            "expectedScore": 0.42881186534448357,
+            "objectiveScore": 0.2709120776506935,
+            "policyCoverage": 0.98833989077948,
+            "replies": [
+              {
+                "move": "f4d2",
+                "probability": 0.5518035077877167,
+                "san": "Bd2",
+                "scoreCp": -198,
+                "expectedScore": 0.2709120776506935,
+                "lossCp": 0,
+                "punishment": [
+                  "b4b2",
+                  "b1c3",
+                  "f8b4",
+                  "a1b1",
+                  "b2c3",
+                  "d2c3",
+                  "b4c3",
+                  "f3d2",
+                  "c6e5",
+                  "e2e3",
+                  "g8e7",
+                  "e3e4",
+                  "e7c6"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.1620346445406534,
+                "san": "Nc3",
+                "scoreCp": -107,
+                "expectedScore": 0.36935147434892557,
+                "lossCp": 91,
+                "punishment": [
+                  "b4f4",
+                  "c3d5"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.10745848652799743,
+                "san": "c3",
+                "scoreCp": 290,
+                "expectedScore": 0.8099984339846871,
+                "lossCp": 488,
+                "punishment": [
+                  "b4f4",
+                  "e2e3",
+                  "f4h6",
+                  "h2h4",
+                  "f7f6",
+                  "g2g4",
+                  "f6e5",
+                  "g4g5",
+                  "h6e6",
+                  "f1h3",
+                  "e6f7",
+                  "b1d2"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.1026736188876948,
+                "san": "Nbd2",
+                "scoreCp": 267,
+                "expectedScore": 0.7916664907298545,
+                "lossCp": 465,
+                "punishment": [
+                  "b4f4",
+                  "e2e3",
+                  "f4h6",
+                  "d2e4",
+                  "d7d6",
+                  "f1b5",
+                  "c8d7",
+                  "e5d6",
+                  "f8d6",
+                  "b5c6",
+                  "d7c6"
+                ]
+              },
+              {
+                "move": "d1d2",
+                "probability": 0.06436963303541779,
+                "san": "Qd2",
+                "scoreCp": 215,
+                "expectedScore": 0.7455466141264027,
+                "lossCp": 413,
+                "punishment": [
+                  "b4b2",
+                  "c2c3",
+                  "b2a1",
+                  "d2c2",
+                  "d7d6",
+                  "e2e4",
+                  "d6e5",
+                  "f3e5",
+                  "f8d6",
+                  "f1b5",
+                  "g8e7",
+                  "e1g1",
+                  "e8g8",
+                  "b5c6",
+                  "e7c6",
+                  "e5c4"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "c2c3",
+              "replySan": "c3",
+              "probability": 0.10745848652799743,
+              "profitCp": 488,
+              "scoreCp": 290,
+              "punishment": [
+                "b4f4",
+                "e2e3",
+                "f4h6",
+                "h2h4",
+                "f7f6",
+                "g2g4",
+                "f6e5",
+                "g4g5",
+                "h6e6",
+                "f1h3",
+                "e6f7",
+                "b1d2"
+              ]
+            }
+          },
+          {
+            "move": "d7d6",
+            "san": "d6",
+            "rootScoreCp": -119,
+            "adjustedScoreCp": -99.78456928547037,
+            "riskCp": 0,
+            "bonusCp": 19.21543071452963,
+            "expectedScoreCp": -99.78456928547037,
+            "expectedScore": 0.37779383725667054,
+            "objectiveScore": 0.3554884462937054,
+            "policyCoverage": 0.967058015921981,
+            "replies": [
+              {
+                "move": "e5d6",
+                "probability": 0.8694028889272583,
+                "san": "exd6",
+                "scoreCp": -108,
+                "expectedScore": 0.3681875822638983,
+                "lossCp": 11,
+                "punishment": [
+                  "e7f6",
+                  "f4d2",
+                  "f8d6",
+                  "d2c3",
+                  "f6g6",
+                  "f3h4",
+                  "g6h6",
+                  "g2g3",
+                  "g8f6",
+                  "d1d2"
+                ]
+              },
+              {
+                "move": "e2e3",
+                "probability": 0.03705783491901883,
+                "san": "e3",
+                "scoreCp": 36,
+                "expectedScore": 0.5448788923735801,
+                "lossCp": 155,
+                "punishment": [
+                  "d6e5",
+                  "f4g3",
+                  "c8d7",
+                  "b1c3",
+                  "e8c8",
+                  "c3d5",
+                  "e7e8",
+                  "f1c4",
+                  "d7e6",
+                  "e1g1",
+                  "g8f6",
+                  "d5f6",
+                  "g7f6"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.03225978069495937,
+                "san": "Nc3",
+                "scoreCp": -30,
+                "expectedScore": 0.46257015465625045,
+                "lossCp": 89,
+                "punishment": [
+                  "d6e5",
+                  "f4g3",
+                  "e7b4",
+                  "d1c1",
+                  "c8e6",
+                  "f3e5",
+                  "c6e5",
+                  "g3e5",
+                  "e8c8",
+                  "e2e3"
+                ]
+              },
+              {
+                "move": "f4g5",
+                "probability": 0.02833751138074461,
+                "san": "Bg5",
+                "scoreCp": -95,
+                "expectedScore": 0.3834334954786807,
+                "lossCp": 24,
+                "punishment": [
+                  "e7e6",
+                  "e5d6",
+                  "f8d6",
+                  "e2e3",
+                  "h7h6",
+                  "g5h4",
+                  "g8f6",
+                  "b1d2",
+                  "e8g8",
+                  "c2c3",
+                  "g7g5"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "e2e3",
+              "replySan": "e3",
+              "probability": 0.03705783491901883,
+              "profitCp": 155,
+              "scoreCp": 36,
+              "punishment": [
+                "d6e5",
+                "f4g3",
+                "c8d7",
+                "b1c3",
+                "e8c8",
+                "c3d5",
+                "e7e8",
+                "f1c4",
+                "d7e6",
+                "e1g1",
+                "g8f6",
+                "d5f6",
+                "g7f6"
+              ]
+            }
+          },
+          {
+            "move": "d7d5",
+            "san": "d5",
+            "rootScoreCp": -218,
+            "adjustedScoreCp": -104.9000566787071,
+            "riskCp": 99,
+            "bonusCp": 49.0999433212929,
+            "expectedScoreCp": -104.9000566787071,
+            "expectedScore": 0.3718005204813877,
+            "objectiveScore": 0.25161827839293577,
+            "policyCoverage": 0.9548924094744303,
+            "replies": [
+              {
+                "move": "e5d6",
+                "probability": 0.4027696183646238,
+                "san": "exd6",
+                "scoreCp": -218,
+                "expectedScore": 0.25161827839293577,
+                "lossCp": 0,
+                "punishment": [
+                  "c7d6",
+                  "e2e3",
+                  "c8e6",
+                  "a2a3",
+                  "g8f6"
+                ]
+              },
+              {
+                "move": "e2e3",
+                "probability": 0.21374986122536177,
+                "san": "e3",
+                "scoreCp": -124,
+                "expectedScore": 0.34978145142617295,
+                "lossCp": 94,
+                "punishment": [
+                  "e7b4",
+                  "b1c3",
+                  "c8g4",
+                  "f1d3",
+                  "e8c8",
+                  "e1g1",
+                  "b4b2",
+                  "c3b5"
+                ]
+              },
+              {
+                "move": "d1d5",
+                "probability": 0.19428988355151308,
+                "san": "Qxd5",
+                "scoreCp": 165,
+                "expectedScore": 0.6952966693475653,
+                "lossCp": 383,
+                "punishment": [
+                  "e7b4",
+                  "b1d2",
+                  "b4f4",
+                  "e2e3",
+                  "f4h6",
+                  "f1c4",
+                  "c8e6",
+                  "d5b5",
+                  "e6c4",
+                  "b5c4",
+                  "f8b4"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.08684309880111073,
+                "san": "Nc3",
+                "scoreCp": -136,
+                "expectedScore": 0.3362613025956473,
+                "lossCp": 82,
+                "punishment": [
+                  "c8e6",
+                  "e2e3",
+                  "e7b4",
+                  "a1b1",
+                  "e8c8",
+                  "a2a3",
+                  "b4b6",
+                  "f1b5",
+                  "g8e7",
+                  "e1g1"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.03159052711670927,
+                "san": "c3",
+                "scoreCp": -146,
+                "expectedScore": 0.3251947274176865,
+                "lossCp": 72,
+                "punishment": [
+                  "c8g4",
+                  "b1d2",
+                  "e8c8",
+                  "e2e3",
+                  "c8b8",
+                  "h2h3",
+                  "g4d7",
+                  "f4g5"
+                ]
+              },
+              {
+                "move": "f4g5",
+                "probability": 0.012827841240259133,
+                "san": "Bg5",
+                "scoreCp": -86,
+                "expectedScore": 0.3941263315682394,
+                "lossCp": 132,
+                "punishment": [
+                  "e7b4",
+                  "g5d2",
+                  "b4b2",
+                  "b1c3",
+                  "c8f5",
+                  "a1b1",
+                  "b2c2",
+                  "d1c2",
+                  "f5c2",
+                  "b1b7",
+                  "e8c8",
+                  "b7b2",
+                  "c2e4"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.012821579174852516,
+                "san": "Nbd2",
+                "scoreCp": -108,
+                "expectedScore": 0.3681875822638983,
+                "lossCp": 110,
+                "punishment": [
+                  "h7h6",
+                  "e2e4",
+                  "d5e4",
+                  "d2e4",
+                  "g7g5",
+                  "f4g3",
+                  "f8g7",
+                  "c2c3",
+                  "c6e5",
+                  "f1b5",
+                  "e5c6",
+                  "b5c6",
+                  "b7c6"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "d1d5",
+              "replySan": "Qxd5",
+              "probability": 0.19428988355151308,
+              "profitCp": 383,
+              "scoreCp": 165,
+              "punishment": [
+                "e7b4",
+                "b1d2",
+                "b4f4",
+                "e2e3",
+                "f4h6",
+                "f1c4",
+                "c8e6",
+                "d5b5",
+                "e6c4",
+                "b5c4",
+                "f8b4"
+              ]
+            }
+          },
+          {
+            "move": "b7b6",
+            "san": "b6",
+            "rootScoreCp": -198,
+            "adjustedScoreCp": -125.93043467285354,
+            "riskCp": 79,
+            "bonusCp": 72.06956532714646,
+            "expectedScoreCp": -125.93043467285354,
+            "expectedScore": 0.34758941062348925,
+            "objectiveScore": 0.2709120776506935,
+            "policyCoverage": 0.9630823439678646,
+            "replies": [
+              {
+                "move": "e2e3",
+                "probability": 0.44457012720448735,
+                "san": "e3",
+                "scoreCp": -126,
+                "expectedScore": 0.34751053780725555,
+                "lossCp": 72,
+                "punishment": [
+                  "e7b4",
+                  "b1d2",
+                  "b4b2",
+                  "f1c4",
+                  "c6a5",
+                  "c4d5",
+                  "c8b7",
+                  "d5b7",
+                  "a5b7",
+                  "e1g1",
+                  "b2c3",
+                  "d2e4"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.24302283282338025,
+                "san": "Nc3",
+                "scoreCp": -186,
+                "expectedScore": 0.2829247145070275,
+                "lossCp": 12,
+                "punishment": [
+                  "e7b4",
+                  "d1c1",
+                  "c8b7",
+                  "a2a3",
+                  "b4a5",
+                  "e2e4",
+                  "e8c8",
+                  "f1c4",
+                  "f7f6",
+                  "e5f6",
+                  "g8f6"
+                ]
+              },
+              {
+                "move": "d1d5",
+                "probability": 0.056193113306822126,
+                "san": "Qd5",
+                "scoreCp": 186,
+                "expectedScore": 0.7170752854929725,
+                "lossCp": 384,
+                "punishment": [
+                  "e7b4",
+                  "f4d2",
+                  "b4b2",
+                  "e2e3",
+                  "b2a1",
+                  "d5b3",
+                  "c8b7",
+                  "f1d3",
+                  "c6e5",
+                  "d2c3",
+                  "e5d3",
+                  "c2d3"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.050291501722933334,
+                "san": "c3",
+                "scoreCp": -118,
+                "expectedScore": 0.35663485430559827,
+                "lossCp": 80,
+                "punishment": [
+                  "c8b7",
+                  "b1d2",
+                  "e8c8",
+                  "e2e3",
+                  "c8b8",
+                  "f1e2",
+                  "d8e8",
+                  "e1g1",
+                  "f7f6",
+                  "e5f6",
+                  "g8f6",
+                  "f1e1",
+                  "h7h6",
+                  "f4g3"
+                ]
+              },
+              {
+                "move": "e2e4",
+                "probability": 0.04915068124119217,
+                "san": "e4",
+                "scoreCp": -205,
+                "expectedScore": 0.2640546060728515,
+                "lossCp": 0,
+                "punishment": [
+                  "e7b4",
+                  "b1c3",
+                  "b4b2",
+                  "f4d2",
+                  "a7a6"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.03424124716744247,
+                "san": "Nbd2",
+                "scoreCp": -127,
+                "expectedScore": 0.34637766910049594,
+                "lossCp": 71,
+                "punishment": [
+                  "c8b7",
+                  "e2e3",
+                  "e8c8",
+                  "c2c3",
+                  "f7f6",
+                  "e5f6",
+                  "g8f6",
+                  "d1a4",
+                  "d8e8"
+                ]
+              },
+              {
+                "move": "f4g5",
+                "probability": 0.030656210606815767,
+                "san": "Bg5",
+                "scoreCp": -85,
+                "expectedScore": 0.39532091528599067,
+                "lossCp": 113,
+                "punishment": [
+                  "e7b4",
+                  "g5d2",
+                  "b4b2",
+                  "b1c3",
+                  "c8a6",
+                  "e2e4",
+                  "a6f1",
+                  "e1f1",
+                  "e8c8",
+                  "g2g3"
+                ]
+              },
+              {
+                "move": "g2g3",
+                "probability": 0.02230422905432407,
+                "san": "g3",
+                "scoreCp": -136,
+                "expectedScore": 0.3362613025956473,
+                "lossCp": 62,
+                "punishment": [
+                  "e7b4",
+                  "b1c3",
+                  "b4b2",
+                  "c3d5",
+                  "f8b4",
+                  "f3d2",
+                  "a8b8",
+                  "f1g2",
+                  "g8e7",
+                  "d5c7",
+                  "e8d8",
+                  "a1b1"
+                ]
+              },
+              {
+                "move": "a2a3",
+                "probability": 0.018945246155983184,
+                "san": "a3",
+                "scoreCp": -145,
+                "expectedScore": 0.3262929005454786,
+                "lossCp": 53,
+                "punishment": [
+                  "c8b7",
+                  "e2e3",
+                  "e8c8",
+                  "b1c3",
+                  "c8b8",
+                  "f1d3",
+                  "e7e8",
+                  "e1g1",
+                  "f7f6",
+                  "e5f6",
+                  "g8f6",
+                  "f4g3"
+                ]
+              },
+              {
+                "move": "f4g3",
+                "probability": 0.013707154684484007,
+                "san": "Bg3",
+                "scoreCp": -82,
+                "expectedScore": 0.3989121211516302,
+                "lossCp": 116,
+                "punishment": [
+                  "e7b4",
+                  "b1d2",
+                  "b4b2",
+                  "e2e3",
+                  "f8b4",
+                  "f1c4",
+                  "b4d2",
+                  "f3d2",
+                  "g8e7",
+                  "e1g1",
+                  "c6e5",
+                  "a1b1",
+                  "b2c3",
+                  "b1b3"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "d1d5",
+              "replySan": "Qd5",
+              "probability": 0.056193113306822126,
+              "profitCp": 384,
+              "scoreCp": 186,
+              "punishment": [
+                "e7b4",
+                "f4d2",
+                "b4b2",
+                "e2e3",
+                "b2a1",
+                "d5b3",
+                "c8b7",
+                "f1d3",
+                "c6e5",
+                "d2c3",
+                "e5d3",
+                "c2d3"
+              ]
+            }
+          },
+          {
+            "move": "f7f6",
+            "san": "f6",
+            "rootScoreCp": -170,
+            "adjustedScoreCp": -151.78465519548286,
+            "riskCp": 51,
+            "bonusCp": -20.784655195482856,
+            "expectedScoreCp": -151.78465519548286,
+            "expectedScore": 0.31888008028372017,
+            "objectiveScore": 0.29943285752602705,
+            "policyCoverage": 0.951691950279239,
+            "replies": [
+              {
+                "move": "e5f6",
+                "probability": 0.8327227928969912,
+                "san": "exf6",
+                "scoreCp": -170,
+                "expectedScore": 0.29943285752602705,
+                "lossCp": 0,
+                "punishment": [
+                  "g8f6",
+                  "b1c3",
+                  "d7d5",
+                  "e2e3",
+                  "e7b4",
+                  "d1c1",
+                  "c8g4",
+                  "a2a3",
+                  "b4e7",
+                  "f1e2"
+                ]
+              },
+              {
+                "move": "e2e3",
+                "probability": 0.05712305809677539,
+                "san": "e3",
+                "scoreCp": -39,
+                "expectedScore": 0.45140389141686565,
+                "lossCp": 131,
+                "punishment": [
+                  "f6e5",
+                  "f4g3",
+                  "g8f6",
+                  "b1c3",
+                  "d7d6",
+                  "g3h4",
+                  "c8e6",
+                  "f3g5",
+                  "e6g8"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.043623854637885866,
+                "san": "Nc3",
+                "scoreCp": -111,
+                "expectedScore": 0.364705150677193,
+                "lossCp": 59,
+                "punishment": [
+                  "f6e5",
+                  "c3d5",
+                  "e7d6",
+                  "f4g3",
+                  "g8f6",
+                  "c2c4",
+                  "f6d5",
+                  "c4d5",
+                  "d6b4",
+                  "f3d2"
+                ]
+              },
+              {
+                "move": "d1d5",
+                "probability": 0.018222244647586528,
+                "san": "Qd5",
+                "scoreCp": 203,
+                "expectedScore": 0.7339975165215696,
+                "lossCp": 373,
+                "punishment": [
+                  "e7b4",
+                  "f4d2",
+                  "b4b2",
+                  "e2e4",
+                  "b2a1",
+                  "f1c4",
+                  "g8e7",
+                  "d5b5",
+                  "c6e5",
+                  "d2c3",
+                  "e5f3",
+                  "g2f3"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "e2e3",
+              "replySan": "e3",
+              "probability": 0.05712305809677539,
+              "profitCp": 131,
+              "scoreCp": -39,
+              "punishment": [
+                "f6e5",
+                "f4g3",
+                "g8f6",
+                "b1c3",
+                "d7d6",
+                "g3h4",
+                "c8e6",
+                "f3g5",
+                "e6g8"
+              ]
+            }
+          },
+          {
+            "move": "h7h6",
+            "san": "h6",
+            "rootScoreCp": -232,
+            "adjustedScoreCp": -164.36425096785462,
+            "riskCp": 113,
+            "bonusCp": 27.635749032145384,
+            "expectedScoreCp": -164.36425096785462,
+            "expectedScore": 0.3053771948603373,
+            "objectiveScore": 0.23866728515708963,
+            "policyCoverage": 0.9634088346921419,
+            "replies": [
+              {
+                "move": "e2e3",
+                "probability": 0.4270958568693768,
+                "san": "e3",
+                "scoreCp": -188,
+                "expectedScore": 0.2809003425836161,
+                "lossCp": 44,
+                "punishment": [
+                  "g7g5",
+                  "f4g3",
+                  "e7b4",
+                  "b1d2",
+                  "b4b2",
+                  "f1c4",
+                  "g8e7"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.2753564724298359,
+                "san": "Nc3",
+                "scoreCp": -232,
+                "expectedScore": 0.23866728515708963,
+                "lossCp": 0,
+                "punishment": [
+                  "e7b4",
+                  "d1c1",
+                  "b4c5",
+                  "e2e4",
+                  "g7g5",
+                  "f4g3",
+                  "f8g7",
+                  "c3d5"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.05528166890497736,
+                "san": "c3",
+                "scoreCp": -73,
+                "expectedScore": 0.40974974806981657,
+                "lossCp": 159,
+                "punishment": [
+                  "g7g5",
+                  "f4g3",
+                  "f8g7",
+                  "d1d5",
+                  "f7f6",
+                  "f3d4",
+                  "c6d4",
+                  "c3d4",
+                  "e7b4",
+                  "b1d2",
+                  "b4b2",
+                  "a1d1"
+                ]
+              },
+              {
+                "move": "e2e4",
+                "probability": 0.045951516962642144,
+                "san": "e4",
+                "scoreCp": -137,
+                "expectedScore": 0.3351462695940264,
+                "lossCp": 95,
+                "punishment": [
+                  "d7d6",
+                  "f1b5",
+                  "g7g5",
+                  "f4g3",
+                  "f8g7",
+                  "b1c3",
+                  "d6e5",
+                  "d1d3",
+                  "g8f6",
+                  "b5c6",
+                  "b7c6",
+                  "g3e5"
+                ]
+              },
+              {
+                "move": "d1d5",
+                "probability": 0.038256356576145456,
+                "san": "Qd5",
+                "scoreCp": 224,
+                "expectedScore": 0.7539887164489482,
+                "lossCp": 456,
+                "punishment": [
+                  "e7b4",
+                  "b1d2",
+                  "b4f4",
+                  "e2e3",
+                  "f4b4",
+                  "f1c4",
+                  "c6d8",
+                  "d5e4",
+                  "b4b6",
+                  "f3d4",
+                  "g8e7",
+                  "d4b5",
+                  "a7a6",
+                  "b5c3",
+                  "d7d6"
+                ]
+              },
+              {
+                "move": "h2h3",
+                "probability": 0.036712058807363786,
+                "san": "h3",
+                "scoreCp": -135,
+                "expectedScore": 0.3373781628299175,
+                "lossCp": 97,
+                "punishment": [
+                  "g7g5",
+                  "f4g3",
+                  "e7b4",
+                  "b1d2",
+                  "b4b2",
+                  "e2e3",
+                  "d7d5",
+                  "e5d6",
+                  "f8d6",
+                  "a1b1",
+                  "b2a2",
+                  "g3d6",
+                  "c7d6"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.03174183774595238,
+                "san": "Nbd2",
+                "scoreCp": -65,
+                "expectedScore": 0.41945769517934034,
+                "lossCp": 167,
+                "punishment": [
+                  "g7g5",
+                  "f4g3",
+                  "f8g7",
+                  "d2c4",
+                  "g5g4",
+                  "f3d2",
+                  "c6e5",
+                  "e2e4",
+                  "e5c4",
+                  "f1c4",
+                  "d7d6",
+                  "e1g1",
+                  "h6h5",
+                  "h2h4",
+                  "g7b2",
+                  "a1b1"
+                ]
+              },
+              {
+                "move": "f4g3",
+                "probability": 0.021007322431600865,
+                "san": "Bg3",
+                "scoreCp": -130,
+                "expectedScore": 0.34298953732650117,
+                "lossCp": 102,
+                "punishment": [
+                  "e7b4",
+                  "b1d2",
+                  "b4b2",
+                  "e2e4",
+                  "c6d4",
+                  "f3d4",
+                  "b2d4",
+                  "f1d3",
+                  "h6h5",
+                  "e1g1"
+                ]
+              },
+              {
+                "move": "a2a3",
+                "probability": 0.01851815219065904,
+                "san": "a3",
+                "scoreCp": -138,
+                "expectedScore": 0.3340330732481797,
+                "lossCp": 94,
+                "punishment": [
+                  "g7g5",
+                  "f4g3",
+                  "h6h5",
+                  "h2h4",
+                  "g5g4",
+                  "f3d4",
+                  "c6e5",
+                  "b1c3"
+                ]
+              },
+              {
+                "move": "g2g3",
+                "probability": 0.013487591773588268,
+                "san": "g3",
+                "scoreCp": -108,
+                "expectedScore": 0.3681875822638983,
+                "lossCp": 124,
+                "punishment": [
+                  "g7g5",
+                  "f4e3",
+                  "g5g4",
+                  "f3d2",
+                  "e7e5",
+                  "b1c3",
+                  "d7d6",
+                  "d2c4",
+                  "e5e7",
+                  "c3d5",
+                  "e7d8",
+                  "h2h3",
+                  "f8g7",
+                  "h3g4",
+                  "c8e6"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "d1d5",
+              "replySan": "Qd5",
+              "probability": 0.038256356576145456,
+              "profitCp": 456,
+              "scoreCp": 224,
+              "punishment": [
+                "e7b4",
+                "b1d2",
+                "b4f4",
+                "e2e3",
+                "f4b4",
+                "f1c4",
+                "c6d8",
+                "d5e4",
+                "b4b6",
+                "f3d4",
+                "g8e7",
+                "d4b5",
+                "a7a6",
+                "b5c3",
+                "d7d6"
+              ]
+            }
+          },
+          {
+            "move": "e7c5",
+            "san": "Qc5",
+            "rootScoreCp": -188,
+            "adjustedScoreCp": -176.91203700122216,
+            "riskCp": 69,
+            "bonusCp": -0.9120370012221599,
+            "expectedScoreCp": -176.91203700122216,
+            "expectedScore": 0.2922336885871732,
+            "objectiveScore": 0.2809003425836161,
+            "policyCoverage": 0.9519117078007356,
+            "replies": [
+              {
+                "move": "e2e3",
+                "probability": 0.4132073569077673,
+                "san": "e3",
+                "scoreCp": -181,
+                "expectedScore": 0.28802408058720647,
+                "lossCp": 7,
+                "punishment": [
+                  "c5b4",
+                  "b1d2",
+                  "d7d5",
+                  "a1b1",
+                  "g8e7",
+                  "c2c3",
+                  "b4b6",
+                  "f1d3",
+                  "e7g6",
+                  "e1g1",
+                  "f8e7",
+                  "b2b4",
+                  "g6f4",
+                  "e3f4",
+                  "e8g8",
+                  "b4b5",
+                  "c6a5"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.30213141702135465,
+                "san": "Nc3",
+                "scoreCp": -179,
+                "expectedScore": 0.2900790816655468,
+                "lossCp": 9,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "e2e3",
+                  "g8f6",
+                  "f1d3",
+                  "e8g8"
+                ]
+              },
+              {
+                "move": "f4e3",
+                "probability": 0.07125729921938766,
+                "san": "Be3",
+                "scoreCp": -173,
+                "expectedScore": 0.29629576200022933,
+                "lossCp": 15,
+                "punishment": [
+                  "c5b5",
+                  "b1c3",
+                  "b5a5",
+                  "e3d2",
+                  "c6e5",
+                  "e2e4",
+                  "e5f3",
+                  "d1f3",
+                  "a5e5",
+                  "c3d5"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.06915787537222044,
+                "san": "c3",
+                "scoreCp": -173,
+                "expectedScore": 0.29629576200022933,
+                "lossCp": 15,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "b1d2",
+                  "c8e6",
+                  "e2e3",
+                  "a8d8",
+                  "f3d4",
+                  "c6d4",
+                  "c3d4",
+                  "c5b6"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.03672680833078761,
+                "san": "Nbd2",
+                "scoreCp": -112,
+                "expectedScore": 0.36354745971843366,
+                "lossCp": 76,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c5d6",
+                  "d2b3",
+                  "d6e7",
+                  "e2e3",
+                  "g8f6",
+                  "f1d3",
+                  "c8e6",
+                  "c2c3",
+                  "e8c8"
+                ]
+              },
+              {
+                "move": "e2e4",
+                "probability": 0.026341854254705515,
+                "san": "e4",
+                "scoreCp": -185,
+                "expectedScore": 0.2839402061842902,
+                "lossCp": 3,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "b1c3",
+                  "g8f6",
+                  "d1d2",
+                  "c8e6",
+                  "e1c1",
+                  "e8g8",
+                  "c1b1"
+                ]
+              },
+              {
+                "move": "a2a3",
+                "probability": 0.019998282511439324,
+                "san": "a3",
+                "scoreCp": -188,
+                "expectedScore": 0.2809003425836161,
+                "lossCp": 0,
+                "punishment": [
+                  "d7d6",
+                  "b2b4",
+                  "c5b6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "d1d6",
+                  "c8g4",
+                  "b1d2",
+                  "g4f3",
+                  "g2f3"
+                ]
+              },
+              {
+                "move": "g2g3",
+                "probability": 0.013090814183073333,
+                "san": "g3",
+                "scoreCp": -163,
+                "expectedScore": 0.3068260506740499,
+                "lossCp": 25,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "d1d2",
+                  "g8f6",
+                  "b1c3",
+                  "e8g8",
+                  "f1g2",
+                  "f8e8",
+                  "a1d1",
+                  "c8f5",
+                  "d2d6"
+                ]
+              }
+            ]
+          },
+          {
+            "move": "e7e6",
+            "san": "Qe6",
+            "rootScoreCp": -214,
+            "adjustedScoreCp": -189.16277011793056,
+            "riskCp": 95,
+            "bonusCp": 5.837229882069437,
+            "expectedScoreCp": -189.16277011793056,
+            "expectedScore": 0.2797274691810311,
+            "objectiveScore": 0.25540308417252405,
+            "policyCoverage": 0.9564469039023484,
+            "replies": [
+              {
+                "move": "e2e3",
+                "probability": 0.44627897097364644,
+                "san": "e3",
+                "scoreCp": -214,
+                "expectedScore": 0.25540308417252405,
+                "lossCp": 0,
+                "punishment": [
+                  "f8b4",
+                  "b1d2",
+                  "d7d5",
+                  "e5d6",
+                  "b4d6",
+                  "f1c4",
+                  "e6g6",
+                  "f4d6",
+                  "c7d6"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.2780650373958479,
+                "san": "Nc3",
+                "scoreCp": -174,
+                "expectedScore": 0.295254302001909,
+                "lossCp": 40,
+                "punishment": [
+                  "f8b4",
+                  "d1d2",
+                  "g8e7",
+                  "e2e3",
+                  "e8g8",
+                  "f1d3",
+                  "e7d5",
+                  "a2a3",
+                  "b4c3",
+                  "b2c3",
+                  "d5f4",
+                  "e3f4"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.051604800061554976,
+                "san": "c3",
+                "scoreCp": -161,
+                "expectedScore": 0.30895698758427714,
+                "lossCp": 53,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "e2e3",
+                  "g8f6",
+                  "f1e2",
+                  "e8g8",
+                  "b1a3"
+                ]
+              },
+              {
+                "move": "e2e4",
+                "probability": 0.04719319399232723,
+                "san": "e4",
+                "scoreCp": -149,
+                "expectedScore": 0.3219117504483725,
+                "lossCp": 65,
+                "punishment": [
+                  "d7d6",
+                  "f3g5",
+                  "e6g6",
+                  "e5d6",
+                  "f8d6",
+                  "f1c4",
+                  "g8h6",
+                  "f4d6",
+                  "c7d6",
+                  "d1d2",
+                  "e8g8",
+                  "b1c3",
+                  "h6g4",
+                  "e1c1"
+                ]
+              },
+              {
+                "move": "f3g5",
+                "probability": 0.04683379388010678,
+                "san": "Ng5",
+                "scoreCp": -157,
+                "expectedScore": 0.31324327335609825,
+                "lossCp": 57,
+                "punishment": [
+                  "e6c4",
+                  "e2e4",
+                  "c4b4",
+                  "b1d2",
+                  "h7h6",
+                  "g5f3",
+                  "b4b2",
+                  "f1c4"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.03082268668048486,
+                "san": "Nbd2",
+                "scoreCp": -121,
+                "expectedScore": 0.35320060744201437,
+                "lossCp": 93,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "e6d6",
+                  "c2c3",
+                  "g8f6",
+                  "d1c2",
+                  "c8g4",
+                  "e2e3",
+                  "e8c8",
+                  "f1e2",
+                  "h8e8"
+                ]
+              },
+              {
+                "move": "g2g3",
+                "probability": 0.02068822277674902,
+                "san": "g3",
+                "scoreCp": -197,
+                "expectedScore": 0.27190080173375075,
+                "lossCp": 17,
+                "punishment": [
+                  "d7d6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "b1c3",
+                  "g8f6",
+                  "c3b5",
+                  "e8g8",
+                  "d1d6",
+                  "a7a6",
+                  "d6e6",
+                  "c8e6",
+                  "b5c7",
+                  "a8d8",
+                  "c7e6"
+                ]
+              },
+              {
+                "move": "f3d4",
+                "probability": 0.019022838751687345,
+                "san": "Nd4",
+                "scoreCp": -170,
+                "expectedScore": 0.29943285752602705,
+                "lossCp": 44,
+                "punishment": [
+                  "c6d4",
+                  "d1d4",
+                  "g8e7",
+                  "b1c3",
+                  "e7c6",
+                  "d4d2",
+                  "f8b4",
+                  "a2a3",
+                  "b4a5"
+                ]
+              },
+              {
+                "move": "h2h3",
+                "probability": 0.015937359389943954,
+                "san": "h3",
+                "scoreCp": -186,
+                "expectedScore": 0.2829247145070275,
+                "lossCp": 28,
+                "punishment": [
+                  "f7f6",
+                  "e5f6",
+                  "e6f6",
+                  "e2e3",
+                  "f6b2",
+                  "b1d2",
+                  "f8b4",
+                  "f1d3",
+                  "d7d5",
+                  "e1g1"
+                ]
+              }
+            ],
+            "trap": {
+              "reply": "b1d2",
+              "replySan": "Nbd2",
+              "probability": 0.03082268668048486,
+              "profitCp": 93,
+              "scoreCp": -121,
+              "punishment": [
+                "d7d6",
+                "e5d6",
+                "f8d6",
+                "f4d6",
+                "e6d6",
+                "c2c3",
+                "g8f6",
+                "d1c2",
+                "c8g4",
+                "e2e3",
+                "e8c8",
+                "f1e2",
+                "h8e8"
+              ]
+            }
+          },
+          {
+            "move": "e7d8",
+            "san": "Qd8",
+            "rootScoreCp": -219,
+            "adjustedScoreCp": -205.80181417000065,
+            "riskCp": 100,
+            "bonusCp": 6.198185829999346,
+            "expectedScoreCp": -205.80181417000065,
+            "expectedScore": 0.26327626154786804,
+            "objectiveScore": 0.2506779155948202,
+            "policyCoverage": 0.9552845944056466,
+            "replies": [
+              {
+                "move": "e2e3",
+                "probability": 0.496942316310819,
+                "san": "e3",
+                "scoreCp": -211,
+                "expectedScore": 0.25826612006856875,
+                "lossCp": 8,
+                "punishment": [
+                  "d7d5",
+                  "e5d6",
+                  "c7d6",
+                  "b1c3",
+                  "g8f6",
+                  "f1e2"
+                ]
+              },
+              {
+                "move": "b1c3",
+                "probability": 0.18638003121830438,
+                "san": "Nc3",
+                "scoreCp": -219,
+                "expectedScore": 0.2506779155948202,
+                "lossCp": 0,
+                "punishment": [
+                  "g8e7",
+                  "f4g5",
+                  "d7d5",
+                  "e5d6",
+                  "d8d6",
+                  "d1d6",
+                  "c7d6",
+                  "e2e4"
+                ]
+              },
+              {
+                "move": "c2c3",
+                "probability": 0.07344257564014431,
+                "san": "c3",
+                "scoreCp": -169,
+                "expectedScore": 0.30048277233757253,
+                "lossCp": 50,
+                "punishment": [
+                  "d7d6",
+                  "e2e3",
+                  "c8e6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "f3d4",
+                  "c6d4",
+                  "c3d4",
+                  "g8f6",
+                  "b1c3",
+                  "e8g8"
+                ]
+              },
+              {
+                "move": "e2e4",
+                "probability": 0.06173041637776751,
+                "san": "e4",
+                "scoreCp": -219,
+                "expectedScore": 0.2506779155948202,
+                "lossCp": 0,
+                "punishment": [
+                  "d7d6",
+                  "f1b5",
+                  "c8e6",
+                  "b1c3",
+                  "d6e5",
+                  "f3e5"
+                ]
+              },
+              {
+                "move": "b1d2",
+                "probability": 0.039418796445440406,
+                "san": "Nbd2",
+                "scoreCp": -189,
+                "expectedScore": 0.2798914731995085,
+                "lossCp": 30,
+                "punishment": [
+                  "d7d5",
+                  "e2e4",
+                  "g8e7",
+                  "c2c3",
+                  "d5e4",
+                  "d2e4",
+                  "d8d1",
+                  "a1d1",
+                  "e7g6",
+                  "f4g3"
+                ]
+              },
+              {
+                "move": "h2h3",
+                "probability": 0.023599130224980235,
+                "san": "h3",
+                "scoreCp": -193,
+                "expectedScore": 0.27587822922918137,
+                "lossCp": 26,
+                "punishment": [
+                  "d7d6",
+                  "b1c3",
+                  "c8e6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6",
+                  "d1d2",
+                  "d8b6",
+                  "e1c1",
+                  "b6f2",
+                  "d2d6"
+                ]
+              },
+              {
+                "move": "g2g3",
+                "probability": 0.022015864183870172,
+                "san": "g3",
+                "scoreCp": -179,
+                "expectedScore": 0.2900790816655468,
+                "lossCp": 40,
+                "punishment": [
+                  "d7d5",
+                  "a2a3",
+                  "g8e7",
+                  "b1c3",
+                  "d5d4",
+                  "c3b5",
+                  "e7g6",
+                  "b5d4"
+                ]
+              },
+              {
+                "move": "a2a3",
+                "probability": 0.01922496957417237,
+                "san": "a3",
+                "scoreCp": -189,
+                "expectedScore": 0.2798914731995085,
+                "lossCp": 30,
+                "punishment": [
+                  "d7d6",
+                  "e2e4",
+                  "c8e6",
+                  "e5d6",
+                  "f8d6",
+                  "f4d6",
+                  "c7d6"
+                ]
+              },
+              {
+                "move": "f4g5",
+                "probability": 0.017231606545768184,
+                "san": "Bg5",
+                "scoreCp": -142,
+                "expectedScore": 0.3295988401911314,
+                "lossCp": 77,
+                "punishment": [
+                  "f8e7",
+                  "g5f4",
+                  "d7d6",
+                  "e5d6",
+                  "c7d6",
+                  "b1c3",
+                  "g8f6",
+                  "e2e4",
+                  "e8g8",
+                  "f1e2",
+                  "f8e8",
+                  "e1g1"
+                ]
+              },
+              {
+                "move": "f4g3",
+                "probability": 0.015298887884379912,
+                "san": "Bg3",
+                "scoreCp": -177,
+                "expectedScore": 0.29214272857551865,
+                "lossCp": 42,
+                "punishment": [
+                  "d7d5",
+                  "e2e3",
+                  "h7h5",
+                  "h2h3",
+                  "g8e7",
+                  "f1e2",
+                  "e7f5",
+                  "g3f4",
+                  "f8e7",
+                  "b1c3"
+                ]
+              }
+            ]
+          },
+          {
+            "move": "a7a6",
+            "san": "a6",
+            "rootScoreCp": -234,
+            "adjustedScoreCp": -234,
+            "riskCp": 115,
+            "bonusCp": 0,
+            "expectedScoreCp": -234,
+            "expectedScore": 0.23685498427314458,
+            "objectiveScore": 0.23685498427314458,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "c6e5",
+            "san": "Nxe5",
+            "rootScoreCp": -418,
+            "adjustedScoreCp": -418,
+            "riskCp": 299,
+            "bonusCp": 0,
+            "expectedScoreCp": -418,
+            "expectedScore": 0.11007257436250302,
+            "objectiveScore": 0.11007257436250302,
+            "policyCoverage": 0,
+            "replies": []
+          },
+          {
+            "move": "e7e5",
+            "san": "Qxe5",
+            "rootScoreCp": -641,
+            "adjustedScoreCp": -641,
+            "riskCp": 522,
+            "bonusCp": 0,
+            "expectedScoreCp": -641,
+            "expectedScore": 0.03897799689573653,
+            "objectiveScore": 0.03897799689573653,
+            "policyCoverage": 0,
+            "replies": []
+          }
+        ],
+        "selected": {
+          "move": "e7b4",
+          "san": "Qb4+",
+          "rootScoreCp": -198,
+          "adjustedScoreCp": -57.34007154560984,
+          "riskCp": 79,
+          "bonusCp": 76.65992845439015,
+          "expectedScoreCp": -57.34007154560984,
+          "expectedScore": 0.42881186534448357,
+          "objectiveScore": 0.2709120776506935,
+          "policyCoverage": 0.98833989077948,
+          "replies": [
+            {
+              "move": "f4d2",
+              "probability": 0.5518035077877167,
+              "san": "Bd2",
+              "scoreCp": -198,
+              "expectedScore": 0.2709120776506935,
+              "lossCp": 0,
+              "punishment": [
+                "b4b2",
+                "b1c3",
+                "f8b4",
+                "a1b1",
+                "b2c3",
+                "d2c3",
+                "b4c3",
+                "f3d2",
+                "c6e5",
+                "e2e3",
+                "g8e7",
+                "e3e4",
+                "e7c6"
+              ]
+            },
+            {
+              "move": "b1c3",
+              "probability": 0.1620346445406534,
+              "san": "Nc3",
+              "scoreCp": -107,
+              "expectedScore": 0.36935147434892557,
+              "lossCp": 91,
+              "punishment": [
+                "b4f4",
+                "c3d5"
+              ]
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.10745848652799743,
+              "san": "c3",
+              "scoreCp": 290,
+              "expectedScore": 0.8099984339846871,
+              "lossCp": 488,
+              "punishment": [
+                "b4f4",
+                "e2e3",
+                "f4h6",
+                "h2h4",
+                "f7f6",
+                "g2g4",
+                "f6e5",
+                "g4g5",
+                "h6e6",
+                "f1h3",
+                "e6f7",
+                "b1d2"
+              ]
+            },
+            {
+              "move": "b1d2",
+              "probability": 0.1026736188876948,
+              "san": "Nbd2",
+              "scoreCp": 267,
+              "expectedScore": 0.7916664907298545,
+              "lossCp": 465,
+              "punishment": [
+                "b4f4",
+                "e2e3",
+                "f4h6",
+                "d2e4",
+                "d7d6",
+                "f1b5",
+                "c8d7",
+                "e5d6",
+                "f8d6",
+                "b5c6",
+                "d7c6"
+              ]
+            },
+            {
+              "move": "d1d2",
+              "probability": 0.06436963303541779,
+              "san": "Qd2",
+              "scoreCp": 215,
+              "expectedScore": 0.7455466141264027,
+              "lossCp": 413,
+              "punishment": [
+                "b4b2",
+                "c2c3",
+                "b2a1",
+                "d2c2",
+                "d7d6",
+                "e2e4",
+                "d6e5",
+                "f3e5",
+                "f8d6",
+                "f1b5",
+                "g8e7",
+                "e1g1",
+                "e8g8",
+                "b5c6",
+                "e7c6",
+                "e5c4"
+              ]
+            }
+          ],
+          "trap": {
+            "reply": "c2c3",
+            "replySan": "c3",
+            "probability": 0.10745848652799743,
+            "profitCp": 488,
+            "scoreCp": 290,
+            "punishment": [
+              "b4f4",
+              "e2e3",
+              "f4h6",
+              "h2h4",
+              "f7f6",
+              "g2g4",
+              "f6e5",
+              "g4g5",
+              "h6e6",
+              "f1h3",
+              "e6f7",
+              "b1d2"
+            ]
+          }
+        },
+        "policySource": "maia"
+      },
+      "legacyCommonOracle": {
+        "move": "d7d6",
+        "san": "d6",
+        "rootCp": -148,
+        "objectiveCp": -108,
+        "objectiveScore": 0.3681875822638983,
+        "expectedScore": 0.37821217199160523,
+        "coverage": 0.9670580159219809,
+        "residualProbability": 0.03294198407801907,
+        "replies": [
+          {
+            "move": "e5d6",
+            "san": "exd6",
+            "probability": 0.8694028889272581,
+            "outcomeCp": -108,
+            "outcomeScore": 0.3681875822638983
+          },
+          {
+            "move": "e2e3",
+            "san": "e3",
+            "probability": 0.037057834919018824,
+            "outcomeCp": 36,
+            "outcomeScore": 0.5448788923735801
+          },
+          {
+            "move": "b1c3",
+            "san": "Nc3",
+            "probability": 0.03225978069495936,
+            "outcomeCp": -30,
+            "outcomeScore": 0.46257015465625045
+          },
+          {
+            "move": "f4g5",
+            "san": "Bg5",
+            "probability": 0.028337511380744605,
+            "outcomeCp": -95,
+            "outcomeScore": 0.3834334954786807
+          }
+        ]
+      },
+      "practicalCommonOracle": {
+        "move": "e7b4",
+        "san": "Qb4+",
+        "rootCp": -172,
+        "objectiveCp": -198,
+        "objectiveScore": 0.2709120776506935,
+        "expectedScore": 0.4288118653444835,
+        "coverage": 0.9883398907794798,
+        "residualProbability": 0.011660109220520187,
+        "replies": [
+          {
+            "move": "f4d2",
+            "san": "Bd2",
+            "probability": 0.5518035077877166,
+            "outcomeCp": -198,
+            "outcomeScore": 0.2709120776506935
+          },
+          {
+            "move": "b1c3",
+            "san": "Nc3",
+            "probability": 0.16203464454065336,
+            "outcomeCp": -107,
+            "outcomeScore": 0.36935147434892557
+          },
+          {
+            "move": "c2c3",
+            "san": "c3",
+            "probability": 0.10745848652799742,
+            "outcomeCp": 290,
+            "outcomeScore": 0.8099984339846871
+          },
+          {
+            "move": "b1d2",
+            "san": "Nbd2",
+            "probability": 0.10267361888769479,
+            "outcomeCp": 267,
+            "outcomeScore": 0.7916664907298545
+          },
+          {
+            "move": "d1d2",
+            "san": "Qd2",
+            "probability": 0.06436963303541778,
+            "outcomeCp": 215,
+            "outcomeScore": 0.7455466141264027
+          }
+        ]
+      },
+      "namedTrapOracle": {
+        "move": "e7b4",
+        "san": "Qb4+",
+        "rootCp": -172,
+        "objectiveCp": -198,
+        "objectiveScore": 0.2709120776506935,
+        "expectedScore": 0.4288118653444835,
+        "coverage": 0.9883398907794798,
+        "residualProbability": 0.011660109220520187,
+        "replies": [
+          {
+            "move": "f4d2",
+            "san": "Bd2",
+            "probability": 0.5518035077877166,
+            "outcomeCp": -198,
+            "outcomeScore": 0.2709120776506935
+          },
+          {
+            "move": "b1c3",
+            "san": "Nc3",
+            "probability": 0.16203464454065336,
+            "outcomeCp": -107,
+            "outcomeScore": 0.36935147434892557
+          },
+          {
+            "move": "c2c3",
+            "san": "c3",
+            "probability": 0.10745848652799742,
+            "outcomeCp": 290,
+            "outcomeScore": 0.8099984339846871
+          },
+          {
+            "move": "b1d2",
+            "san": "Nbd2",
+            "probability": 0.10267361888769479,
+            "outcomeCp": 267,
+            "outcomeScore": 0.7916664907298545
+          },
+          {
+            "move": "d1d2",
+            "san": "Qd2",
+            "probability": 0.06436963303541778,
+            "outcomeCp": 215,
+            "outcomeScore": 0.7455466141264027
+          }
+        ]
+      },
+      "namedReplyProbability": 0.5518035077877166,
+      "namedReplyRank": 1
+    }
+  ],
+  "maiaModelSha256": "F7BD01B3E41DCEB5E93EB9F4C61E9C4DB8B35411EFFD1D8C984B006CD74BB804",
+  "practicalSourceSha256": "68B7F7870DC0AF7E3171EAF43CB9477E02925CEF15DAE595B3AB8594607F374B",
+  "finishedAt": "2026-10-13T18:14:26.681Z",
+  "productionHashAtEnd": "F599E54ED4443BB5260FA617AE745344B32F5272F9DDD81A88BE76138B08AB28",
+  "analyses": 253
+}

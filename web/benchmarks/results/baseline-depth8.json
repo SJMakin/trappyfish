@@ -1,0 +1,2644 @@
+{
+  "phase": "baseline",
+  "startedAt": "2026-10-13T18:07:50.571Z",
+  "depth": 8,
+  "engine": "Stockfish 18 lite single-thread WASM (stockfish npm 18.0.8)",
+  "stockfishWasmSha256": "A8FBC05EC6920B56D7485826DCB02C5FFD2826BCBF751CF973046F237A9096F1",
+  "originalSourceSha256": "F599E54ED4443BB5260FA617AE745344B32F5272F9DDD81A88BE76138B08AB28",
+  "frozenLegacySha256": "639B7DA7C27923553CC79CFD2FC3CAAB333D8E00685B13B700F94144E2DFAFDB",
+  "productionHashAtStart": "F599E54ED4443BB5260FA617AE745344B32F5272F9DDD81A88BE76138B08AB28",
+  "sourceWasUnchangedAtStart": true,
+  "legacySettings": {
+    "rootDepth": 8,
+    "trapDepth": 8,
+    "candidateCount": 6,
+    "replyCount": 6,
+    "aggression": 1.45,
+    "maxRiskCp": 170,
+    "bonusCapCp": 240,
+    "minProfitCp": 25,
+    "minDropCp": 35,
+    "method": "median"
+  },
+  "practicalSettings": {
+    "rootDepth": 8,
+    "trapDepth": 8,
+    "candidateCount": 10,
+    "replyCount": 10,
+    "aggression": 1,
+    "maxRiskCp": 100,
+    "opponentRating": 1500,
+    "engineRating": 2000,
+    "replyCoverage": 0.95
+  },
+  "positions": [
+    {
+      "id": "legal-sound",
+      "name": "Légal after h3 / Bh5",
+      "setup": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bc4",
+        "d6",
+        "Nc3",
+        "Bg4",
+        "h3",
+        "Bh5"
+      ],
+      "candidate": "Nxe5",
+      "temptingReply": "Bxd1",
+      "continuation": [
+        "Bxf7+",
+        "Ke7",
+        "Nd5#"
+      ],
+      "source": "https://www.thechesswebsite.com/legal/",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p2b/2B1P3/2N2N1P/PPPP1PP1/R1BQK2R w KQkq - 1 6",
+      "legacy": {
+        "move": "e1g1",
+        "san": "O-O",
+        "mode": "trappy",
+        "rootBestMove": "g2g4",
+        "rootBestSan": "g4",
+        "rootBestScoreCp": 76,
+        "candidates": [
+          {
+            "move": "e1g1",
+            "san": "O-O",
+            "rootScoreCp": 41,
+            "adjustedScoreCp": 89.39495130813953,
+            "riskCp": 35,
+            "bonusCp": 48.39495130813953,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -14
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -14
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -36
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -35
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -124
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -147
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -172
+                }
+              ],
+              "shallowScoreCp": -35,
+              "finalScoreCp": -172,
+              "opponentBestScoreCp": -21,
+              "trappiness": 0.5973837209302325,
+              "profitCp": 151,
+              "qualityCp": 33.37582848837209
+            }
+          },
+          {
+            "move": "g2g4",
+            "san": "g4",
+            "rootScoreCp": 76,
+            "adjustedScoreCp": 76,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "c4d5",
+            "san": "Bd5",
+            "rootScoreCp": 38,
+            "adjustedScoreCp": 69.08346875000001,
+            "riskCp": 38,
+            "bonusCp": 31.08346875,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -5
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -1
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 5
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 2
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -128
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -128
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -104
+                }
+              ],
+              "shallowScoreCp": -1,
+              "finalScoreCp": -104,
+              "opponentBestScoreCp": -26,
+              "trappiness": 0.7427884615384616,
+              "profitCp": 78,
+              "qualityCp": 21.436875
+            }
+          },
+          {
+            "move": "h1g1",
+            "san": "Rg1",
+            "rootScoreCp": 49,
+            "adjustedScoreCp": 67.54501666666667,
+            "riskCp": 27,
+            "bonusCp": 18.545016666666665,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 44
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -2
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -29
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -78
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -72
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -61
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -90
+                }
+              ],
+              "shallowScoreCp": -29,
+              "finalScoreCp": -90,
+              "opponentBestScoreCp": -22,
+              "trappiness": 0.5083333333333333,
+              "profitCp": 68,
+              "qualityCp": 12.789666666666665
+            }
+          },
+          {
+            "move": "a2a4",
+            "san": "a4",
+            "rootScoreCp": 56,
+            "adjustedScoreCp": 65.30855154639175,
+            "riskCp": 20,
+            "bonusCp": 9.308551546391753,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -20
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -29
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -43
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -52
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -93
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -97
+                }
+              ],
+              "shallowScoreCp": -29,
+              "finalScoreCp": -97,
+              "opponentBestScoreCp": -64,
+              "trappiness": 0.5257731958762886,
+              "profitCp": 33,
+              "qualityCp": 6.419690721649484
+            }
+          },
+          {
+            "move": "d2d3",
+            "san": "d3",
+            "rootScoreCp": 61,
+            "adjustedScoreCp": 64.591196875,
+            "riskCp": 15,
+            "bonusCp": 3.5911968749999996,
+            "trap": {
+              "reply": "g8f6",
+              "replySan": "Nf6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -42
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -37
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -46
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -58
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -58
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -72
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -80
+                }
+              ],
+              "shallowScoreCp": -46,
+              "finalScoreCp": -80,
+              "opponentBestScoreCp": -59,
+              "trappiness": 0.31875,
+              "profitCp": 21,
+              "qualityCp": 2.4766874999999997
+            }
+          },
+          {
+            "move": "a2a3",
+            "san": "a3",
+            "rootScoreCp": 47,
+            "adjustedScoreCp": 60.14484011627907,
+            "riskCp": 29,
+            "bonusCp": 13.14484011627907,
+            "trap": {
+              "reply": "c6a5",
+              "replySan": "Na5",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -34
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -30
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -18
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -18
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -135
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -135
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -129
+                }
+              ],
+              "shallowScoreCp": -30,
+              "finalScoreCp": -129,
+              "opponentBestScoreCp": -66,
+              "trappiness": 0.5755813953488372,
+              "profitCp": 63,
+              "qualityCp": 9.065406976744187
+            }
+          },
+          {
+            "move": "c4b5",
+            "san": "Bb5",
+            "rootScoreCp": 39,
+            "adjustedScoreCp": 58.749221938775506,
+            "riskCp": 37,
+            "bonusCp": 19.74922193877551,
+            "trap": {
+              "reply": "f8e7",
+              "replySan": "Be7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -8
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -39
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -63
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -98
+                }
+              ],
+              "shallowScoreCp": -24,
+              "finalScoreCp": -98,
+              "opponentBestScoreCp": -33,
+              "trappiness": 0.5663265306122449,
+              "profitCp": 65,
+              "qualityCp": 13.62015306122449
+            }
+          },
+          {
+            "move": "c3d5",
+            "san": "Nd5",
+            "rootScoreCp": 33,
+            "adjustedScoreCp": 41.094625,
+            "riskCp": 43,
+            "bonusCp": 8.094625,
+            "trap": {
+              "reply": "c6d4",
+              "replySan": "Nd4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 8
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 22
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 28
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 41
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -60
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -45
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -71
+                }
+              ],
+              "shallowScoreCp": 22,
+              "finalScoreCp": -71,
+              "opponentBestScoreCp": -42,
+              "trappiness": 0.77,
+              "profitCp": 29,
+              "qualityCp": 5.5825000000000005
+            }
+          },
+          {
+            "move": "c4f7",
+            "san": "Bxf7+",
+            "rootScoreCp": -349,
+            "adjustedScoreCp": -349,
+            "riskCp": 425,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "e1g1",
+          "san": "O-O",
+          "rootScoreCp": 41,
+          "adjustedScoreCp": 89.39495130813953,
+          "riskCp": 35,
+          "bonusCp": 48.39495130813953,
+          "trap": {
+            "reply": "g8e7",
+            "replySan": "Nge7",
+            "vector": [
+              {
+                "depth": 2,
+                "scoreCp": -14
+              },
+              {
+                "depth": 3,
+                "scoreCp": -14
+              },
+              {
+                "depth": 4,
+                "scoreCp": -36
+              },
+              {
+                "depth": 5,
+                "scoreCp": -35
+              },
+              {
+                "depth": 6,
+                "scoreCp": -124
+              },
+              {
+                "depth": 7,
+                "scoreCp": -147
+              },
+              {
+                "depth": 8,
+                "scoreCp": -172
+              }
+            ],
+            "shallowScoreCp": -35,
+            "finalScoreCp": -172,
+            "opponentBestScoreCp": -21,
+            "trappiness": 0.5973837209302325,
+            "profitCp": 151,
+            "qualityCp": 33.37582848837209
+          }
+        }
+      },
+      "elapsedMs": 2625
+    },
+    {
+      "id": "legal-premature",
+      "name": "Premature Légal sacrifice",
+      "setup": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bc4",
+        "d6",
+        "Nc3",
+        "Bg4"
+      ],
+      "candidate": "Nxe5",
+      "temptingReply": "Bxd1",
+      "continuation": [
+        "Bxf7+",
+        "Ke7",
+        "Nd5#"
+      ],
+      "caution": "Bxd1 loses to mate, but Nxe5 can instead win a knight for Black; reject excessive objective risk.",
+      "source": "https://www.chessworld.net/legals-mate.asp",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5",
+      "legacy": {
+        "move": "c4d5",
+        "san": "Bd5",
+        "mode": "trappy",
+        "rootBestMove": "h2h3",
+        "rootBestSan": "h3",
+        "rootBestScoreCp": 56,
+        "candidates": [
+          {
+            "move": "c4d5",
+            "san": "Bd5",
+            "rootScoreCp": 23,
+            "adjustedScoreCp": 75.088785,
+            "riskCp": 33,
+            "bonusCp": 52.088784999999994,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -8
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -4
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -2
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -2
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -162
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -152
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -150
+                }
+              ],
+              "shallowScoreCp": -4,
+              "finalScoreCp": -150,
+              "opponentBestScoreCp": -17,
+              "trappiness": 0.73,
+              "profitCp": 133,
+              "qualityCp": 35.9233
+            }
+          },
+          {
+            "move": "a1b1",
+            "san": "Rb1",
+            "rootScoreCp": 1,
+            "adjustedScoreCp": 74.26372067039107,
+            "riskCp": 55,
+            "bonusCp": 73.26372067039107,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 4
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -1
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -11
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -15
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -17
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -48
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -179
+                }
+              ],
+              "shallowScoreCp": -11,
+              "finalScoreCp": -179,
+              "opponentBestScoreCp": 15,
+              "trappiness": 0.7039106145251397,
+              "profitCp": 194,
+              "qualityCp": 50.52670391061453
+            }
+          },
+          {
+            "move": "h2h3",
+            "san": "h3",
+            "rootScoreCp": 56,
+            "adjustedScoreCp": 59.74209971910112,
+            "riskCp": 0,
+            "bonusCp": 3.742099719101123,
+            "trap": {
+              "reply": "g4d7",
+              "replySan": "Bd7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -54
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -55
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -50
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -96
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -90
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -89
+                }
+              ],
+              "shallowScoreCp": -54,
+              "finalScoreCp": -89,
+              "opponentBestScoreCp": -54,
+              "trappiness": 0.2949438202247191,
+              "profitCp": 35,
+              "qualityCp": 2.580758426966292
+            }
+          },
+          {
+            "move": "c4b5",
+            "san": "Bb5",
+            "rootScoreCp": 42,
+            "adjustedScoreCp": 47.59285714285714,
+            "riskCp": 14,
+            "bonusCp": 5.5928571428571425,
+            "trap": {
+              "reply": "h7h5",
+              "replySan": "h5",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -7
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -44
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -44
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -57
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -71
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -71
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -77
+                }
+              ],
+              "shallowScoreCp": -44,
+              "finalScoreCp": -77,
+              "opponentBestScoreCp": -29,
+              "trappiness": 0.3214285714285714,
+              "profitCp": 48,
+              "qualityCp": 3.8571428571428568
+            }
+          },
+          {
+            "move": "d2d3",
+            "san": "d3",
+            "rootScoreCp": -26,
+            "adjustedScoreCp": 46.25850249999999,
+            "riskCp": 82,
+            "bonusCp": 72.25850249999999,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -36
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -34
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -31
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -64
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -225
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -222
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -200
+                }
+              ],
+              "shallowScoreCp": -36,
+              "finalScoreCp": -200,
+              "opponentBestScoreCp": 19,
+              "trappiness": 0.615,
+              "profitCp": 219,
+              "qualityCp": 49.83345
+            }
+          },
+          {
+            "move": "e1g1",
+            "san": "O-O",
+            "rootScoreCp": 34,
+            "adjustedScoreCp": 40.307500000000005,
+            "riskCp": 22,
+            "bonusCp": 6.307500000000001,
+            "trap": {
+              "reply": "d8d7",
+              "replySan": "Qd7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -20
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -19
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -17
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -22
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -21
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -21
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -50
+                }
+              ],
+              "shallowScoreCp": -20,
+              "finalScoreCp": -50,
+              "opponentBestScoreCp": 8,
+              "trappiness": 0.30000000000000004,
+              "profitCp": 58,
+              "qualityCp": 4.3500000000000005
+            }
+          },
+          {
+            "move": "c3d5",
+            "san": "Nd5",
+            "rootScoreCp": 25,
+            "adjustedScoreCp": 40.19368,
+            "riskCp": 31,
+            "bonusCp": 15.19368,
+            "trap": {
+              "reply": "g8e7",
+              "replySan": "Nge7",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -19
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -18
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -21
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -37
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -36
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -36
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -69
+                }
+              ],
+              "shallowScoreCp": -21,
+              "finalScoreCp": -69,
+              "opponentBestScoreCp": -10,
+              "trappiness": 0.48,
+              "profitCp": 59,
+              "qualityCp": 10.4784
+            }
+          },
+          {
+            "move": "c4e2",
+            "san": "Be2",
+            "rootScoreCp": 16,
+            "adjustedScoreCp": 24.645625,
+            "riskCp": 40,
+            "bonusCp": 8.645624999999999,
+            "trap": {
+              "reply": "g4h5",
+              "replySan": "Bh5",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -10
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -29
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -22
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -24
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -33
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -61
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -69
+                }
+              ],
+              "shallowScoreCp": -24,
+              "finalScoreCp": -69,
+              "opponentBestScoreCp": -16,
+              "trappiness": 0.44999999999999996,
+              "profitCp": 53,
+              "qualityCp": 5.9624999999999995
+            }
+          },
+          {
+            "move": "b2b4",
+            "san": "b4",
+            "rootScoreCp": -30,
+            "adjustedScoreCp": -3.8021250000000038,
+            "riskCp": 86,
+            "bonusCp": 26.197874999999996,
+            "trap": {
+              "reply": "c6b4",
+              "replySan": "Nxb4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 0
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -13
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 6
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -2
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -25
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -43
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -35
+                }
+              ],
+              "shallowScoreCp": -2,
+              "finalScoreCp": -35,
+              "opponentBestScoreCp": 38,
+              "trappiness": 0.33,
+              "profitCp": 73,
+              "qualityCp": 18.0675
+            }
+          },
+          {
+            "move": "c4f7",
+            "san": "Bxf7+",
+            "rootScoreCp": -240,
+            "adjustedScoreCp": -240,
+            "riskCp": 296,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "c4d5",
+          "san": "Bd5",
+          "rootScoreCp": 23,
+          "adjustedScoreCp": 75.088785,
+          "riskCp": 33,
+          "bonusCp": 52.088784999999994,
+          "trap": {
+            "reply": "g8e7",
+            "replySan": "Nge7",
+            "vector": [
+              {
+                "depth": 2,
+                "scoreCp": -8
+              },
+              {
+                "depth": 3,
+                "scoreCp": -4
+              },
+              {
+                "depth": 4,
+                "scoreCp": -2
+              },
+              {
+                "depth": 5,
+                "scoreCp": -2
+              },
+              {
+                "depth": 6,
+                "scoreCp": -162
+              },
+              {
+                "depth": 7,
+                "scoreCp": -152
+              },
+              {
+                "depth": 8,
+                "scoreCp": -150
+              }
+            ],
+            "shallowScoreCp": -4,
+            "finalScoreCp": -150,
+            "opponentBestScoreCp": -17,
+            "trappiness": 0.73,
+            "profitCp": 133,
+            "qualityCp": 35.9233
+          }
+        }
+      },
+      "elapsedMs": 2435
+    },
+    {
+      "id": "blackburne",
+      "name": "Blackburne Shilling bait",
+      "setup": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bc4"
+      ],
+      "candidate": "Nd4",
+      "temptingReply": "Nxe5",
+      "continuation": [
+        "Qg5",
+        "Nxf7",
+        "Qxg2",
+        "Rf1",
+        "Qxe4+",
+        "Be2",
+        "Nf3#"
+      ],
+      "caution": "Famous bait is objectively dubious; selecting a normal developing move can be correct.",
+      "source": "https://www.chess.com/openings/Italian-Game-Blackburne-Shilling-Gambit-4.Nxe5-Qg5",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+      "legacy": {
+        "move": "f8e7",
+        "san": "Be7",
+        "mode": "standard",
+        "rootBestMove": "f8e7",
+        "rootBestSan": "Be7",
+        "rootBestScoreCp": -59,
+        "candidates": [
+          {
+            "move": "f8e7",
+            "san": "Be7",
+            "rootScoreCp": -59,
+            "adjustedScoreCp": -59,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "d7d6",
+            "san": "d6",
+            "rootScoreCp": -61,
+            "adjustedScoreCp": -61,
+            "riskCp": 2,
+            "bonusCp": 0
+          },
+          {
+            "move": "g8f6",
+            "san": "Nf6",
+            "rootScoreCp": -61,
+            "adjustedScoreCp": -61,
+            "riskCp": 2,
+            "bonusCp": 0
+          },
+          {
+            "move": "f8c5",
+            "san": "Bc5",
+            "rootScoreCp": -70,
+            "adjustedScoreCp": -62.605725,
+            "riskCp": 11,
+            "bonusCp": 7.3942749999999995,
+            "trap": {
+              "reply": "d2d3",
+              "replySan": "d3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 32
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 41
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 53
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 53
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 54
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 20
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 22
+                }
+              ],
+              "shallowScoreCp": 53,
+              "finalScoreCp": 22,
+              "opponentBestScoreCp": 69,
+              "trappiness": 0.31,
+              "profitCp": 47,
+              "qualityCp": 5.0995
+            }
+          },
+          {
+            "move": "a7a6",
+            "san": "a6",
+            "rootScoreCp": -72,
+            "adjustedScoreCp": -72,
+            "riskCp": 13,
+            "bonusCp": 0
+          },
+          {
+            "move": "f8d6",
+            "san": "Bd6",
+            "rootScoreCp": -83,
+            "adjustedScoreCp": -83,
+            "riskCp": 24,
+            "bonusCp": 0
+          },
+          {
+            "move": "g8e7",
+            "san": "Nge7",
+            "rootScoreCp": -84,
+            "adjustedScoreCp": -84,
+            "riskCp": 25,
+            "bonusCp": 0
+          },
+          {
+            "move": "d8f6",
+            "san": "Qf6",
+            "rootScoreCp": -85,
+            "adjustedScoreCp": -85,
+            "riskCp": 26,
+            "bonusCp": 0
+          },
+          {
+            "move": "a8b8",
+            "san": "Rb8",
+            "rootScoreCp": -87,
+            "adjustedScoreCp": -87,
+            "riskCp": 28,
+            "bonusCp": 0
+          },
+          {
+            "move": "g8h6",
+            "san": "Nh6",
+            "rootScoreCp": -94,
+            "adjustedScoreCp": -94,
+            "riskCp": 35,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "f8e7",
+          "san": "Be7",
+          "rootScoreCp": -59,
+          "adjustedScoreCp": -59,
+          "riskCp": 0,
+          "bonusCp": 0
+        }
+      },
+      "elapsedMs": 2691
+    },
+    {
+      "id": "fishing-pole",
+      "name": "Fishing Pole hook",
+      "setup": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bb5",
+        "Nf6",
+        "O-O",
+        "Ng4",
+        "h3"
+      ],
+      "candidate": "h5",
+      "temptingReply": "hxg4",
+      "continuation": [
+        "hxg4",
+        "Ne1",
+        "Qh4"
+      ],
+      "caution": "One tempting capture is not a forced win; the model should weigh alternative human replies.",
+      "source": "https://www.thechesswebsite.com/fishingpoletrap/",
+      "fen": "r1bqkb1r/pppp1ppp/2n5/1B2p3/4P1n1/5N1P/PPPP1PP1/RNBQ1RK1 b kq - 0 5",
+      "legacy": {
+        "move": "h7h5",
+        "san": "h5",
+        "mode": "standard",
+        "rootBestMove": "h7h5",
+        "rootBestSan": "h5",
+        "rootBestScoreCp": -118,
+        "candidates": [
+          {
+            "move": "h7h5",
+            "san": "h5",
+            "rootScoreCp": -118,
+            "adjustedScoreCp": -118,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "g4f6",
+            "san": "Nf6",
+            "rootScoreCp": -134,
+            "adjustedScoreCp": -134,
+            "riskCp": 16,
+            "bonusCp": 0
+          },
+          {
+            "move": "g4h6",
+            "san": "Nh6",
+            "rootScoreCp": -137,
+            "adjustedScoreCp": -137,
+            "riskCp": 19,
+            "bonusCp": 0
+          },
+          {
+            "move": "a7a6",
+            "san": "a6",
+            "rootScoreCp": -216,
+            "adjustedScoreCp": -216,
+            "riskCp": 98,
+            "bonusCp": 0
+          },
+          {
+            "move": "d7d5",
+            "san": "d5",
+            "rootScoreCp": -219,
+            "adjustedScoreCp": -219,
+            "riskCp": 101,
+            "bonusCp": 0
+          },
+          {
+            "move": "g4f2",
+            "san": "Nxf2",
+            "rootScoreCp": -231,
+            "adjustedScoreCp": -231,
+            "riskCp": 113,
+            "bonusCp": 0
+          },
+          {
+            "move": "f7f5",
+            "san": "f5",
+            "rootScoreCp": -248,
+            "adjustedScoreCp": -248,
+            "riskCp": 130,
+            "bonusCp": 0
+          },
+          {
+            "move": "g7g5",
+            "san": "g5",
+            "rootScoreCp": -283,
+            "adjustedScoreCp": -283,
+            "riskCp": 165,
+            "bonusCp": 0
+          },
+          {
+            "move": "f8c5",
+            "san": "Bc5",
+            "rootScoreCp": -291,
+            "adjustedScoreCp": -288.24024590163935,
+            "riskCp": 173,
+            "bonusCp": 2.7597540983606557,
+            "trap": {
+              "reply": "h3g4",
+              "replySan": "hxg4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 268
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 360
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 370
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 341
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 341
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 280
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 305
+                }
+              ],
+              "shallowScoreCp": 341,
+              "finalScoreCp": 305,
+              "opponentBestScoreCp": 330,
+              "trappiness": 0.08852459016393444,
+              "profitCp": 25,
+              "qualityCp": 1.9032786885245903
+            }
+          },
+          {
+            "move": "f8d6",
+            "san": "Bd6",
+            "rootScoreCp": -303,
+            "adjustedScoreCp": -303,
+            "riskCp": 185,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "h7h5",
+          "san": "h5",
+          "rootScoreCp": -118,
+          "adjustedScoreCp": -118,
+          "riskCp": 0,
+          "bonusCp": 0
+        }
+      },
+      "elapsedMs": 1721
+    },
+    {
+      "id": "englund",
+      "name": "Englund queen fork",
+      "setup": [
+        "d4",
+        "e5",
+        "dxe5",
+        "Nc6",
+        "Nf3",
+        "Qe7",
+        "Bf4"
+      ],
+      "candidate": "Qb4+",
+      "temptingReply": "Bd2",
+      "continuation": [
+        "Qxb2",
+        "Bc3",
+        "Bb4",
+        "Qd2",
+        "Bxc3",
+        "Qxc3",
+        "Qc1#"
+      ],
+      "caution": "Requires several later mistakes; the initial Bd2 reply is a correct defense, and a one-reply model should not count the full trap as certain.",
+      "source": "https://www.chess.com/openings/Englund-Gambit",
+      "fen": "r1b1kbnr/ppppqppp/2n5/4P3/5B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 4 4",
+      "legacy": {
+        "move": "b7b6",
+        "san": "b6",
+        "mode": "trappy",
+        "rootBestMove": "e7b4",
+        "rootBestSan": "Qb4+",
+        "rootBestScoreCp": -188,
+        "candidates": [
+          {
+            "move": "b7b6",
+            "san": "b6",
+            "rootScoreCp": -209,
+            "adjustedScoreCp": -171.76415343915343,
+            "riskCp": 21,
+            "bonusCp": 37.23584656084656,
+            "trap": {
+              "reply": "a2a3",
+              "replySan": "a3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 260
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 261
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 268
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 106
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 147
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 130
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 126
+                }
+              ],
+              "shallowScoreCp": 260,
+              "finalScoreCp": 126,
+              "opponentBestScoreCp": 262,
+              "trappiness": 0.7552910052910053,
+              "profitCp": 136,
+              "qualityCp": 25.67989417989418
+            }
+          },
+          {
+            "move": "e7b4",
+            "san": "Qb4+",
+            "rootScoreCp": -188,
+            "adjustedScoreCp": -188,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "a7a6",
+            "san": "a6",
+            "rootScoreCp": -204,
+            "adjustedScoreCp": -197.06548828125,
+            "riskCp": 16,
+            "bonusCp": 6.93451171875,
+            "trap": {
+              "reply": "e2e3",
+              "replySan": "e3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 215
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 234
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 234
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 177
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 177
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 164
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 160
+                }
+              ],
+              "shallowScoreCp": 215,
+              "finalScoreCp": 160,
+              "opponentBestScoreCp": 213,
+              "trappiness": 0.2578125,
+              "profitCp": 53,
+              "qualityCp": 4.782421875
+            }
+          },
+          {
+            "move": "e7c5",
+            "san": "Qc5",
+            "rootScoreCp": -202,
+            "adjustedScoreCp": -202,
+            "riskCp": 14,
+            "bonusCp": 0
+          },
+          {
+            "move": "f7f6",
+            "san": "f6",
+            "rootScoreCp": -204,
+            "adjustedScoreCp": -204,
+            "riskCp": 16,
+            "bonusCp": 0
+          },
+          {
+            "move": "d7d6",
+            "san": "d6",
+            "rootScoreCp": -207,
+            "adjustedScoreCp": -207,
+            "riskCp": 19,
+            "bonusCp": 0
+          },
+          {
+            "move": "d7d5",
+            "san": "d5",
+            "rootScoreCp": -217,
+            "adjustedScoreCp": -207.80285714285714,
+            "riskCp": 29,
+            "bonusCp": 9.197142857142856,
+            "trap": {
+              "reply": "b1c3",
+              "replySan": "Nc3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 133
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 171
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 219
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 206
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 135
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 141
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 126
+                }
+              ],
+              "shallowScoreCp": 171,
+              "finalScoreCp": 126,
+              "opponentBestScoreCp": 190,
+              "trappiness": 0.26785714285714285,
+              "profitCp": 64,
+              "qualityCp": 6.3428571428571425
+            }
+          },
+          {
+            "move": "h7h6",
+            "san": "h6",
+            "rootScoreCp": -222,
+            "adjustedScoreCp": -211.27604166666666,
+            "riskCp": 34,
+            "bonusCp": 10.723958333333334,
+            "trap": {
+              "reply": "a2a3",
+              "replySan": "a3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 252
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 224
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 224
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 184
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 193
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 186
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 144
+                }
+              ],
+              "shallowScoreCp": 224,
+              "finalScoreCp": 144,
+              "opponentBestScoreCp": 215,
+              "trappiness": 0.4166666666666667,
+              "profitCp": 71,
+              "qualityCp": 7.395833333333334
+            }
+          },
+          {
+            "move": "e7d8",
+            "san": "Qd8",
+            "rootScoreCp": -228,
+            "adjustedScoreCp": -228,
+            "riskCp": 40,
+            "bonusCp": 0
+          },
+          {
+            "move": "e7e5",
+            "san": "Qxe5",
+            "rootScoreCp": -651,
+            "adjustedScoreCp": -651,
+            "riskCp": 463,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "b7b6",
+          "san": "b6",
+          "rootScoreCp": -209,
+          "adjustedScoreCp": -171.76415343915343,
+          "riskCp": 21,
+          "bonusCp": 37.23584656084656,
+          "trap": {
+            "reply": "a2a3",
+            "replySan": "a3",
+            "vector": [
+              {
+                "depth": 2,
+                "scoreCp": 260
+              },
+              {
+                "depth": 3,
+                "scoreCp": 261
+              },
+              {
+                "depth": 4,
+                "scoreCp": 268
+              },
+              {
+                "depth": 5,
+                "scoreCp": 106
+              },
+              {
+                "depth": 6,
+                "scoreCp": 147
+              },
+              {
+                "depth": 7,
+                "scoreCp": 130
+              },
+              {
+                "depth": 8,
+                "scoreCp": 126
+              }
+            ],
+            "shallowScoreCp": 260,
+            "finalScoreCp": 126,
+            "opponentBestScoreCp": 262,
+            "trappiness": 0.7552910052910053,
+            "profitCp": 136,
+            "qualityCp": 25.67989417989418
+          }
+        }
+      },
+      "elapsedMs": 1934
+    },
+    {
+      "id": "elephant",
+      "name": "Elephant Trap recapture",
+      "setup": [
+        "d4",
+        "d5",
+        "c4",
+        "e6",
+        "Nc3",
+        "Nf6",
+        "Bg5",
+        "Nbd7",
+        "cxd5"
+      ],
+      "candidate": "exd5",
+      "temptingReply": "Nxd5",
+      "continuation": [
+        "Nxd5",
+        "Bxd8",
+        "Bb4+",
+        "Qd2",
+        "Bxd2+",
+        "Kxd2",
+        "Kxd8"
+      ],
+      "source": "https://www.thechesswebsite.com/elephant-trap/",
+      "fen": "r1bqkb1r/pppn1ppp/4pn2/3P2B1/3P4/2N5/PP2PPPP/R2QKBNR b KQkq - 0 5",
+      "legacy": {
+        "move": "e6d5",
+        "san": "exd5",
+        "mode": "trappy",
+        "rootBestMove": "e6d5",
+        "rootBestSan": "exd5",
+        "rootBestScoreCp": -26,
+        "candidates": [
+          {
+            "move": "e6d5",
+            "san": "exd5",
+            "rootScoreCp": -26,
+            "adjustedScoreCp": 251.97629098360653,
+            "riskCp": 0,
+            "bonusCp": 277.97629098360653,
+            "trap": {
+              "reply": "c3d5",
+              "replySan": "Nxd5",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 96
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 89
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 56
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 40
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -341
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -341
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -305
+                }
+              ],
+              "shallowScoreCp": 56,
+              "finalScoreCp": -305,
+              "opponentBestScoreCp": 29,
+              "trappiness": 0.7653005464480874,
+              "profitCp": 334,
+              "qualityCp": 191.7077868852459
+            }
+          },
+          {
+            "move": "h7h6",
+            "san": "h6",
+            "rootScoreCp": -91,
+            "adjustedScoreCp": -91,
+            "riskCp": 65,
+            "bonusCp": 0
+          },
+          {
+            "move": "d7b6",
+            "san": "Nb6",
+            "rootScoreCp": -133,
+            "adjustedScoreCp": -133,
+            "riskCp": 107,
+            "bonusCp": 0
+          },
+          {
+            "move": "e6e5",
+            "san": "e5",
+            "rootScoreCp": -149,
+            "adjustedScoreCp": -149,
+            "riskCp": 123,
+            "bonusCp": 0
+          },
+          {
+            "move": "f8b4",
+            "san": "Bb4",
+            "rootScoreCp": -171,
+            "adjustedScoreCp": -171,
+            "riskCp": 145,
+            "bonusCp": 0
+          },
+          {
+            "move": "c7c5",
+            "san": "c5",
+            "rootScoreCp": -188,
+            "adjustedScoreCp": -183.71796875,
+            "riskCp": 162,
+            "bonusCp": 4.28203125,
+            "trap": {
+              "reply": "d5c6",
+              "replySan": "dxc6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": 119
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 146
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 170
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": 179
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": 171
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": 171
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": 144
+                }
+              ],
+              "shallowScoreCp": 171,
+              "finalScoreCp": 144,
+              "opponentBestScoreCp": 204,
+              "trappiness": 0.140625,
+              "profitCp": 60,
+              "qualityCp": 2.953125
+            }
+          },
+          {
+            "move": "f8d6",
+            "san": "Bd6",
+            "rootScoreCp": -185,
+            "adjustedScoreCp": -185,
+            "riskCp": 159,
+            "bonusCp": 0
+          },
+          {
+            "move": "f8e7",
+            "san": "Be7",
+            "rootScoreCp": -189,
+            "adjustedScoreCp": -189,
+            "riskCp": 163,
+            "bonusCp": 0
+          },
+          {
+            "move": "d7b8",
+            "san": "Nb8",
+            "rootScoreCp": -215,
+            "adjustedScoreCp": -215,
+            "riskCp": 189,
+            "bonusCp": 0
+          },
+          {
+            "move": "f6d5",
+            "san": "Nxd5",
+            "rootScoreCp": -474,
+            "adjustedScoreCp": -474,
+            "riskCp": 448,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "e6d5",
+          "san": "exd5",
+          "rootScoreCp": -26,
+          "adjustedScoreCp": 251.97629098360653,
+          "riskCp": 0,
+          "bonusCp": 277.97629098360653,
+          "trap": {
+            "reply": "c3d5",
+            "replySan": "Nxd5",
+            "vector": [
+              {
+                "depth": 2,
+                "scoreCp": 96
+              },
+              {
+                "depth": 3,
+                "scoreCp": 89
+              },
+              {
+                "depth": 4,
+                "scoreCp": 56
+              },
+              {
+                "depth": 5,
+                "scoreCp": 40
+              },
+              {
+                "depth": 6,
+                "scoreCp": -341
+              },
+              {
+                "depth": 7,
+                "scoreCp": -341
+              },
+              {
+                "depth": 8,
+                "scoreCp": -305
+              }
+            ],
+            "shallowScoreCp": 56,
+            "finalScoreCp": -305,
+            "opponentBestScoreCp": 29,
+            "trappiness": 0.7653005464480874,
+            "profitCp": 334,
+            "qualityCp": 191.7077868852459
+          }
+        }
+      },
+      "elapsedMs": 2179
+    },
+    {
+      "id": "mate-in-one",
+      "name": "Immediate mate control",
+      "setup": [
+        "f3",
+        "e5",
+        "g4"
+      ],
+      "candidate": "Qh4#",
+      "caution": "Certain checkmate must remain preferred over speculative traps.",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq - 0 2",
+      "legacy": {
+        "move": "d8h4",
+        "san": "Qh4#",
+        "mode": "standard",
+        "rootBestMove": "d8h4",
+        "rootBestSan": "Qh4#",
+        "rootBestScoreCp": 99900,
+        "candidates": [
+          {
+            "move": "d8h4",
+            "san": "Qh4#",
+            "rootScoreCp": 99900,
+            "adjustedScoreCp": 99900,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "h7h5",
+            "san": "h5",
+            "rootScoreCp": 267,
+            "adjustedScoreCp": 267,
+            "riskCp": 99633,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "d2d4",
+              "replySan": "d4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -135
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -135
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -303
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -303
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -311
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -290
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -343
+                }
+              ],
+              "shallowScoreCp": -290,
+              "finalScoreCp": -343,
+              "opponentBestScoreCp": -285,
+              "trappiness": 0.11588921282798834,
+              "profitCp": 58,
+              "qualityCp": 2.3525510204081628
+            }
+          },
+          {
+            "move": "d7d6",
+            "san": "d6",
+            "rootScoreCp": 207,
+            "adjustedScoreCp": 207,
+            "riskCp": 99693,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "e2e3",
+              "replySan": "e3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -145
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -145
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -147
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -186
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -166
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -258
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -242
+                }
+              ],
+              "shallowScoreCp": -147,
+              "finalScoreCp": -242,
+              "opponentBestScoreCp": -121,
+              "trappiness": 0.2944214876033058,
+              "profitCp": 121,
+              "qualityCp": 12.46875
+            }
+          },
+          {
+            "move": "d7d5",
+            "san": "d5",
+            "rootScoreCp": 207,
+            "adjustedScoreCp": 207,
+            "riskCp": 99693,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "e2e3",
+              "replySan": "e3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -206
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -206
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -181
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -294
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -283
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -283
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -272
+                }
+              ],
+              "shallowScoreCp": -206,
+              "finalScoreCp": -272,
+              "opponentBestScoreCp": -142,
+              "trappiness": 0.18198529411764705,
+              "profitCp": 130,
+              "qualityCp": 8.28033088235294
+            }
+          },
+          {
+            "move": "b8c6",
+            "san": "Nc6",
+            "rootScoreCp": 189,
+            "adjustedScoreCp": 189,
+            "riskCp": 99711,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "e1f2",
+              "replySan": "Kf2",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -147
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -172
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -177
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -185
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -286
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -286
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -294
+                }
+              ],
+              "shallowScoreCp": -177,
+              "finalScoreCp": -294,
+              "opponentBestScoreCp": -156,
+              "trappiness": 0.298469387755102,
+              "profitCp": 138,
+              "qualityCp": 10.297193877551019
+            }
+          },
+          {
+            "move": "f8e7",
+            "san": "Be7",
+            "rootScoreCp": 184,
+            "adjustedScoreCp": 184,
+            "riskCp": 99716,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "e2e4",
+              "replySan": "e4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -155
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -155
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -168
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -181
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -171
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -249
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -298
+                }
+              ],
+              "shallowScoreCp": -168,
+              "finalScoreCp": -298,
+              "opponentBestScoreCp": -201,
+              "trappiness": 0.3271812080536913,
+              "profitCp": 97,
+              "qualityCp": 11.107802013422818
+            }
+          },
+          {
+            "move": "f8c5",
+            "san": "Bc5",
+            "rootScoreCp": 184,
+            "adjustedScoreCp": 184,
+            "riskCp": 99716,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "d2d3",
+              "replySan": "d3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -66
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -206
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -421
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -155
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -231
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -231
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -242
+                }
+              ],
+              "shallowScoreCp": -206,
+              "finalScoreCp": -242,
+              "opponentBestScoreCp": -156,
+              "trappiness": 0.1115702479338843,
+              "profitCp": 86,
+              "qualityCp": 3.358264462809917
+            }
+          },
+          {
+            "move": "h7h6",
+            "san": "h6",
+            "rootScoreCp": 175,
+            "adjustedScoreCp": 175,
+            "riskCp": 99725,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "h2h4",
+              "replySan": "h4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -81
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -70
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -90
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -111
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -111
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -141
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -209
+                }
+              ],
+              "shallowScoreCp": -90,
+              "finalScoreCp": -209,
+              "opponentBestScoreCp": -152,
+              "trappiness": 0.4270334928229665,
+              "profitCp": 57,
+              "qualityCp": 6.0852272727272725
+            }
+          },
+          {
+            "move": "f7f5",
+            "san": "f5",
+            "rootScoreCp": 156,
+            "adjustedScoreCp": 156,
+            "riskCp": 99744,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "g1h3",
+              "replySan": "Nh3",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -143
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -143
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -142
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -142
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -171
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -171
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -174
+                }
+              ],
+              "shallowScoreCp": -143,
+              "finalScoreCp": -174,
+              "opponentBestScoreCp": -129,
+              "trappiness": 0.13362068965517243,
+              "profitCp": 45,
+              "qualityCp": 2.224784482758621
+            }
+          },
+          {
+            "move": "b8a6",
+            "san": "Na6",
+            "rootScoreCp": 144,
+            "adjustedScoreCp": 144,
+            "riskCp": 99756,
+            "bonusCp": 0,
+            "trap": {
+              "reply": "e2e4",
+              "replySan": "e4",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -115
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -115
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -90
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -221
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -194
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -194
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -193
+                }
+              ],
+              "shallowScoreCp": -115,
+              "finalScoreCp": -193,
+              "opponentBestScoreCp": -101,
+              "trappiness": 0.3031088082901554,
+              "profitCp": 92,
+              "qualityCp": 9.760103626943003
+            }
+          }
+        ],
+        "selected": {
+          "move": "d8h4",
+          "san": "Qh4#",
+          "rootScoreCp": 99900,
+          "adjustedScoreCp": 99900,
+          "riskCp": 0,
+          "bonusCp": 0
+        }
+      },
+      "elapsedMs": 1352
+    },
+    {
+      "id": "start",
+      "name": "Starting-position control",
+      "setup": [],
+      "caution": "Legal move and hard risk budget control; no expected SAN.",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "legacy": {
+        "move": "e2e4",
+        "san": "e4",
+        "mode": "standard",
+        "rootBestMove": "e2e4",
+        "rootBestSan": "e4",
+        "rootBestScoreCp": 29,
+        "candidates": [
+          {
+            "move": "e2e4",
+            "san": "e4",
+            "rootScoreCp": 29,
+            "adjustedScoreCp": 29,
+            "riskCp": 0,
+            "bonusCp": 0
+          },
+          {
+            "move": "b1c3",
+            "san": "Nc3",
+            "rootScoreCp": 8,
+            "adjustedScoreCp": 21.073199999999996,
+            "riskCp": 21,
+            "bonusCp": 13.073199999999996,
+            "trap": {
+              "reply": "e7e6",
+              "replySan": "e6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -1
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": 3
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": 2
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -4
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -33
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -38
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -47
+                }
+              ],
+              "shallowScoreCp": -1,
+              "finalScoreCp": -47,
+              "opponentBestScoreCp": 9,
+              "trappiness": 0.45999999999999996,
+              "profitCp": 56,
+              "qualityCp": 9.015999999999998
+            }
+          },
+          {
+            "move": "d2d4",
+            "san": "d4",
+            "rootScoreCp": 21,
+            "adjustedScoreCp": 21,
+            "riskCp": 8,
+            "bonusCp": 0
+          },
+          {
+            "move": "g1f3",
+            "san": "Nf3",
+            "rootScoreCp": 15,
+            "adjustedScoreCp": 19.06725,
+            "riskCp": 14,
+            "bonusCp": 4.06725,
+            "trap": {
+              "reply": "g7g6",
+              "replySan": "g6",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -13
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -15
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -27
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -33
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -33
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -41
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -61
+                }
+              ],
+              "shallowScoreCp": -27,
+              "finalScoreCp": -61,
+              "opponentBestScoreCp": -28,
+              "trappiness": 0.33999999999999997,
+              "profitCp": 33,
+              "qualityCp": 2.8049999999999997
+            }
+          },
+          {
+            "move": "e2e3",
+            "san": "e3",
+            "rootScoreCp": 18,
+            "adjustedScoreCp": 18,
+            "riskCp": 11,
+            "bonusCp": 0
+          },
+          {
+            "move": "g2g3",
+            "san": "g3",
+            "rootScoreCp": -4,
+            "adjustedScoreCp": 0.524,
+            "riskCp": 33,
+            "bonusCp": 4.524,
+            "trap": {
+              "reply": "h7h5",
+              "replySan": "h5",
+              "vector": [
+                {
+                  "depth": 2,
+                  "scoreCp": -17
+                },
+                {
+                  "depth": 3,
+                  "scoreCp": -17
+                },
+                {
+                  "depth": 4,
+                  "scoreCp": -28
+                },
+                {
+                  "depth": 5,
+                  "scoreCp": -25
+                },
+                {
+                  "depth": 6,
+                  "scoreCp": -27
+                },
+                {
+                  "depth": 7,
+                  "scoreCp": -38
+                },
+                {
+                  "depth": 8,
+                  "scoreCp": -51
+                }
+              ],
+              "shallowScoreCp": -25,
+              "finalScoreCp": -51,
+              "opponentBestScoreCp": -3,
+              "trappiness": 0.26,
+              "profitCp": 48,
+              "qualityCp": 3.12
+            }
+          },
+          {
+            "move": "h2h4",
+            "san": "h4",
+            "rootScoreCp": 0,
+            "adjustedScoreCp": 0,
+            "riskCp": 29,
+            "bonusCp": 0
+          },
+          {
+            "move": "c2c3",
+            "san": "c3",
+            "rootScoreCp": -2,
+            "adjustedScoreCp": -2,
+            "riskCp": 31,
+            "bonusCp": 0
+          },
+          {
+            "move": "d2d3",
+            "san": "d3",
+            "rootScoreCp": -3,
+            "adjustedScoreCp": -3,
+            "riskCp": 32,
+            "bonusCp": 0
+          },
+          {
+            "move": "b1a3",
+            "san": "Na3",
+            "rootScoreCp": -58,
+            "adjustedScoreCp": -58,
+            "riskCp": 87,
+            "bonusCp": 0
+          }
+        ],
+        "selected": {
+          "move": "e2e4",
+          "san": "e4",
+          "rootScoreCp": 29,
+          "adjustedScoreCp": 29,
+          "riskCp": 0,
+          "bonusCp": 0
+        }
+      },
+      "elapsedMs": 1702
+    }
+  ],
+  "finishedAt": "2026-10-13T18:08:07.267Z",
+  "productionHashAtEnd": "F599E54ED4443BB5260FA617AE745344B32F5272F9DDD81A88BE76138B08AB28",
+  "analyses": 564
+}

@@ -1,0 +1,2375 @@
+{
+  "mode": "chains",
+  "startedAt": "2026-10-13T18:30:38.221Z",
+  "baselineSourceSha256": "34CCA92B66270E901CD47F636F35AEA91F83E3D225C925D0ABA40AF93865CC7D",
+  "productionSourceSha256AtStart": "34CCA92B66270E901CD47F636F35AEA91F83E3D225C925D0ABA40AF93865CC7D",
+  "modelSha256": "F7BD01B3E41DCEB5E93EB9F4C61E9C4DB8B35411EFFD1D8C984B006CD74BB804",
+  "stockfishSha256": "A8FBC05EC6920B56D7485826DCB02C5FFD2826BCBF751CF973046F237A9096F1",
+  "utility": "sigmoid(cp/200), terminal 0/0.5/1; true Maia mass, unsearched tail uses strongest known defense",
+  "caveat": "Focused position diagnostics; utility is not calibrated game win probability or Elo evidence.",
+  "positions": [
+    {
+      "id": "blackburne",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+      "candidate": "c6d4",
+      "firstReply": "f3e5",
+      "firstReplyProbability": 0.3441862436652216,
+      "afterFirstReplyFen": "r1bqkbnr/pppp1ppp/8/4N3/2BnP3/8/PPPP1PPP/RNBQK2R b KQkq - 0 4",
+      "bestEngineContinuation": {
+        "depth": 12,
+        "multipv": 1,
+        "score": {
+          "type": "cp",
+          "raw": -12,
+          "cp": -12
+        },
+        "pv": [
+          "d8g5",
+          "c4f7",
+          "e8d8",
+          "e1g1",
+          "g5e5",
+          "c2c3",
+          "d4e6",
+          "d2d3",
+          "e6f4",
+          "g2g3",
+          "f4h3",
+          "g1g2",
+          "e5f6",
+          "f7h5",
+          "g7g6",
+          "e4e5",
+          "f6e5"
+        ],
+        "firstMove": "d8g5",
+        "raw": "info depth 12 seldepth 22 multipv 1 score cp -12 nodes 257467 nps 360093 hashfull 42 time 715 pv d8g5 c4f7 e8d8 e1g1 g5e5 c2c3 d4e6 d2d3 e6f4 g2g3 f4h3 g1g2 e5f6 f7h5 g7g6 e4e5 f6e5"
+      },
+      "namedContinuation": "d8g5",
+      "continuations": [
+        {
+          "move": "d8g5",
+          "san": "Qg5",
+          "rootCp": -3,
+          "bestDefense": "c4f7",
+          "defenseCp": -20,
+          "objectiveCp": -20,
+          "objectiveUtility": 0.47502081252106,
+          "expectedUtility": 0.7570927379934754,
+          "coverage": 0.9530416222609738,
+          "residualProbability": 0.046958377739026225,
+          "punishableProbability": 0.7936404580163746,
+          "replies": [
+            {
+              "move": "e5f7",
+              "probability": 0.5341238764032609,
+              "san": "Nxf7",
+              "cp": 346,
+              "utility": 0.8494124202541561,
+              "punishment": [
+                "g5g2",
+                "d2d3",
+                "d7d5",
+                "d1h5",
+                "g2h1",
+                "e1d2",
+                "f8b4",
+                "b1c3",
+                "g8f6",
+                "h5e5",
+                "c8e6"
+              ],
+              "lossCp": 366
+            },
+            {
+              "move": "c4f7",
+              "probability": 0.15940116424459913,
+              "san": "Bxf7+",
+              "cp": -20,
+              "utility": 0.47502081252106,
+              "punishment": [
+                "e8d8",
+                "e1g1",
+                "g5e5",
+                "c2c3",
+                "d4e6",
+                "d2d3",
+                "g8h6",
+                "f2f4",
+                "e5f6",
+                "f7h5",
+                "g7g6",
+                "h5f3",
+                "c7c6"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "e5f3",
+              "probability": 0.07735088498395963,
+              "san": "Nf3",
+              "cp": 326,
+              "utility": 0.8361696387766411,
+              "punishment": [
+                "g5g2",
+                "f3d4",
+                "g2h1",
+                "c4f1",
+                "h1e4",
+                "d1e2",
+                "e4e2",
+                "f1e2",
+                "c7c6",
+                "a2a4"
+              ],
+              "lossCp": 346
+            },
+            {
+              "move": "e1g1",
+              "probability": 0.03996686795467304,
+              "san": "O-O",
+              "cp": 102,
+              "utility": 0.6248064744684293,
+              "punishment": [
+                "g5e5",
+                "c2c3",
+                "d4e6",
+                "d2d4",
+                "e5e4",
+                "b1d2",
+                "e4g6"
+              ],
+              "lossCp": 122
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.038754509736710914,
+              "san": "c3",
+              "cp": 349,
+              "utility": 0.8513210454160925,
+              "punishment": [
+                "g5g2",
+                "c3d4",
+                "g2h1",
+                "e1e2",
+                "h1e4",
+                "e2f1",
+                "e4h1",
+                "f1e2",
+                "h1d1",
+                "e2d1",
+                "g8h6",
+                "a2a4"
+              ],
+              "lossCp": 369
+            },
+            {
+              "move": "d2d3",
+              "probability": 0.038651235797818456,
+              "san": "d3",
+              "cp": 152,
+              "utility": 0.6813537337890256,
+              "punishment": [
+                "g5e5",
+                "c1e3",
+                "g8f6",
+                "e1g1",
+                "b7b5",
+                "f2f4",
+                "e5c5",
+                "c2c3",
+                "b5c4",
+                "c3d4"
+              ],
+              "lossCp": 172
+            },
+            {
+              "move": "f2f4",
+              "probability": 0.02029529151352755,
+              "san": "f4",
+              "cp": 331,
+              "utility": 0.8395656701846744,
+              "punishment": [
+                "g5g2",
+                "h1f1",
+                "g2e4",
+                "e1f2",
+                "e4f4",
+                "f2g2",
+                "f4e4",
+                "g2f2",
+                "d4c2",
+                "c4f7",
+                "e8d8",
+                "b1c3",
+                "e4e5",
+                "d1c2",
+                "e5h2",
+                "f2e3"
+              ],
+              "lossCp": 351
+            },
+            {
+              "move": "d1g4",
+              "probability": 0.016757618057688287,
+              "san": "Qg4",
+              "cp": 446,
+              "utility": 0.902911359013501,
+              "punishment": [
+                "g5e5",
+                "c2c3",
+                "d4c2",
+                "e1d1",
+                "d7d5",
+                "g4f3",
+                "d5c4",
+                "d1c2",
+                "g8f6",
+                "f3e2",
+                "e5e4",
+                "e2e4",
+                "f6e4"
+              ],
+              "lossCp": 466
+            },
+            {
+              "move": "d1f3",
+              "probability": 0.014796248523062668,
+              "san": "Qf3",
+              "cp": 589,
+              "utility": 0.9500266417629325,
+              "punishment": [
+                "d4f3",
+                "e5f3",
+                "g5g2",
+                "h1g1",
+                "g2f3",
+                "d2d4",
+                "f3f6",
+                "b1c3"
+              ],
+              "lossCp": 609
+            },
+            {
+              "move": "e5g4",
+              "probability": 0.012943925045673123,
+              "san": "Ng4",
+              "cp": 260,
+              "utility": 0.7858349830425586,
+              "punishment": [
+                "d7d5",
+                "c4d5",
+                "g5g4",
+                "d1g4",
+                "c8g4",
+                "d5b3",
+                "a7a5",
+                "d2d3",
+                "a5a4",
+                "c1e3",
+                "a4b3",
+                "e3d4",
+                "b3a2"
+              ],
+              "lossCp": 280
+            }
+          ]
+        },
+        {
+          "move": "d7d5",
+          "san": "d5",
+          "rootCp": -33,
+          "bestDefense": "c4d5",
+          "defenseCp": -81,
+          "objectiveCp": -81,
+          "objectiveUtility": 0.40011163113600173,
+          "expectedUtility": 0.45917040471323123,
+          "coverage": 0.9537386177618339,
+          "residualProbability": 0.046261382238166115,
+          "punishableProbability": 0.1290960299521593,
+          "replies": [
+            {
+              "move": "c4d5",
+              "probability": 0.41908210972433835,
+              "san": "Bxd5",
+              "cp": -81,
+              "utility": 0.40011163113600173,
+              "punishment": [
+                "d8g5",
+                "c2c3",
+                "g5g2",
+                "d1a4",
+                "c7c6",
+                "d5f7",
+                "e8e7",
+                "a4b4",
+                "e7f6",
+                "b4d4"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "e4d5",
+              "probability": 0.40556047808533624,
+              "san": "exd5",
+              "cp": -38,
+              "utility": 0.45264238185691075,
+              "punishment": [
+                "f8d6",
+                "c2c3",
+                "d6e5",
+                "c3d4",
+                "e5d4",
+                "b1c3",
+                "d8e7",
+                "d1e2"
+              ],
+              "lossCp": 43
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.03971596155639406,
+              "san": "c3",
+              "cp": 179,
+              "utility": 0.7099209183344533,
+              "punishment": [
+                "d5c4",
+                "c3d4",
+                "d8d4",
+                "e5g4",
+                "d4e4",
+                "g4e3",
+                "c8e6",
+                "d1a4",
+                "c7c6",
+                "e1g1",
+                "g8f6",
+                "b1c3",
+                "e4d3",
+                "b2b3",
+                "c4b3",
+                "a2b3"
+              ],
+              "lossCp": 260
+            },
+            {
+              "move": "d1h5",
+              "probability": 0.03903115014647021,
+              "san": "Qh5",
+              "cp": 172,
+              "utility": 0.7026606543447315,
+              "punishment": [
+                "g7g6",
+                "e5g6",
+                "d4c2",
+                "e1d1",
+                "f7g6",
+                "h5e5",
+                "d8e7",
+                "e5h8",
+                "d5c4",
+                "h8g8",
+                "c2a1",
+                "g8c4"
+              ],
+              "lossCp": 253
+            },
+            {
+              "move": "e5f7",
+              "probability": 0.026302921741135764,
+              "san": "Nxf7",
+              "cp": 69,
+              "utility": 0.585404569129465,
+              "punishment": [
+                "d8h4",
+                "d2d3",
+                "c8g4",
+                "d1d2",
+                "d5c4",
+                "f7h8",
+                "a8d8"
+              ],
+              "lossCp": 150
+            },
+            {
+              "move": "c4b3",
+              "probability": 0.012536478282646877,
+              "san": "Bb3",
+              "cp": 200,
+              "utility": 0.7310585786300049,
+              "punishment": [
+                "d8g5",
+                "d2d3",
+                "g5e5",
+                "b3d5",
+                "c7c6",
+                "c2c3",
+                "d4f3",
+                "d1f3",
+                "c6d5",
+                "c1f4",
+                "d5e4",
+                "d3e4",
+                "e5e6",
+                "b1d2",
+                "g8f6"
+              ],
+              "lossCp": 281
+            },
+            {
+              "move": "c4b5",
+              "probability": 0.01150951822551237,
+              "san": "Bb5+",
+              "cp": 279,
+              "utility": 0.8013892651145572,
+              "punishment": [
+                "d4b5",
+                "e4d5",
+                "d8d5",
+                "e1g1",
+                "c8e6",
+                "f1e1",
+                "b5d4",
+                "b1c3",
+                "d5a5",
+                "e5f3",
+                "d4f3",
+                "d1f3",
+                "e8c8",
+                "e1e6",
+                "f7e6"
+              ],
+              "lossCp": 360
+            }
+          ]
+        },
+        {
+          "move": "d8e7",
+          "san": "Qe7",
+          "rootCp": -83,
+          "bestDefense": "f2f4",
+          "defenseCp": -59,
+          "objectiveCp": -83,
+          "objectiveUtility": 0.3977138231113694,
+          "expectedUtility": 0.510145038434994,
+          "coverage": 0.9629627399758888,
+          "residualProbability": 0.03703726002411123,
+          "punishableProbability": 0.29855852854116505,
+          "replies": [
+            {
+              "move": "e5f7",
+              "probability": 0.3546989466752068,
+              "san": "Nxf7",
+              "cp": -74,
+              "utility": 0.40854102156721994,
+              "punishment": [
+                "e7e4",
+                "e1f1",
+                "d4c2"
+              ],
+              "lossCp": 9
+            },
+            {
+              "move": "c4f7",
+              "probability": 0.2133675562239203,
+              "san": "Bxf7+",
+              "cp": -4,
+              "utility": 0.4950001666600003,
+              "punishment": [
+                "e8d8",
+                "e1g1",
+                "e7e5",
+                "c2c3",
+                "d4e6",
+                "d2d3",
+                "e5f6",
+                "f7h5",
+                "b7b6",
+                "f2f4",
+                "c8b7"
+              ],
+              "lossCp": 79
+            },
+            {
+              "move": "d1h5",
+              "probability": 0.10434605982628349,
+              "san": "Qh5",
+              "cp": 236,
+              "utility": 0.7649478037637647,
+              "punishment": [
+                "g7g6",
+                "h5d1",
+                "e7e5",
+                "d2d3",
+                "b7b5",
+                "c4d5",
+                "c7c6",
+                "c2c3",
+                "d4e6",
+                "d3d4",
+                "e5c7",
+                "d5b3",
+                "a7a5",
+                "d4d5",
+                "e6c5",
+                "e1g1"
+              ],
+              "lossCp": 319
+            },
+            {
+              "move": "f2f4",
+              "probability": 0.09633770853559652,
+              "san": "f4",
+              "cp": -59,
+              "utility": 0.42678022732016513,
+              "punishment": [
+                "d7d6",
+                "c2c3",
+                "d6e5",
+                "c3d4",
+                "e5f4",
+                "e1g1",
+                "g7g5",
+                "b1c3",
+                "f8g7",
+                "c3d5",
+                "g7d4",
+                "g1h1"
+              ],
+              "lossCp": 24
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.07290575431445469,
+              "san": "c3",
+              "cp": 71,
+              "utility": 0.5878295384825115,
+              "punishment": [
+                "e7e5",
+                "c3d4",
+                "e5e4",
+                "d1e2",
+                "e4e2",
+                "c4e2",
+                "d7d5",
+                "d2d3"
+              ],
+              "lossCp": 154
+            },
+            {
+              "move": "e5f3",
+              "probability": 0.045599592105522176,
+              "san": "Nf3",
+              "cp": 144,
+              "utility": 0.6726070170677604,
+              "punishment": [
+                "e7e4",
+                "e1f1",
+                "e4c2",
+                "d1e1",
+                "g8e7",
+                "d2d3",
+                "d4f3",
+                "g2f3",
+                "e8d8",
+                "b1a3",
+                "c2a4",
+                "c1g5"
+              ],
+              "lossCp": 227
+            },
+            {
+              "move": "e1g1",
+              "probability": 0.02528948780061736,
+              "san": "O-O",
+              "cp": 141,
+              "utility": 0.669295402777446,
+              "punishment": [
+                "e7e5",
+                "c2c3",
+                "d4e6",
+                "d2d4",
+                "e5e4",
+                "f1e1"
+              ],
+              "lossCp": 224
+            },
+            {
+              "move": "e5d3",
+              "probability": 0.019538176361601035,
+              "san": "Nd3",
+              "cp": 90,
+              "utility": 0.610639233949222,
+              "punishment": [
+                "b7b5",
+                "c4d5",
+                "c7c6",
+                "c2c3",
+                "c6d5",
+                "c3d4",
+                "e7e4",
+                "d1e2",
+                "g8e7",
+                "f2f3",
+                "e4d4",
+                "b1c3",
+                "b5b4",
+                "c3b5",
+                "d4b6",
+                "d3b4",
+                "e8d8",
+                "e1d1"
+              ],
+              "lossCp": 173
+            },
+            {
+              "move": "d2d3",
+              "probability": 0.016243165065270352,
+              "san": "d3",
+              "cp": 145,
+              "utility": 0.6737070994545215,
+              "punishment": [
+                "e7e5",
+                "c2c3",
+                "d4e6",
+                "f2f4",
+                "e6f4",
+                "e1g1",
+                "g7g5",
+                "b1a3",
+                "f8a3",
+                "b2a3",
+                "e5g7"
+              ],
+              "lossCp": 228
+            },
+            {
+              "move": "e5g4",
+              "probability": 0.014636293067415975,
+              "san": "Ng4",
+              "cp": 195,
+              "utility": 0.7261149812607791,
+              "punishment": [
+                "d7d5",
+                "c4b3",
+                "d4b3",
+                "a2b3",
+                "e7e4",
+                "g4e3",
+                "d5d4",
+                "a1a4",
+                "c8d7",
+                "d2d3",
+                "e4e5",
+                "e1g1",
+                "d7a4"
+              ],
+              "lossCp": 278
+            }
+          ]
+        },
+        {
+          "move": "d8f6",
+          "san": "Qf6",
+          "rootCp": -189,
+          "bestDefense": "e5f7",
+          "defenseCp": -127,
+          "objectiveCp": -204,
+          "objectiveUtility": 0.26502740053348117,
+          "expectedUtility": 0.3982085885457363,
+          "coverage": 0.9540178048556074,
+          "residualProbability": 0.04598219514439261,
+          "punishableProbability": 0.3092173120968442,
+          "replies": [
+            {
+              "move": "e5f7",
+              "probability": 0.48982190813393867,
+              "san": "Nxf7",
+              "cp": -127,
+              "utility": 0.34637766910049594,
+              "punishment": [
+                "b7b5",
+                "f7h8",
+                "b5c4",
+                "d1h5",
+                "g7g6",
+                "h5h7",
+                "d4c2",
+                "e1d1"
+              ],
+              "lossCp": 77
+            },
+            {
+              "move": "c4f7",
+              "probability": 0.1549785846248245,
+              "san": "Bxf7+",
+              "cp": -204,
+              "utility": 0.26502740053348117,
+              "punishment": [
+                "e8e7",
+                "f7g8",
+                "h8g8",
+                "e5f3",
+                "d4f3",
+                "d1f3",
+                "f6f3",
+                "g2f3",
+                "d7d5",
+                "d2d3",
+                "d5d4",
+                "h1g1",
+                "e7f7"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "e5g4",
+              "probability": 0.09207080298480591,
+              "san": "Ng4",
+              "cp": -89,
+              "utility": 0.3905502163716748,
+              "punishment": [
+                "f6h4",
+                "g4e3",
+                "h4e4",
+                "e1g1",
+                "f8d6",
+                "f1e1",
+                "g8e7",
+                "c2c3",
+                "e4h4",
+                "c3d4",
+                "h4h2",
+                "g1f1"
+              ],
+              "lossCp": 115
+            },
+            {
+              "move": "d1h5",
+              "probability": 0.06404546671756514,
+              "san": "Qh5",
+              "cp": 234,
+              "utility": 0.7631450157268554,
+              "punishment": [
+                "g7g6",
+                "h5d1",
+                "f6e5",
+                "e1g1",
+                "b7b5",
+                "c4d5",
+                "c7c6",
+                "f1e1",
+                "d4e6",
+                "d5e6",
+                "e5e6",
+                "d2d4"
+              ],
+              "lossCp": 438
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.05797901579097462,
+              "san": "c3",
+              "cp": 55,
+              "utility": 0.5683199834782481,
+              "punishment": [
+                "f6e5",
+                "c3d4",
+                "e5e4",
+                "d1e2",
+                "e4e2",
+                "c4e2",
+                "d7d5"
+              ],
+              "lossCp": 259
+            },
+            {
+              "move": "f2f4",
+              "probability": 0.02987887214684699,
+              "san": "f4",
+              "cp": 139,
+              "utility": 0.6670782770956253,
+              "punishment": [
+                "f6f4",
+                "c4f7",
+                "e8d8",
+                "d2d3",
+                "f4e5",
+                "c2c3",
+                "d4e6",
+                "e1g1",
+                "g8f6",
+                "f1f5"
+              ],
+              "lossCp": 343
+            },
+            {
+              "move": "e5f3",
+              "probability": 0.02589952020584233,
+              "san": "Nf3",
+              "cp": -75,
+              "utility": 0.40733340004593027,
+              "punishment": [
+                "d7d5",
+                "f3d4",
+                "d5c4",
+                "d4f3",
+                "f6g6",
+                "e1g1",
+                "c8h3",
+                "f3e1",
+                "g8f6",
+                "f2f3",
+                "e8c8",
+                "d2d4",
+                "c4d3",
+                "c2d3",
+                "f8c5",
+                "g1h1",
+                "h3d7"
+              ],
+              "lossCp": 129
+            },
+            {
+              "move": "e1g1",
+              "probability": 0.02458706725087878,
+              "san": "O-O",
+              "cp": 154,
+              "utility": 0.6835208937363156,
+              "punishment": [
+                "f6e5",
+                "c2c3",
+                "f8d6",
+                "f2f4",
+                "e5c5",
+                "c4f7",
+                "e8f7",
+                "c3d4",
+                "c5d4",
+                "g1h1",
+                "d4e4",
+                "d1b3",
+                "f7e8"
+              ],
+              "lossCp": 358
+            },
+            {
+              "move": "d2d3",
+              "probability": 0.014756566999930415,
+              "san": "d3",
+              "cp": 162,
+              "utility": 0.6921095043017882,
+              "punishment": [
+                "f6e5",
+                "c2c3",
+                "d4e6",
+                "f2f4",
+                "e6f4",
+                "e1g1",
+                "e5c5",
+                "f1f2",
+                "f4e6",
+                "b1d2",
+                "g8f6"
+              ],
+              "lossCp": 366
+            }
+          ]
+        }
+      ],
+      "elapsedMs": 2812
+    },
+    {
+      "id": "englund",
+      "fen": "r1b1kbnr/ppppqppp/2n5/4P3/5B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 4 4",
+      "candidate": "e7b4",
+      "firstReply": "f4d2",
+      "firstReplyProbability": 0.28113961439015683,
+      "afterFirstReplyFen": "r1b1kbnr/pppp1ppp/2n5/4P3/1q6/5N2/PPPBPPPP/RN1QKB1R b KQkq - 6 5",
+      "bestEngineContinuation": {
+        "depth": 12,
+        "multipv": 1,
+        "score": {
+          "type": "cp",
+          "raw": -136,
+          "cp": -136
+        },
+        "pv": [
+          "b4b2",
+          "b1c3",
+          "f8b4",
+          "a1b1",
+          "b2a3",
+          "c3d5",
+          "b4d2",
+          "d1d2",
+          "e8d8",
+          "e2e4",
+          "f7f6",
+          "f1e2",
+          "f6e5"
+        ],
+        "firstMove": "b4b2",
+        "raw": "info depth 12 seldepth 25 multipv 1 score cp -136 nodes 129319 nps 439860 hashfull 26 time 294 pv b4b2 b1c3 f8b4 a1b1 b2a3 c3d5 b4d2 d1d2 e8d8 e2e4 f7f6 f1e2 f6e5"
+      },
+      "namedContinuation": "b4b2",
+      "continuations": [
+        {
+          "move": "b4b2",
+          "san": "Qxb2",
+          "rootCp": -161,
+          "bestDefense": "b1c3",
+          "defenseCp": -219,
+          "objectiveCp": -219,
+          "objectiveUtility": 0.2506779155948202,
+          "expectedUtility": 0.49306028571584515,
+          "coverage": 0.9549819327831036,
+          "residualProbability": 0.045018067216896385,
+          "punishableProbability": 0.4294013597727108,
+          "replies": [
+            {
+              "move": "b1c3",
+              "probability": 0.5255805730103928,
+              "san": "Nc3",
+              "cp": -219,
+              "utility": 0.2506779155948202,
+              "punishment": [
+                "f8b4",
+                "a1b1",
+                "b2c3",
+                "d2c3",
+                "b4c3",
+                "f3d2",
+                "g8e7",
+                "b1b3",
+                "e7d5",
+                "e2e3",
+                "a7a6",
+                "f1c4"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "d2c3",
+              "probability": 0.37979313376528967,
+              "san": "Bc3",
+              "cp": 304,
+              "utility": 0.8205384805926733,
+              "punishment": [
+                "f8b4",
+                "c3d2",
+                "b2a1",
+                "c2c3",
+                "b4e7",
+                "d1b3",
+                "d7d5",
+                "b3c2",
+                "c8f5",
+                "c2f5",
+                "a1a2",
+                "f5d3",
+                "a8d8",
+                "d2e3",
+                "g8h6",
+                "e3h6",
+                "g7h6"
+              ],
+              "lossCp": 523
+            },
+            {
+              "move": "b1a3",
+              "probability": 0.017232547227827102,
+              "san": "Na3",
+              "cp": 307,
+              "utility": 0.8227366964217431,
+              "punishment": [
+                "b2a3",
+                "e2e4",
+                "a3a4",
+                "f3g5",
+                "f8b4",
+                "f2f4",
+                "b4d2",
+                "d1d2"
+              ],
+              "lossCp": 526
+            },
+            {
+              "move": "e2e3",
+              "probability": 0.012354165444719008,
+              "san": "e3",
+              "cp": 186,
+              "utility": 0.7170752854929725,
+              "punishment": [
+                "b2a1",
+                "f1c4",
+                "d7d5",
+                "c4d5",
+                "a1b2",
+                "f3g5",
+                "c6d8",
+                "d2c3"
+              ],
+              "lossCp": 405
+            },
+            {
+              "move": "e2e4",
+              "probability": 0.010064749210997691,
+              "san": "e4",
+              "cp": 177,
+              "utility": 0.7078572714244814,
+              "punishment": [
+                "b2a1",
+                "f1c4",
+                "a1b2",
+                "e1g1",
+                "b2b6",
+                "b1c3",
+                "b6b4",
+                "c3b5",
+                "b4c4",
+                "b5c7",
+                "e8d8"
+              ],
+              "lossCp": 396
+            },
+            {
+              "move": "d1c1",
+              "probability": 0.009956764123877356,
+              "san": "Qc1",
+              "cp": 312,
+              "utility": 0.826353352980995,
+              "punishment": [
+                "b2a1",
+                "c2c4",
+                "c6e5",
+                "d2c3",
+                "e5f3",
+                "e2f3",
+                "a1a2",
+                "f1d3",
+                "a2a6",
+                "e1g1"
+              ],
+              "lossCp": 531
+            }
+          ]
+        },
+        {
+          "move": "b4e7",
+          "san": "Qe7",
+          "rootCp": -130,
+          "bestDefense": "d2c3",
+          "defenseCp": -154,
+          "objectiveCp": -170,
+          "objectiveUtility": 0.29943285752602705,
+          "expectedUtility": 0.3339843461612557,
+          "coverage": 0.9365235352953398,
+          "residualProbability": 0.06347646470466017,
+          "punishableProbability": 0.06502233369055556,
+          "replies": [
+            {
+              "move": "b1c3",
+              "probability": 0.21568585412216149,
+              "san": "Nc3",
+              "cp": -166,
+              "utility": 0.3036450701761659,
+              "punishment": [
+                "c6e5",
+                "c3d5",
+                "e5f3",
+                "g2f3",
+                "e7c5",
+                "e2e4",
+                "d7d6",
+                "c2c3",
+                "c8e6",
+                "d1a4",
+                "c7c6"
+              ],
+              "lossCp": 4
+            },
+            {
+              "move": "d2f4",
+              "probability": 0.17103633593777823,
+              "san": "Bf4",
+              "cp": -170,
+              "utility": 0.29943285752602705,
+              "punishment": [
+                "f7f6",
+                "e5f6",
+                "g8f6",
+                "b1c3",
+                "d7d6",
+                "e2e3",
+                "c8e6",
+                "a2a3"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "d2c3",
+              "probability": 0.15299552358402613,
+              "san": "Bc3",
+              "cp": -154,
+              "utility": 0.31647910626368436,
+              "punishment": [
+                "b7b6",
+                "e2e3",
+                "c8b7",
+                "a2a4",
+                "f7f6",
+                "e5f6",
+                "g8f6",
+                "b1d2",
+                "e8c8",
+                "a4a5",
+                "d8e8",
+                "a5b6",
+                "a7b6"
+              ],
+              "lossCp": 16
+            },
+            {
+              "move": "d2g5",
+              "probability": 0.134172186585795,
+              "san": "Bg5",
+              "cp": -140,
+              "utility": 0.3318122278318339,
+              "punishment": [
+                "e7b4",
+                "b1c3",
+                "b4b2",
+                "g5d2",
+                "c6b4",
+                "a1c1",
+                "b4a2",
+                "c3d5",
+                "a2c1",
+                "d5c7",
+                "e8d8",
+                "d2c1"
+              ],
+              "lossCp": 30
+            },
+            {
+              "move": "e2e3",
+              "probability": 0.08667650045924413,
+              "san": "e3",
+              "cp": -73,
+              "utility": 0.40974974806981657,
+              "punishment": [
+                "c6e5",
+                "d2c3",
+                "e5f3",
+                "d1f3",
+                "g8f6",
+                "f1d3",
+                "d7d5",
+                "b1d2",
+                "h7h5"
+              ],
+              "lossCp": 97
+            },
+            {
+              "move": "e2e4",
+              "probability": 0.07686336581054508,
+              "san": "e4",
+              "cp": -119,
+              "utility": 0.3554884462937054,
+              "punishment": [
+                "c6e5",
+                "b1c3",
+                "g8f6",
+                "f3e5",
+                "e7e5",
+                "f2f4",
+                "e5e7",
+                "d1e2",
+                "d7d5",
+                "c3d5",
+                "f6d5",
+                "e4d5"
+              ],
+              "lossCp": 51
+            },
+            {
+              "move": "g2g3",
+              "probability": 0.0340714351052342,
+              "san": "g3",
+              "cp": -99,
+              "utility": 0.37871640480893215,
+              "punishment": [
+                "c6e5",
+                "f3e5",
+                "e7e5",
+                "b1c3",
+                "c7c6",
+                "e2e4",
+                "d7d5",
+                "f1g2",
+                "f8c5"
+              ],
+              "lossCp": 71
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.02445597158293906,
+              "san": "c3",
+              "cp": -16,
+              "utility": 0.48001065984441826,
+              "punishment": [
+                "c6e5",
+                "f3e5",
+                "e7e5",
+                "d2e3",
+                "d7d5",
+                "e3d4",
+                "e5e6",
+                "e2e3",
+                "c7c5"
+              ],
+              "lossCp": 154
+            },
+            {
+              "move": "a2a3",
+              "probability": 0.022998109577700137,
+              "san": "a3",
+              "cp": -53,
+              "utility": 0.4341349971045183,
+              "punishment": [
+                "c6e5",
+                "b1c3",
+                "e5f3",
+                "g2f3",
+                "c7c6",
+                "e2e4",
+                "d7d5",
+                "d2e3",
+                "g8f6"
+              ],
+              "lossCp": 117
+            },
+            {
+              "move": "e5e6",
+              "probability": 0.017568252529916357,
+              "san": "e6",
+              "cp": -42,
+              "utility": 0.4476920904256748,
+              "punishment": [
+                "d7e6",
+                "e2e4",
+                "g8f6",
+                "b1c3",
+                "c8d7",
+                "f1d3",
+                "e8c8",
+                "d1e2",
+                "e6e5",
+                "c3d5",
+                "f6d5",
+                "e4d5"
+              ],
+              "lossCp": 128
+            }
+          ]
+        },
+        {
+          "move": "b4c5",
+          "san": "Qc5",
+          "rootCp": -142,
+          "bestDefense": "d2c3",
+          "defenseCp": -140,
+          "objectiveCp": -187,
+          "objectiveUtility": 0.28191142481665016,
+          "expectedUtility": 0.34501610228057983,
+          "coverage": 0.9339941940166723,
+          "residualProbability": 0.06600580598332773,
+          "punishableProbability": 0.10175934297413364,
+          "replies": [
+            {
+              "move": "b1c3",
+              "probability": 0.24169501019562747,
+              "san": "Nc3",
+              "cp": -131,
+              "utility": 0.3418636849519819,
+              "punishment": [
+                "c6e5",
+                "e2e4",
+                "e5f3",
+                "d1f3",
+                "c7c6",
+                "f1d3"
+              ],
+              "lossCp": 56
+            },
+            {
+              "move": "d2e3",
+              "probability": 0.19026918091988482,
+              "san": "Be3",
+              "cp": -187,
+              "utility": 0.28191142481665016,
+              "punishment": [
+                "c5e7",
+                "e3f4",
+                "d7d6",
+                "e5d6",
+                "c7d6",
+                "e2e3",
+                "g8f6"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "e2e3",
+              "probability": 0.1373626639606143,
+              "san": "e3",
+              "cp": -89,
+              "utility": 0.3905502163716748,
+              "punishment": [
+                "c6e5",
+                "b1c3",
+                "g8f6",
+                "e3e4",
+                "c7c6",
+                "f3e5",
+                "c5e5"
+              ],
+              "lossCp": 98
+            },
+            {
+              "move": "d2c3",
+              "probability": 0.06982490669547659,
+              "san": "Bc3",
+              "cp": -140,
+              "utility": 0.3318122278318339,
+              "punishment": [
+                "g8e7",
+                "e2e3",
+                "e7d5",
+                "d1d3",
+                "d5c3",
+                "d3c3",
+                "c5c3",
+                "b1c3"
+              ],
+              "lossCp": 47
+            },
+            {
+              "move": "e2e4",
+              "probability": 0.06804421032009532,
+              "san": "e4",
+              "cp": -122,
+              "utility": 0.35205919791934975,
+              "punishment": [
+                "c6e5",
+                "d2c3",
+                "e5f3",
+                "d1f3",
+                "g8f6",
+                "b1d2",
+                "d7d6",
+                "c3f6",
+                "g7f6",
+                "f3f6"
+              ],
+              "lossCp": 65
+            },
+            {
+              "move": "b2b4",
+              "probability": 0.06427396333571303,
+              "san": "b4",
+              "cp": -48,
+              "utility": 0.44028635073280703,
+              "punishment": [
+                "c6b4",
+                "b1c3",
+                "d7d6",
+                "e5d6",
+                "f8d6",
+                "a2a3",
+                "b4c6",
+                "c3e4",
+                "c5d5",
+                "e4d6",
+                "d5d6"
+              ],
+              "lossCp": 139
+            },
+            {
+              "move": "d2f4",
+              "probability": 0.05666837012260847,
+              "san": "Bf4",
+              "cp": -132,
+              "utility": 0.34073961154861454,
+              "punishment": [
+                "d7d6",
+                "e5d6",
+                "f8d6",
+                "f4d6",
+                "c7d6",
+                "b1c3",
+                "g8f6",
+                "e2e3",
+                "c8g4",
+                "a2a3",
+                "e8g8",
+                "f1e2"
+              ],
+              "lossCp": 55
+            },
+            {
+              "move": "a2a3",
+              "probability": 0.04337818266509064,
+              "san": "a3",
+              "cp": -105,
+              "utility": 0.37168381170463377,
+              "punishment": [
+                "c6e5",
+                "b1c3",
+                "e5f3",
+                "e2f3",
+                "g8f6",
+                "d2e3",
+                "c5c6",
+                "d1d2",
+                "b7b6"
+              ],
+              "lossCp": 82
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.037485379638420614,
+              "san": "c3",
+              "cp": -59,
+              "utility": 0.42678022732016513,
+              "punishment": [
+                "c6e5",
+                "d2e3",
+                "c5e7",
+                "f3e5",
+                "e7e5",
+                "g2g3",
+                "f8c5",
+                "e3c5",
+                "e5c5",
+                "f1g2",
+                "g8f6"
+              ],
+              "lossCp": 128
+            },
+            {
+              "move": "g2g3",
+              "probability": 0.024992326163141072,
+              "san": "g3",
+              "cp": -93,
+              "utility": 0.38580035722310485,
+              "punishment": [
+                "c6e5",
+                "f3e5",
+                "c5e5",
+                "b1c3",
+                "c7c6",
+                "e2e4",
+                "d7d5",
+                "d2f4",
+                "e5e7"
+              ],
+              "lossCp": 94
+            }
+          ]
+        },
+        {
+          "move": "b4c4",
+          "san": "Qc4",
+          "rootCp": -237,
+          "bestDefense": "b1c3",
+          "defenseCp": -212,
+          "objectiveCp": -237,
+          "objectiveUtility": 0.23415437418020288,
+          "expectedUtility": 0.3182130774948083,
+          "coverage": 0.9537474205544443,
+          "residualProbability": 0.04625257944555572,
+          "punishableProbability": 0.432032247500159,
+          "replies": [
+            {
+              "move": "e2e3",
+              "probability": 0.3183658247675146,
+              "san": "e3",
+              "cp": -189,
+              "utility": 0.2798914731995085,
+              "punishment": [
+                "c4c5",
+                "d2c3",
+                "g8e7",
+                "d1d3",
+                "e7d5",
+                "a2a3",
+                "d5c3",
+                "d3c3",
+                "d7d5",
+                "e5d6",
+                "c5c3",
+                "b1c3",
+                "f8d6",
+                "e1c1",
+                "e8g8"
+              ],
+              "lossCp": 48
+            },
+            {
+              "move": "b2b3",
+              "probability": 0.16602448666706981,
+              "san": "b3",
+              "cp": -129,
+              "utility": 0.3441171587921863,
+              "punishment": [
+                "c4e6",
+                "d2c3",
+                "f7f6",
+                "f3d4",
+                "c6d4",
+                "d1d4",
+                "d7d5",
+                "e5d6",
+                "f8d6",
+                "e2e3",
+                "c7c5"
+              ],
+              "lossCp": 108
+            },
+            {
+              "move": "b1c3",
+              "probability": 0.1491120674436757,
+              "san": "Nc3",
+              "cp": -212,
+              "utility": 0.2573094546973142,
+              "punishment": [
+                "c4c5",
+                "e2e4",
+                "c6e5",
+                "f3e5",
+                "c5e5",
+                "f2f4",
+                "e5e7",
+                "d1f3",
+                "c7c6",
+                "e1c1",
+                "d7d6",
+                "e4e5",
+                "d6e5",
+                "f4e5"
+              ],
+              "lossCp": 25
+            },
+            {
+              "move": "b1a3",
+              "probability": 0.13581133513256777,
+              "san": "Na3",
+              "cp": -62,
+              "utility": 0.42311473886795364,
+              "punishment": [
+                "f8a3",
+                "b2a3",
+                "c4c5",
+                "e2e4",
+                "b7b6",
+                "h2h4",
+                "c6e5",
+                "d2b4",
+                "e5f3",
+                "d1f3",
+                "c5c2"
+              ],
+              "lossCp": 175
+            },
+            {
+              "move": "e2e4",
+              "probability": 0.09582642682139092,
+              "san": "e4",
+              "cp": -134,
+              "utility": 0.33849684079704756,
+              "punishment": [
+                "c4e4",
+                "f1e2",
+                "c6e5",
+                "e1g1",
+                "f8d6",
+                "b1c3",
+                "e4c6",
+                "d2f4",
+                "e5g6",
+                "f4d6",
+                "c6d6",
+                "d1d6",
+                "c7d6",
+                "c3d5",
+                "g8e7"
+              ],
+              "lossCp": 103
+            },
+            {
+              "move": "d2c3",
+              "probability": 0.03985096759364892,
+              "san": "Bc3",
+              "cp": -213,
+              "utility": 0.25635510824373786,
+              "punishment": [
+                "c4g4",
+                "h2h3",
+                "g4g6",
+                "e2e3",
+                "d7d6",
+                "f1d3",
+                "g6h6",
+                "a2a3",
+                "d6e5",
+                "f3e5",
+                "c6e5",
+                "c3e5"
+              ],
+              "lossCp": 24
+            },
+            {
+              "move": "c2c3",
+              "probability": 0.02313389014251847,
+              "san": "c3",
+              "cp": -83,
+              "utility": 0.3977138231113694,
+              "punishment": [
+                "c4e4",
+                "c3c4",
+                "c6e5",
+                "f3e5",
+                "e4e5",
+                "b1c3",
+                "g8f6",
+                "g2g3",
+                "c7c6"
+              ],
+              "lossCp": 154
+            },
+            {
+              "move": "g2g3",
+              "probability": 0.014386313249446099,
+              "san": "g3",
+              "cp": -151,
+              "utility": 0.31973280330135156,
+              "punishment": [
+                "d7d6",
+                "e5d6",
+                "f8d6",
+                "d2c3",
+                "g8f6",
+                "c3f6",
+                "g7f6",
+                "b1d2",
+                "c4b4"
+              ],
+              "lossCp": 86
+            },
+            {
+              "move": "d2f4",
+              "probability": 0.01123610873661204,
+              "san": "Bf4",
+              "cp": 263,
+              "utility": 0.788348634008099,
+              "punishment": [
+                "c4f4",
+                "e2e3",
+                "f4h6",
+                "h2h4",
+                "f7f6",
+                "e5f6",
+                "g7f6",
+                "b1c3",
+                "f8b4",
+                "g2g4",
+                "b4c3",
+                "b2c3"
+              ],
+              "lossCp": 500
+            }
+          ]
+        }
+      ],
+      "elapsedMs": 1742
+    },
+    {
+      "id": "elephant",
+      "fen": "r1bqkb1r/pppn1ppp/4pn2/3P2B1/3P4/2N5/PP2PPPP/R2QKBNR b KQkq - 0 5",
+      "candidate": "e6d5",
+      "firstReply": "c3d5",
+      "firstReplyProbability": 0.17445501014108358,
+      "afterFirstReplyFen": "r1bqkb1r/pppn1ppp/5n2/3N2B1/3P4/8/PP2PPPP/R2QKBNR b KQkq - 0 6",
+      "bestEngineContinuation": {
+        "depth": 12,
+        "multipv": 1,
+        "score": {
+          "type": "cp",
+          "raw": 316,
+          "cp": 316
+        },
+        "pv": [
+          "f6d5",
+          "g5d2",
+          "f8b4",
+          "e2e4",
+          "b4d2",
+          "d1d2",
+          "d5f6",
+          "e4e5"
+        ],
+        "firstMove": "f6d5",
+        "raw": "info depth 12 seldepth 15 multipv 1 score cp 316 nodes 108873 nps 425285 hashfull 16 time 256 pv f6d5 g5d2 f8b4 e2e4 b4d2 d1d2 d5f6 e4e5"
+      },
+      "namedContinuation": "f6d5",
+      "continuations": [
+        {
+          "move": "f6d5",
+          "san": "Nxd5",
+          "rootCp": 318,
+          "bestDefense": "g5d2",
+          "defenseCp": 312,
+          "objectiveCp": 308,
+          "objectiveUtility": 0.8234647252208833,
+          "expectedUtility": 0.836426551702586,
+          "coverage": 0.9545253865566788,
+          "residualProbability": 0.045474613443321155,
+          "punishableProbability": 0.11698561771058824,
+          "replies": [
+            {
+              "move": "g5d8",
+              "probability": 0.8141556251466923,
+              "san": "Bxd8",
+              "cp": 308,
+              "utility": 0.8234647252208833,
+              "punishment": [
+                "f8b4",
+                "d1d2",
+                "b4d2",
+                "e1d2",
+                "e8d8",
+                "e2e4",
+                "d5f6",
+                "e4e5",
+                "f6e8",
+                "g1f3"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "e2e4",
+              "probability": 0.061704310373758446,
+              "san": "e4",
+              "cp": 507,
+              "utility": 0.9265593156415015,
+              "punishment": [
+                "d8g5",
+                "d1c2",
+                "d5f6",
+                "g1f3",
+                "g5a5",
+                "e1d1"
+              ],
+              "lossCp": 199
+            },
+            {
+              "move": "g1f3",
+              "probability": 0.02082251428648636,
+              "san": "Nf3",
+              "cp": 353,
+              "utility": 0.8538347696026178,
+              "punishment": [
+                "f8b4",
+                "g5d2",
+                "b4d2",
+                "f3d2",
+                "e8g8",
+                "e2e4",
+                "d5f6",
+                "f1e2",
+                "c7c5",
+                "d4c5",
+                "d7c5",
+                "e1g1",
+                "c5e6",
+                "e4e5"
+              ],
+              "lossCp": 45
+            },
+            {
+              "move": "d1a4",
+              "probability": 0.017380150770903935,
+              "san": "Qa4",
+              "cp": 551,
+              "utility": 0.9401951107103428,
+              "punishment": [
+                "d8g5",
+                "e1d1",
+                "f8b4",
+                "g1f3",
+                "g5h6"
+              ],
+              "lossCp": 243
+            },
+            {
+              "move": "e2e3",
+              "probability": 0.017283720705498256,
+              "san": "e3",
+              "cp": 574,
+              "utility": 0.946343347992828,
+              "punishment": [
+                "f8b4",
+                "e1e2",
+                "d8g5",
+                "a2a3",
+                "b4a5",
+                "e3e4"
+              ],
+              "lossCp": 266
+            },
+            {
+              "move": "d1d2",
+              "probability": 0.01041139116508122,
+              "san": "Qd2",
+              "cp": 443,
+              "utility": 0.9015884520526233,
+              "punishment": [
+                "f7f6",
+                "e1c1",
+                "f6g5",
+                "e2e4",
+                "d5f4",
+                "g1f3",
+                "c7c6",
+                "c1b1",
+                "f8e7",
+                "f1c4"
+              ],
+              "lossCp": 135
+            },
+            {
+              "move": "d1b3",
+              "probability": 0.010206044695346373,
+              "san": "Qb3",
+              "cp": 491,
+              "utility": 0.9209263231301599,
+              "punishment": [
+                "d8g5",
+                "g1f3",
+                "f8b4",
+                "b3b4",
+                "d5b4",
+                "f3g5",
+                "b4c2",
+                "e1d2",
+                "c2a1"
+              ],
+              "lossCp": 183
+            },
+            {
+              "move": "g5d2",
+              "probability": 0.002561629412911919,
+              "san": "Bd2",
+              "cp": 312,
+              "utility": 0.826353352980995,
+              "punishment": [
+                "d7f6",
+                "g1f3",
+                "c7c6",
+                "e2e3",
+                "f8e7"
+              ],
+              "lossCp": 4
+            }
+          ]
+        },
+        {
+          "move": "c7c6",
+          "san": "c6",
+          "rootCp": -102,
+          "bestDefense": "d5c3",
+          "defenseCp": -96,
+          "objectiveCp": -102,
+          "objectiveUtility": 0.3751935255315707,
+          "expectedUtility": 0.4550923818318022,
+          "coverage": 0.9532071977945554,
+          "residualProbability": 0.04679280220544457,
+          "punishableProbability": 0.07079886987017078,
+          "replies": [
+            {
+              "move": "d5f6",
+              "probability": 0.6502130079250404,
+              "san": "Nxf6+",
+              "cp": -66,
+              "utility": 0.4182406231581638,
+              "punishment": [
+                "d7f6",
+                "a2a3",
+                "f8e7",
+                "g5f6",
+                "e7f6",
+                "e2e3",
+                "d8a5",
+                "b2b4",
+                "a5g5",
+                "g1f3"
+              ],
+              "lossCp": 36
+            },
+            {
+              "move": "g5f6",
+              "probability": 0.18219255883414742,
+              "san": "Bxf6",
+              "cp": -51,
+              "utility": 0.4365932137378063,
+              "punishment": [
+                "d7f6",
+                "d5f6",
+                "d8f6",
+                "d1d2",
+                "c8g4",
+                "a2a3",
+                "e8c8",
+                "e2e3",
+                "c8b8",
+                "f1d3"
+              ],
+              "lossCp": 51
+            },
+            {
+              "move": "d5c3",
+              "probability": 0.05000276116519672,
+              "san": "Nc3",
+              "cp": -96,
+              "utility": 0.382252125230751,
+              "punishment": [
+                "d8b6",
+                "g5c1",
+                "c6c5",
+                "g1f3",
+                "c5d4",
+                "f3d4",
+                "f8b4",
+                "e2e3",
+                "e8g8",
+                "f1e2",
+                "b4c3",
+                "b2c3"
+              ],
+              "lossCp": 6
+            },
+            {
+              "move": "d5f4",
+              "probability": 0.037676237754621346,
+              "san": "Nf4",
+              "cp": 652,
+              "utility": 0.9630307907033229,
+              "punishment": [
+                "f8b4",
+                "d1d2",
+                "b4d2",
+                "e1d2",
+                "f6e4",
+                "d2c2",
+                "d8g5",
+                "e2e3",
+                "g5e7",
+                "g1h3",
+                "d7f6",
+                "h1g1",
+                "c8f5"
+              ],
+              "lossCp": 754
+            },
+            {
+              "move": "d5e3",
+              "probability": 0.018526606654268776,
+              "san": "Ne3",
+              "cp": 640,
+              "utility": 0.9608342772032357,
+              "punishment": [
+                "f8b4",
+                "d1d2",
+                "b4d2",
+                "e1d2",
+                "f6e4",
+                "d2c2",
+                "d8g5",
+                "h2h4",
+                "g5d8",
+                "e3f5",
+                "e8g8",
+                "e2e3",
+                "e4f2"
+              ],
+              "lossCp": 742
+            },
+            {
+              "move": "d5b4",
+              "probability": 0.014596025461280667,
+              "san": "Nb4",
+              "cp": 399,
+              "utility": 0.8802711097107355,
+              "punishment": [
+                "f8b4",
+                "g5d2",
+                "d8e7",
+                "e2e3",
+                "b4d2",
+                "d1d2",
+                "d7b6",
+                "f1d3",
+                "g7g6",
+                "g1f3",
+                "c8f5"
+              ],
+              "lossCp": 501
+            }
+          ]
+        },
+        {
+          "move": "h7h6",
+          "san": "h6",
+          "rootCp": -87,
+          "bestDefense": "g5f6",
+          "defenseCp": -95,
+          "objectiveCp": -95,
+          "objectiveUtility": 0.3834334954786807,
+          "expectedUtility": 0.4764253675021173,
+          "coverage": 0.9524855214522606,
+          "residualProbability": 0.04751447854773938,
+          "punishableProbability": 0.15239441786584917,
+          "replies": [
+            {
+              "move": "g5f6",
+              "probability": 0.49025520526400895,
+              "san": "Bxf6",
+              "cp": -95,
+              "utility": 0.3834334954786807,
+              "punishment": [
+                "d7f6",
+                "d5c3",
+                "c8d7",
+                "g1f3",
+                "c7c5",
+                "e2e3",
+                "d8b6",
+                "d1c2",
+                "c5d4",
+                "f3d4"
+              ],
+              "lossCp": 0
+            },
+            {
+              "move": "d5f6",
+              "probability": 0.3098358983224025,
+              "san": "Nxf6+",
+              "cp": -33,
+              "utility": 0.45884333184977194,
+              "punishment": [
+                "d7f6",
+                "g5c1",
+                "f8b4",
+                "c1d2"
+              ],
+              "lossCp": 62
+            },
+            {
+              "move": "g5f4",
+              "probability": 0.06986732345998102,
+              "san": "Bf4",
+              "cp": 350,
+              "utility": 0.8519528019683106,
+              "punishment": [
+                "f6d5",
+                "f4d2",
+                "d7f6",
+                "g1f3",
+                "f8e7",
+                "e2e3",
+                "e8g8",
+                "f3e5",
+                "c7c6",
+                "f1c4",
+                "a7a5",
+                "a2a3",
+                "a5a4"
+              ],
+              "lossCp": 445
+            },
+            {
+              "move": "g5h4",
+              "probability": 0.06344915087413927,
+              "san": "Bh4",
+              "cp": 325,
+              "utility": 0.8354835371034369,
+              "punishment": [
+                "f6d5",
+                "h4d8",
+                "f8b4",
+                "d1d2",
+                "b4d2",
+                "e1d2",
+                "e8d8",
+                "e2e4",
+                "d5f6",
+                "f2f3",
+                "d7b6",
+                "a1c1",
+                "f6e8",
+                "f1d3",
+                "a7a5",
+                "g1e2",
+                "a5a4",
+                "e2f4"
+              ],
+              "lossCp": 420
+            },
+            {
+              "move": "d5c7",
+              "probability": 0.019077943531728873,
+              "san": "Nxc7+",
+              "cp": 295,
+              "utility": 0.8138161720984914,
+              "punishment": [
+                "d8c7",
+                "g5d2",
+                "f6e4",
+                "a2a3",
+                "e4d2",
+                "d1d2",
+                "d7f6",
+                "e2e3",
+                "f8d6",
+                "a1c1"
+              ],
+              "lossCp": 390
+            }
+          ]
+        },
+        {
+          "move": "f8d6",
+          "san": "Bd6",
+          "rootCp": -103,
+          "bestDefense": "e2e4",
+          "defenseCp": -97,
+          "objectiveCp": -103,
+          "objectiveUtility": 0.37402214223339625,
+          "expectedUtility": 0.4091769666985536,
+          "coverage": 0.9154515611885646,
+          "residualProbability": 0.08454843881143537,
+          "punishableProbability": 0,
+          "replies": [
+            {
+              "move": "d5f6",
+              "probability": 0.31171510236431776,
+              "san": "Nxf6+",
+              "cp": -62,
+              "utility": 0.42311473886795364,
+              "punishment": [
+                "d7f6",
+                "a2a3",
+                "e8g8",
+                "e2e3",
+                "h7h6",
+                "g5h4",
+                "c7c5",
+                "d4c5",
+                "d6c5",
+                "d1d8",
+                "f8d8"
+              ],
+              "lossCp": 41
+            },
+            {
+              "move": "g5f6",
+              "probability": 0.20323305096259428,
+              "san": "Bxf6",
+              "cp": -68,
+              "utility": 0.4158094770645926,
+              "punishment": [
+                "d7f6",
+                "d5c3",
+                "e8g8",
+                "g1f3",
+                "d8e7",
+                "e2e3",
+                "c7c5"
+              ],
+              "lossCp": 35
+            },
+            {
+              "move": "g1f3",
+              "probability": 0.10057964306319696,
+              "san": "Nf3",
+              "cp": -90,
+              "utility": 0.389360766050778,
+              "punishment": [
+                "h7h6",
+                "g5f6",
+                "d7f6",
+                "d5c3",
+                "e8g8",
+                "g2g3",
+                "d8e7",
+                "f1g2",
+                "f8d8",
+                "e1g1",
+                "c7c5",
+                "f1e1",
+                "c5d4",
+                "d1d4"
+              ],
+              "lossCp": 13
+            },
+            {
+              "move": "e2e4",
+              "probability": 0.09661402328713664,
+              "san": "e4",
+              "cp": -97,
+              "utility": 0.38107214519980964,
+              "punishment": [
+                "h7h6",
+                "g5f6",
+                "d7f6",
+                "d5c3",
+                "d8e7",
+                "e4e5",
+                "d6b4",
+                "f1d3",
+                "c7c5",
+                "g1e2",
+                "c5d4",
+                "e5f6",
+                "d4c3",
+                "f6e7"
+              ],
+              "lossCp": 6
+            },
+            {
+              "move": "e2e3",
+              "probability": 0.0708949612887951,
+              "san": "e3",
+              "cp": -92,
+              "utility": 0.38698582386066455,
+              "punishment": [
+                "h7h6",
+                "g5f6",
+                "d7f6",
+                "d5c3",
+                "e8g8",
+                "g1f3",
+                "d8e7",
+                "d1c2",
+                "f8d8"
+              ],
+              "lossCp": 11
+            },
+            {
+              "move": "a1c1",
+              "probability": 0.0349015628157483,
+              "san": "Rc1",
+              "cp": -60,
+              "utility": 0.425557483188341,
+              "punishment": [
+                "h7h6",
+                "g5f6",
+                "d7f6",
+                "d5c3",
+                "e8g8",
+                "e2e3",
+                "c7c5",
+                "d4c5",
+                "d6c5",
+                "d1d8",
+                "f8d8",
+                "g1f3"
+              ],
+              "lossCp": 43
+            },
+            {
+              "move": "d1a4",
+              "probability": 0.03326432481957159,
+              "san": "Qa4",
+              "cp": -33,
+              "utility": 0.45884333184977194,
+              "punishment": [
+                "e8g8",
+                "e2e3",
+                "h7h6",
+                "d5f6",
+                "d7f6",
+                "g5f6",
+                "d8f6",
+                "g1f3"
+              ],
+              "lossCp": 70
+            },
+            {
+              "move": "d1c2",
+              "probability": 0.024828439952970526,
+              "san": "Qc2",
+              "cp": -81,
+              "utility": 0.40011163113600173,
+              "punishment": [
+                "h7h6",
+                "g5f6",
+                "d7f6",
+                "d5c3",
+                "c8d7",
+                "e2e3",
+                "c7c5",
+                "d4c5",
+                "d6c5",
+                "g1f3",
+                "e8g8",
+                "f1d3",
+                "a8c8",
+                "e1g1"
+              ],
+              "lossCp": 22
+            },
+            {
+              "move": "d1b3",
+              "probability": 0.021487961556316933,
+              "san": "Qb3",
+              "cp": -42,
+              "utility": 0.4476920904256748,
+              "punishment": [
+                "e8g8",
+                "e2e4",
+                "f8e8",
+                "f1d3",
+                "c7c5",
+                "d5f6",
+                "d7f6"
+              ],
+              "lossCp": 61
+            },
+            {
+              "move": "d1d3",
+              "probability": 0.017932491077916397,
+              "san": "Qd3",
+              "cp": -40,
+              "utility": 0.45016600268752216,
+              "punishment": [
+                "h7h6",
+                "g5f6",
+                "d7f6",
+                "d5c3",
+                "e8g8"
+              ],
+              "lossCp": 63
+            }
+          ]
+        }
+      ],
+      "elapsedMs": 1592
+    }
+  ],
+  "finishedAt": "2026-10-13T18:30:46.506Z",
+  "stockfishCalls": 115,
+  "productionSourceSha256AtEnd": "34CCA92B66270E901CD47F636F35AEA91F83E3D225C925D0ABA40AF93865CC7D"
+}

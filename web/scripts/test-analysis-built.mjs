@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import { chromium } from '@playwright/test';
+import { Chess } from 'chess.js';
+import { mkdir, writeFile } from 'node:fs/promises';
+
+const appUrl = (process.env.TRAPPY_TEST_URL ?? 'http://127.0.0.1:5180').replace(/\/+$/, '');
+const browser = await chromium.launch({ channel: process.platform === 'win32' ? 'msedge' : undefined, headless: true });
+const errors = [];
+const fixture = new Chess();
+for (const move of ['e4', 'e5', 'Nf3', 'Nc6', 'Bc4', 'd6', 'Nc3', 'Bg4', 'h3', 'Bh5']) fixture.move(move);
+try {
+  const source = await browser.newPage();
+  await source.goto(`${appUrl}/?mode=play&player=w&fen=${encodeURIComponent(fixture.fen())}`);
+  await source.locator('.board-wrap [data-square="e1"]').waitFor();
+  const screenshot = await source.locator('.board-wrap').screenshot();
+  await source.close();
+  const page = await browser.newPage({ viewport: { width: 1366, height: 1000 } });
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('response', (response) => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
+  await page.goto(`${appUrl}/`);
+  assert.equal(await page.getByRole('button', { name: 'Analyze', exact: true }).getAttribute('aria-pressed'), 'true');
+  await page.getByLabel('Upload chessboard screenshot').setInputFiles({ name: 'legal.png', mimeType: 'image/png', buffer: screenshot });
+  await page.getByText('Board detected.', { exact: false }).waitFor({ timeout: 90000 });
+  assert.equal((await page.locator('#import-fen').inputValue()).split(' ')[0], fixture.fen().split(' ')[0]);
+  await page.getByLabel('Side to move', { exact: true }).selectOption('w');
+  const rootFen = await page.locator('#import-fen').inputValue();
+  const began = Date.now();
+  await page.getByRole('button', { name: 'Analyze position', exact: true }).click();
+  await page.getByTestId('analysis-results').waitFor({ timeout: 180000 });
+  const previewMs = Date.now() - began;
+  assert.equal(await page.getByTestId('analysis-board').getAttribute('data-fen'), rootFen);
+  assert.equal(await page.getByTestId('analysis-results').getAttribute('data-analysis-fen'), rootFen);
+  assert.doesNotMatch(await page.getByTestId('analysis-results').innerText(), /unavailable; showing Stockfish/);
+  const stop = page.getByRole('button', { name: 'Stop', exact: true });
+  if (await stop.isVisible()) await stop.click();
+  await page.getByTestId('analysis-candidate').filter({ hasText: 'Nxe5' }).click();
+  await page.locator('.human-reply-tree > summary').click();
+  await page.getByTestId('analysis-reply').filter({ hasText: 'Bxd1' }).click();
+  await page.getByRole('button', { name: 'End of line', exact: true }).click();
+  const mate = new Chess(rootFen);
+  for (const move of ['Nxe5', 'Bxd1', 'Bxf7+', 'Ke7', 'Nd5#']) mate.move(move);
+  assert.equal(await page.getByTestId('analysis-board').getAttribute('data-fen'), mate.fen());
+  assert.deepEqual(errors, []);
+  await mkdir('artifacts/analysis', { recursive: true });
+  await page.screenshot({ path: 'artifacts/analysis/built-analysis-desktop.png', fullPage: true });
+  await writeFile('artifacts/analysis/built-browser-review.json', JSON.stringify({ previewMs, rootFen, mateFen: mate.fen(), errors }, null, 2));
+  console.log(`Built analysis passed: screenshot → Fenshot → reviewed position → real Maia/Stockfish (${previewMs}ms preview) → legal mating line; no autoplay or browser errors.`);
+} finally { await browser.close(); }

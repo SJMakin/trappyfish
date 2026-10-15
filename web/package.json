@@ -1,0 +1,51 @@
+{
+  "name": "trappy-js",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/copy-assets.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "prebuild": "node scripts/copy-assets.mjs",
+    "build": "tsc && vite build",
+    "prebuild:pages": "node scripts/copy-assets.mjs",
+    "build:pages": "tsc && node scripts/build-pages.mjs",
+    "preview": "vite preview --host 127.0.0.1 --port 5180",
+    "test": "tsx scripts/test-position.ts && tsx scripts/test-practical-engine.ts && tsx scripts/test-ruthless-engine.ts && tsx scripts/test-analysis-engine.ts && tsx scripts/test-uci.ts && tsx scripts/test-maia.ts --node-only",
+    "test:maia": "tsx scripts/test-maia.ts",
+    "test:screenshot": "node scripts/test-position-browser.mjs",
+    "test:app": "node scripts/test-app-browser.mjs",
+    "test:ux": "node scripts/test-ux-browser.mjs",
+    "test:privacy": "node scripts/test-plan-privacy.mjs",
+    "test:game": "tsx scripts/test-maia-game.ts",
+    "test:analysis": "node scripts/test-analysis-browser.mjs",
+    "test:analysis-real": "tsx scripts/test-analysis-real.ts",
+    "test:analysis-built": "node scripts/test-analysis-built.mjs",
+    "test:analysis-layout": "node scripts/review-analysis-layout.mjs",
+    "test:pages": "node scripts/test-pages.mjs",
+    "benchmark": "tsx scripts/benchmark-traps.ts --phase production",
+    "benchmark:ruthless": "tsx scripts/review-traps.ts --mode production --output benchmarks/review/production-latest.json",
+    "update:trappyfish": "powershell -ExecutionPolicy Bypass -File scripts/update-trappyfish.ps1",
+    "publish:trappyfish": "powershell -ExecutionPolicy Bypass -File scripts/publish-trappyfish.ps1"
+  },
+  "dependencies": {
+    "@scoriiu/fenshot": "^0.1.4",
+    "@vitejs/plugin-react": "latest",
+    "chess.js": "latest",
+    "lucide-react": "latest",
+    "onnxruntime-web": "^1.30.0",
+    "react": "latest",
+    "react-chessboard": "latest",
+    "react-dom": "latest",
+    "stockfish": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "onnxruntime-node": "^1.30.0",
+    "tsx": "^4.23.15",
+    "typescript": "latest"
+  }
+}

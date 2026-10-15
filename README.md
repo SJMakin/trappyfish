@@ -1,3 +1,11 @@
+# Trappyfish
+
+[Open the browser app](https://sjmakin.github.io/trappyfish/) · [App source and documentation](web/README.md)
+
+Upload a chessboard screenshot or paste a FEN to find practical traps, likely human mistakes, targets and the lines that punish them. Maia predicts opponent replies; Stockfish evaluates the outcomes. The browser app includes deep position analysis, line exploration and a separate AI practice mode.
+
+The app lives in `web/`. Its GitHub Pages workflow tests, builds and deploys on changes to `web/` on `main`. The standalone engine and its WASM build remain at the repository root.
+
 ### Stockfish.js
 
 <a href="https://github.com/nmrugg/stockfish.js">Stockfish.js</a> is a WASM implementation by Nathan Rugg of the <a href="https://github.com/official-stockfish/Stockfish">Stockfish</a> chess engine, for [Chess.com's](https://www.chess.com/analysis) in-browser engine.
