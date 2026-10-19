@@ -46,7 +46,7 @@
 .line-navigator > p { color: #697767; font-size: 12px; line-height: 1.5; margin: 10px 0; }
 .manual-line { font-weight: 650; color: #6b4b34 !important; }
 .research-board-hint { color: #7a8573; font-size: 11px; line-height: 1.5; margin: 10px 4px; }
-.research-board-tools { display: grid; grid-template-columns: auto auto 1fr; gap: 6px; margin-top: 7px; }
+.research-board-tools { display: grid; grid-template-columns: auto auto auto 1fr; gap: 6px; margin-top: 7px; }
 .research-board-tools button { font-size: 11px; min-height: 34px; background: transparent; }
 .research-more-tools { position: relative; justify-self: end; min-width: 80px; }
 .research-more-tools > summary { display: flex; justify-content: center; align-items: center; gap: 5px; border: 1px solid #d2d8d1; border-radius: 7px; min-height: 34px; padding: 0 10px; font-size: 11px; font-weight: 650; cursor: pointer; }
@@ -72,6 +72,12 @@
 .research-settings-row { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(130px, 1fr) auto; gap: 12px; align-items: end; }
 .research-settings-row > label { font-size: 11px; font-weight: 700; color: #6b7862; display: grid; gap: 5px; }
 .research-settings-row select { width: 100%; min-height: 36px; font-size: 12px; }
+.analysis-playing-style { grid-column: 1 / -1; }
+.analysis-playing-style > p { margin: 8px 0 0; font-size: 11px; line-height: 1.6; color: #65765b; }
+.analysis-playing-style .playing-style-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.analysis-playing-style .playing-style-controls > p { grid-column: 1 / -1; }
+@media (max-width: 1080px) { .analysis-playing-style .playing-style-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 440px) { .analysis-playing-style .playing-style-controls { grid-template-columns: minmax(0, 1fr); } }
 .analysis-depth-buttons { display: flex; gap: 7px; }
 .analysis-depth-buttons button { font-size: 12px; min-height: 36px; }
 .research-advanced { align-self: center; }
@@ -88,6 +94,13 @@
 .analysis-progress p { font-size: 11px; color: #7b694b; margin: 8px 0 6px; }
 .analysis-progress progress { width: 100%; height: 5px; accent-color: #a27645; display: block; }
 .analysis-progress small { display: block; font-size: 10px; color: #9b8c6f; line-height: 1.5; margin-top: 7px; }
+.search-live-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 4px; font-family: "Cascadia Code", Consolas, monospace; }
+.search-live-metrics > div { min-width: 0; }
+.search-live-metrics dt { font-size: 9px; color: #786e4e; }
+.search-live-metrics dd { margin: 4px 0 0; font-size: 13px; color: #554e31; font-variant-numeric: tabular-nums; }
+.technical-analysis .research-search-controls { border-radius: 7px; }
+.technical-analysis .analysis-playing-style .playing-style-controls { border-radius: 6px; background: #fafcf8; }
+.technical-analysis .line-navigator { border-radius: 6px; background: #fdfefb; }
 .analysis-complete { display: flex; justify-content: flex-end; align-items: center; gap: 5px; color: #607653; font-size: 10px; }
 .research-search-controls > .import-warning, .research-search-controls > .error-strip { grid-column: 1 / -1; }
 .research-search-controls > .import-warning, .research-search-controls > .error-strip { margin-top: 12px; }

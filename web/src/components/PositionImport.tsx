@@ -4,15 +4,18 @@ import { Chessboard } from 'react-chessboard';
 import { Camera, FlipVertical2, Pencil, RotateCw, Upload } from 'lucide-react';
 import { recognizeScreenshot } from '../import/fenshot';
 import { placementForPreview, rotatePlacement, setPlacementSquare, validatePosition } from '../import/position';
+import { WebcamCapture } from './WebcamCapture';
+import './importPresentation.css';
 
 type ScanSummary = { reliable: boolean; minConfidence: number; meanConfidence: number; orientation: 'white' | 'black' };
 
-export function PositionImport({ currentFen, playerColor, onLoad, variant = 'play', initialOpen }: {
+export function PositionImport({ currentFen, playerColor, onLoad, variant = 'play', initialOpen, active = true }: {
   currentFen: string;
   playerColor: Color;
   onLoad: (fen: string, player: Color) => void;
   variant?: 'analysis' | 'play';
   initialOpen?: boolean;
+  active?: boolean;
 }) {
   const isAnalysis = variant === 'analysis';
   const [open, setOpen] = useState(initialOpen ?? isAnalysis);
@@ -28,28 +31,55 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
   const [notice, setNotice] = useState<string | null>(null);
   const [editingPieces, setEditingPieces] = useState(false);
   const [paintPiece, setPaintPiece] = useState<string | null>('wP');
+  const [cameraOpen, setCameraOpen] = useState(false);
   const scanId = useRef(0);
   const scanInFlight = useRef(false);
   const importPanel = useRef<HTMLDetailsElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const webcamButton = useRef<HTMLButtonElement>(null);
   const validation = useMemo(() => validatePosition(draftFen), [draftFen]);
   const fields = draftFen.trim().split(/\s+/);
   const previewPosition = useMemo(() => placementForPreview(draftFen.trim().split(/\s+/)[0]), [draftFen]);
 
+  const cancelRecognition = () => {
+    scanId.current += 1;
+    scanInFlight.current = false;
+    setScanning(false);
+  };
+
+  const closeCamera = () => {
+    setCameraOpen(false);
+    requestAnimationFrame(() => webcamButton.current?.focus());
+  };
+
   useEffect(() => { setPlayAs(playerColor); }, [playerColor]);
 
   useEffect(() => {
-    return () => { scanId.current += 1; };
+    return () => { scanId.current += 1; scanInFlight.current = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!active || !open) {
+      cancelRecognition();
+      setCameraOpen(false);
+    }
+  }, [active, open]);
+
+  useEffect(() => {
+    const cancel = () => { cancelRecognition(); setCameraOpen(false); };
+    window.addEventListener('pagehide', cancel);
+    return () => window.removeEventListener('pagehide', cancel);
   }, []);
 
   useEffect(() => {
     return () => { if (sourceImage) URL.revokeObjectURL(sourceImage); };
   }, [sourceImage]);
 
-  const readImage = async (file: File) => {
-    if (scanInFlight.current) return;
+  const readImage = async (file: File, reopen = false) => {
+    if (!active || (!open && !reopen) || scanInFlight.current) return;
     scanInFlight.current = true;
     const id = ++scanId.current;
+    setCameraOpen(false);
     setOpen(true);
     setScanning(true);
     setError(null);
@@ -68,29 +98,27 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
     } catch (failure) {
       if (id === scanId.current) setError(failure instanceof Error ? failure.message : String(failure));
     } finally {
-      scanInFlight.current = false;
-      if (id === scanId.current) setScanning(false);
+      if (id === scanId.current) { scanInFlight.current = false; setScanning(false); }
     }
   };
 
   useEffect(() => {
-    if (!open && !isAnalysis) return;
+    if (!active || (!open && !isAnalysis)) return;
     const handlePaste = (event: ClipboardEvent) => {
       if (importPanel.current?.closest('[hidden]')) return;
       const image = Array.from(event.clipboardData?.items ?? []).find((item) => item.type.startsWith('image/'))?.getAsFile();
       if (!image) return;
       event.preventDefault();
-      void readImage(image);
+      void readImage(image, isAnalysis);
     };
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
-  }, [open, isAnalysis]);
+  }, [open, active, isAnalysis]);
 
   const updateField = (index: number, value: string) => {
     const next = draftFen.trim().split(/\s+/);
     if (next.length !== 6) return;
-    scanId.current += 1;
-    setScanning(false);
+    cancelRecognition();
     next[index] = value;
     if (index === 1) next[3] = '-';
     setDraftFen(next.join(' '));
@@ -101,8 +129,7 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
 
   const remapPieceSquares = () => {
     if (fields.length !== 6 || !previewPosition) return;
-    scanId.current += 1;
-    setScanning(false);
+    cancelRecognition();
     setDraftFen(`${rotatePlacement(fields[0])} ${fields[1]} - - ${fields[4]} ${fields[5]}`);
     setTurnSource(null);
     setNotice('Piece squares changed: a1 ↔ h8, c7 ↔ f2. Check every piece and the side to move before loading.');
@@ -117,7 +144,8 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
 
   const load = () => {
     if (!validation.fen || scanning || (scan && !scan.reliable && !reviewed)) return;
-    scanId.current += 1;
+    cancelRecognition();
+    setCameraOpen(false);
     onLoad(validation.fen, isAnalysis ? previewOrientation : playAs);
     setError(null);
     setNotice(null);
@@ -133,7 +161,10 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
   };
 
   return (
-    <details ref={importPanel} className={`position-import${isAnalysis ? ' analysis-import' : ''}`} open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
+    <details ref={importPanel} className={`position-import${isAnalysis ? ' analysis-import' : ''}`} open={open} onToggle={(event) => {
+      if (!event.currentTarget.open) { cancelRecognition(); setCameraOpen(false); }
+      setOpen(event.currentTarget.open);
+    }}>
       <summary><Camera size={isAnalysis ? 20 : 16} /> {isAnalysis ? 'Screenshot or position' : 'Set position from FEN or screenshot'}</summary>
       <div className="import-content">
         <div className="image-drop-zone" aria-label="Drop or paste a chessboard screenshot"
@@ -143,11 +174,14 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
             const file = Array.from(event.dataTransfer.files).find((entry) => entry.type.startsWith('image/'));
             if (file) void readImage(file); else setError('Drop an image file containing a chessboard.');
           }}>
-          <button type="button" className={isAnalysis ? 'primary-button' : ''} disabled={scanning} onClick={() => fileInput.current?.click()}>
+          <div className="image-import-actions"><button type="button" className={isAnalysis ? 'primary-button' : ''} disabled={scanning || cameraOpen} onClick={() => fileInput.current?.click()}>
             <Upload size={18} /> {scanning ? 'Reading screenshot…' : isAnalysis ? 'Upload screenshot' : 'Choose screenshot'}
           </button>
-          <p>Or drop an image here / paste from your clipboard.</p>
-          <small>{isAnalysis ? 'A clear, complete 2D board works best. Recognition runs locally.' : 'Read a clear, complete 2D board. Review the pieces before loading.'}</small>
+          <button ref={webcamButton} type="button" disabled={scanning || cameraOpen} onClick={() => { setError(null); setCameraOpen(true); }}>
+            <Camera size={18} /> Use webcam
+          </button></div>
+          <p>Drop a screenshot here or paste from your clipboard.</p>
+          <small>A complete 2D board works best. Images are processed in this browser.</small>
           <input ref={fileInput} aria-label="Upload chessboard screenshot" type="file" accept="image/*" hidden
             onChange={(event) => {
               const file = event.target.files?.[0];
@@ -155,6 +189,11 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
               event.target.value = '';
             }} />
         </div>
+
+        {active && open && cameraOpen ? <WebcamCapture onCancel={closeCamera} onCapture={(file) => {
+          closeCamera();
+          void readImage(file);
+        }} /> : null}
 
         {error ? <p className="error-strip" role="alert">{error}</p> : null}
         {notice ? <p className="import-notice" role="status">{notice}</p> : null}
@@ -166,20 +205,19 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
 
         {sourceImage ? <img className="source-screenshot" src={sourceImage} alt="Uploaded chessboard screenshot for comparison" /> : null}
 
+        <div className="import-fen-section">
         <label className="fen-label" htmlFor="import-fen">{isAnalysis ? 'Or paste a FEN position' : 'Full FEN'}</label>
         <textarea id="import-fen" rows={isAnalysis && !scan ? 2 : 3} spellCheck={false} value={draftFen} disabled={scanning}
-          placeholder={isAnalysis ? 'Paste your position here, or upload a screenshot above.' : undefined}
+          placeholder={isAnalysis ? 'Paste FEN notation…' : undefined}
           onChange={(event) => {
-            scanId.current += 1;
-            setScanning(false);
+            cancelRecognition();
             setDraftFen(event.target.value);
             setTurnSource(null);
             setReviewed(false);
             setNotice(null);
           }} />
         <button type="button" className="subtle-button" disabled={scanning} onClick={() => {
-          scanId.current += 1;
-          setScanning(false);
+          cancelRecognition();
           setDraftFen(currentFen);
           setPreviewOrientation(playerColor);
           setTurnSource(null);
@@ -188,6 +226,7 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
           setError(null);
           setNotice(null);
         }}>{isAnalysis ? 'Use board position' : 'Use current position'}</button>
+        </div>
 
         {fields.length === 6 ? <>
           <div className="import-select-row">
@@ -256,7 +295,7 @@ export function PositionImport({ currentFen, playerColor, onLoad, variant = 'pla
         </label> : null}
         <button className="load-position" type="button" onClick={load}
           disabled={!validation.fen || scanning || Boolean(scan && !scan.reliable && !reviewed)}>{isAnalysis ? 'Analyze position' : 'Load position'}</button>
-        {isAnalysis ? <p className="muted import-next-step">Find candidate moves, likely mistakes, strong defenses, and the lines that punish them.</p> : null}
+        {isAnalysis ? <p className="muted import-next-step">Review candidate moves, likely replies, and the best defense.</p> : null}
       </div>
     </details>
   );

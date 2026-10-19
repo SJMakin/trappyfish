@@ -129,7 +129,8 @@ select {
 .brand-line { display: flex; align-items: center; gap: 9px; }
 .brand-line > svg { color: #a15828; }
 .board-meta { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 9px; font-size: 12px; color: #626d64; }
-.board-tools { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 14px; }
+.board-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+@media (max-width: 440px) { .board-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .board-hint { text-align: center; font-size: 12px; color: #717a72; margin: 10px 0 0; }
 .keyboard-square:focus-visible { outline: 3px solid #a15828; outline-offset: -3px; }
 .new-game-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px; margin-top: 10px; border: 1px solid #d2d8d1; background: #fff; border-radius: 8px; }
@@ -250,6 +251,16 @@ select {
 }
 
 .settings select { grid-column: 1 / -1; width: 100%; font-size: 13px; }
+
+.playing-style-controls { min-width: 0; margin: 8px 0 0; padding: 12px; border: 1px solid #dce2d5; border-radius: 9px; display: grid; gap: 12px; }
+.playing-style-controls legend { font-size: 13px; font-weight: 700; color: #364d31; padding: 0 5px; }
+.playing-style-controls > p { margin: 0; font-size: 11px; line-height: 1.5; color: #65715e; }
+.playing-style-controls .style-control { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; min-width: 0; }
+.style-control-heading { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; font-weight: 650; }
+.style-control-heading output { font-variant-numeric: tabular-nums; color: #526e44; white-space: nowrap; }
+.style-control input[type="range"] { width: 100%; min-height: 24px; margin: 0; accent-color: #627d4d; }
+.style-control small { font-size: 11px; line-height: 1.45; color: #65715e; }
+.playing-style-controls:disabled { opacity: 0.65; }
 
 .section-title {
   display: flex;

@@ -58,7 +58,10 @@ try {
     const legacy = await new LegacyEngine(uci.asClient()).chooseMove(fixture.fen, legacySettings, true);
     const row: Record<string, unknown> = { ...fixture, legacy, elapsedMs: Date.now() - startedAt };
     if (phase !== 'baseline') {
-      const practical = await new PracticalEngine(uci.asClient(), maia).chooseMove(fixture.fen, practicalSettings, true);
+      const liveSettings = phase === 'production'
+        ? { ...practicalSettings, trappiness: practicalSettings.aggression, aggression: 0, tension: 0 }
+        : practicalSettings;
+      const practical = await new PracticalEngine(uci.asClient(), maia).chooseMove(fixture.fen, liveSettings, true);
       if (practical.policySource !== 'maia' && !new Chess(fixture.fen).moves({ verbose: true }).some((move) => {
         const board = new Chess(fixture.fen); board.move(move); return board.isCheckmate();
       })) throw new Error(`Real Maia policy was not used: ${practical.policySource}`);

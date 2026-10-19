@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
 import { Chess } from 'chess.js';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
 const appUrl = (process.env.TRAPPY_TEST_URL ?? 'http://127.0.0.1:5180').replace(/\/+$/, '');
 const browser = await chromium.launch({ channel: process.platform === 'win32' ? 'msedge' : undefined, headless: true });
@@ -34,15 +34,27 @@ try {
   const stop = page.getByRole('button', { name: 'Stop', exact: true });
   if (await stop.isVisible()) await stop.click();
   await page.getByTestId('analysis-candidate').filter({ hasText: 'Nxe5' }).click();
-  await page.locator('.human-reply-tree > summary').click();
+  await page.getByRole('button', { name: 'Expand all', exact: true }).click();
   await page.getByTestId('analysis-reply').filter({ hasText: 'Bxd1' }).click();
   await page.getByRole('button', { name: 'End of line', exact: true }).click();
   const mate = new Chess(rootFen);
   for (const move of ['Nxe5', 'Bxd1', 'Bxf7+', 'Ke7', 'Nd5#']) mate.move(move);
   assert.equal(await page.getByTestId('analysis-board').getAttribute('data-fen'), mate.fen());
+  assert.doesNotMatch(await page.getByTestId('engine-hud').innerText(), /no search telemetry/);
+  const exported = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'JSON', exact: true }).click();
+  const downloaded = await exported;
+  const diagnostics = JSON.parse(await readFile(await downloaded.path(), 'utf8'));
+  assert.equal(diagnostics.fen, rootFen, 'Diagnostics retain the analyzed root, rather than the replayed leaf');
+  assert.equal(diagnostics.selectedMove, 'f3e5');
+  assert.ok(diagnostics.decision.diagnostics.nodes > 0, 'Actual Stockfish node counts are exposed');
+  assert.ok(diagnostics.decision.diagnostics.stockfishCalls > 0);
+  assert.ok(diagnostics.decision.diagnostics.policyCalls > 0);
+  assert.ok(diagnostics.decision.diagnostics.rootTrace.length > 0);
+  assert.ok(diagnostics.decision.selected.initialScoreCp !== undefined);
   assert.deepEqual(errors, []);
   await mkdir('artifacts/analysis', { recursive: true });
   await page.screenshot({ path: 'artifacts/analysis/built-analysis-desktop.png', fullPage: true });
   await writeFile('artifacts/analysis/built-browser-review.json', JSON.stringify({ previewMs, rootFen, mateFen: mate.fen(), errors }, null, 2));
-  console.log(`Built analysis passed: screenshot → Fenshot → reviewed position → real Maia/Stockfish (${previewMs}ms preview) → legal mating line; no autoplay or browser errors.`);
+  console.log(`Built analysis passed: screenshot → Fenshot → real Maia/Stockfish (${previewMs}ms preview) → tree mate replay; measured telemetry, root convergence and settings JSON export; no autoplay or browser errors.`);
 } finally { await browser.close(); }

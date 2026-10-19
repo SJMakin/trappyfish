@@ -10,12 +10,32 @@ try {
   const sparse = '4k3/8/8/8/8/8/8/4K2R w - - 0 1';
   await desktop.goto(`${appUrl}/?mode=play&fen=${encodeURIComponent(sparse)}`);
   await desktop.locator('.board-wrap [data-square="h1"] [data-piece="wR"]').waitFor();
-  assert.equal(await desktop.getByRole('button', { name: 'Ruthless', exact: true }).getAttribute('aria-pressed'), 'true');
+  assert.equal(await desktop.getByRole('button', { name: 'Custom style', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await desktop.getByRole('button', { name: '1000', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await desktop.getByRole('button', { name: 'Play', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await desktop.getByLabel('Search depth', { exact: true }).isVisible(), false, 'Technical settings must be collapsed by default');
+  const setRange = async (page, label, value) => page.getByLabel(label, { exact: true }).evaluate((input, value) => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, String(value));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }, value);
+  assert.equal(await desktop.getByLabel('Play trappiness', { exact: true }).inputValue(), '1');
+  assert.equal(await desktop.getByLabel('Play aggressiveness', { exact: true }).inputValue(), '0');
+  assert.equal(await desktop.getByLabel('Play tension', { exact: true }).inputValue(), '0');
+  await setRange(desktop, 'Play aggressiveness', 0.8);
+  await setRange(desktop, 'Play tension', 0.7);
+  await setRange(desktop, 'Play risk when winning', 60);
+  assert.equal(await desktop.getByLabel('Play trappiness', { exact: true }).inputValue(), '1', 'Attack must not reset trappiness');
+  assert.equal(await desktop.getByLabel('Play risk tolerance', { exact: true }).inputValue(), '100', 'Style must not enlarge risk');
+  assert.equal(await desktop.getByLabel('Play aggressiveness', { exact: true }).inputValue(), '0.8');
+  assert.equal(await desktop.getByLabel('Play tension', { exact: true }).inputValue(), '0.7');
+  assert.equal(await desktop.getByLabel('Play risk when winning', { exact: true }).inputValue(), '60');
+  await desktop.getByRole('button', { name: 'Stockfish', exact: true }).click();
+  assert.equal(await desktop.getByLabel('Play aggressiveness', { exact: true }).count(), 0, 'Stockfish explicitly bypasses style');
+  await desktop.getByRole('button', { name: 'Custom style', exact: true }).click();
+  assert.equal(await desktop.getByLabel('Play aggressiveness', { exact: true }).inputValue(), '0.8', 'Mode switches preserve explicit controls');
+  await desktop.screenshot({ path: 'artifacts/ux/playing-style-desktop.png' });
   await desktop.getByRole('button', { name: '800', exact: true }).click();
-  assert.match(await desktop.locator('.board-meta').innerText(), /800 profile/);
+  assert.match(await desktop.locator('.board-meta').innerText(), /800 opponent/);
   await desktop.getByRole('button', { name: 'Flip board', exact: true }).click();
   assert.equal(await desktop.locator('.board-wrap [data-piece]').count(), 3, 'Flip must preserve imported position');
   await desktop.getByRole('button', { name: 'New game', exact: true }).click();
@@ -79,5 +99,5 @@ try {
   assert.equal(await mobile.getByRole('dialog').count(), 0, 'Escape must cancel promotion without moving');
   assert.equal(await mobile.locator('.board-wrap [data-square="a7"] [data-piece="wP"]').count(), 1);
   assert.deepEqual(errors, []);
-  console.log('UX browser checks passed: Ruthless/1000/Play defaults, collapsed advanced settings, profile changes, safe board flip/new game, click legal targets/illegal moves, board keyboard navigation, promotion focus/choice/cancel, preserved game across workspaces, real mobile taps, and no horizontal overflow.');
+  console.log('UX browser checks passed: Custom style/1000/Play defaults, collapsed advanced settings, rating changes, safe board flip/new game, click legal targets/illegal moves, board keyboard navigation, promotion focus/choice/cancel, preserved game across workspaces, real mobile taps, and no horizontal overflow.');
 } finally { await browser.close(); }

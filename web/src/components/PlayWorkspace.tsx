@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, type Color, type Move, type Square } from 'chess.js';
 import { Chessboard, type ChessboardOptions } from 'react-chessboard';
-import { Bot, BrainCircuit, Check, Eye, EyeOff, FlipVertical2, RotateCcw, Swords, Undo2 } from 'lucide-react';
+import { BookmarkPlus, Bot, BrainCircuit, Check, Eye, EyeOff, FlipVertical2, RotateCcw, Swords, Undo2 } from 'lucide-react';
 import { UciClient } from '../engine/uci';
 import { MaiaClient } from '../engine/maia';
 import { PositionImport } from './PositionImport';
+import { PlayingStyleControls } from './PlayingStyleControls';
 import { validatePosition } from '../import/position';
+import { createHistoryId, type SavedPosition } from '../history/positionHistory';
+import { rememberPracticeGame, restorePracticeGame } from '../history/workspaceHistory';
 import {
   DEFAULT_TRAPPY_SETTINGS, TrappyEngine, moveToUci, opposite, playUci, squarePairFromUci,
   type MoveDecision, type TrappySettings,
@@ -17,8 +20,13 @@ type Plan = { decision: MoveDecision; fen: string };
 type ReviewedPlan = Plan & { actualReply: string; actualReplySan: string };
 type Promotion = { from: string; to: string };
 
-export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }: { initialFen?: string; initialPlayer?: Color; active?: boolean }) {
-  const gameRef = useRef(createInitialGame(initialFen));
+export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, savedPosition }: { initialFen?: string; initialPlayer?: Color; active?: boolean; savedPosition?: SavedPosition }) {
+  const [initialGame] = useState(() => restorePracticeGame(initialFen, savedPosition));
+  const gameRef = useRef(initialGame);
+  const historyId = useRef(savedPosition?.id ?? createHistoryId());
+  const historyCreatedAt = useRef(savedPosition?.createdAt ?? Date.now());
+  const historyStarted = useRef(Boolean(savedPosition || initialFen));
+  const [historyVersion, setHistoryVersion] = useState(0);
   const activeRef = useRef(active);
   activeRef.current = active;
   const searchIdRef = useRef(0);
@@ -26,26 +34,37 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
   const maia = useMemo(() => new MaiaClient(), []);
   const trappyEngine = useMemo(() => new TrappyEngine(uci, maia), [uci, maia]);
   const [fen, setFen] = useState(gameRef.current.fen());
-  const [playerColor, setPlayerColor] = useState<Color>(initialPlayer);
-  const [orientation, setOrientation] = useState<Color>(initialPlayer);
-  const [newGameColor, setNewGameColor] = useState<Color>(initialPlayer);
+  const [playerColor, setPlayerColor] = useState<Color>(savedPosition?.playerColor ?? initialPlayer);
+  const [orientation, setOrientation] = useState<Color>(savedPosition?.orientation ?? initialPlayer);
+  const [newGameColor, setNewGameColor] = useState<Color>(savedPosition?.playerColor ?? initialPlayer);
   const [newGameOpen, setNewGameOpen] = useState(false);
   const [thinking, setThinking] = useState(false);
-  const [trappyEnabled, setTrappyEnabled] = useState(true);
+  const [trappyEnabled, setTrappyEnabled] = useState(savedPosition?.styleEnabled ?? true);
   const [analysis, setAnalysis] = useState(false);
-  const [settings, setSettings] = useState<TrappySettings>(DEFAULT_TRAPPY_SETTINGS);
+  const [settings, setSettings] = useState<TrappySettings>({ ...DEFAULT_TRAPPY_SETTINGS, ...savedPosition?.settings });
   const [plan, setPlan] = useState<Plan | null>(null);
   const [review, setReview] = useState<ReviewedPlan | null>(null);
-  const [lastMove, setLastMove] = useState<string | null>(null);
+  const [lastMove, setLastMove] = useState<string | null>(() => {
+    const last = gameRef.current.history({ verbose: true }).at(-1); return last ? moveToUci(last) : null;
+  });
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [keyboardSquare, setKeyboardSquare] = useState<string>(initialPlayer === 'w' ? 'e2' : 'e7');
   const [promotion, setPromotion] = useState<Promotion | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [moveHistory, setMoveHistory] = useState<Move[]>([]);
+  const [notice, setNotice] = useState<string | null>(savedPosition ? 'Saved game restored with its moves and playing controls.' : null);
+  const [moveHistory, setMoveHistory] = useState<Move[]>(() => gameRef.current.history({ verbose: true }));
   const promotionDialog = useRef<HTMLElement>(null);
   const engineColor = opposite(playerColor);
   const game = gameRef.current;
+
+  const saveGame = useCallback(() => {
+    historyStarted.current = true;
+    rememberPracticeGame(gameRef.current, { id: historyId.current, createdAt: historyCreatedAt.current,
+      orientation, playerColor, settings, styleEnabled: trappyEnabled });
+  }, [orientation, playerColor, settings, trappyEnabled]);
+  useEffect(() => {
+    if (active && (historyStarted.current || gameRef.current.history().length > 0)) saveGame();
+  }, [active, fen, historyVersion, saveGame]);
 
   const syncGameState = useCallback(() => {
     setFen(gameRef.current.fen());
@@ -63,6 +82,8 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
     searchIdRef.current += 1;
     trappyEngine.cancel();
     gameRef.current = new Chess();
+    historyId.current = createHistoryId(); historyCreatedAt.current = Date.now(); historyStarted.current = false;
+    setHistoryVersion((version) => version + 1);
     setPlayerColor(color);
     setOrientation(color);
     setThinking(false);
@@ -82,6 +103,8 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
     searchIdRef.current += 1;
     trappyEngine.cancel();
     gameRef.current = new Chess(position.fen);
+    historyId.current = createHistoryId(); historyCreatedAt.current = Date.now(); historyStarted.current = true;
+    setHistoryVersion((version) => version + 1);
     setPlayerColor(color);
     setOrientation(color);
     setNewGameColor(color);
@@ -207,8 +230,8 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
     allowDragging: !thinking && !promotion && !game.isGameOver() && game.turn() === playerColor,
     canDragPiece: ({ piece }) => game.turn() === playerColor && piece.pieceType[0] === playerColor,
     onPieceDrop: handleDrop, onSquareClick: handleSquareClick,
-    boardStyle: { borderRadius: 7, boxShadow: '0 18px 55px rgba(21, 28, 41, 0.18)' },
-    lightSquareStyle: { backgroundColor: '#e9dfcf' }, darkSquareStyle: { backgroundColor: '#7a8f77' },
+    boardStyle: { borderRadius: 6, boxShadow: '0 4px 16px rgba(23, 35, 56, 0.10)' },
+    lightSquareStyle: { backgroundColor: '#e8edf2' }, darkSquareStyle: { backgroundColor: '#8297ad' },
     squareStyles: styles,
     squareRenderer: ({ square, piece, children }) => <div id={`trappy-board-keyboard-${square}`} className="keyboard-square"
       style={{ width: '100%', height: '100%', ...styles[square] }} role="button" tabIndex={keyboardSquare === square ? 0 : -1}
@@ -233,14 +256,14 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
     <main className="app-shell">
       <section className="board-column" aria-label="Chess board">
         <header className="panel-header">
-          <div><div className="brand-line"><Swords size={24} /><h1>Trappyfish</h1></div>
+          <div><span className="eyebrow">PRACTICE</span><h1>Play against the engine</h1>
             <p role="status" aria-live="polite">{statusText(game, playerColor, thinking)}</p></div>
           <div className="status-light" data-active={thinking || undefined} aria-label={thinking ? 'Engine thinking' : 'Ready'}>
             {thinking ? <BrainCircuit size={20} /> : <Check size={20} />}
           </div>
         </header>
         <div className="board-meta"><span>You play {playerColor === 'w' ? 'White' : 'Black'}</span>
-          <span>{trappyEnabled ? `Ruthless · ${settings.opponentRating} profile` : 'Stockfish'}</span></div>
+          <span>{trappyEnabled ? `Custom style · ${settings.opponentRating} opponent` : 'Stockfish'}</span></div>
         <div className="board-wrap">
           <Chessboard options={boardOptions} />
           {promotion ? <div className="promotion-backdrop">
@@ -267,6 +290,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
           <button type="button" aria-expanded={newGameOpen} onClick={() => setNewGameOpen(!newGameOpen)}><RotateCcw size={16} /> New game</button>
           <button type="button" disabled={!moveHistory.length || thinking} onClick={undoPair}><Undo2 size={16} /> Undo</button>
           <button type="button" onClick={() => setOrientation(opposite(orientation))}><FlipVertical2 size={16} /> Flip board</button>
+          <button type="button" aria-label="Save practice game" onClick={() => { saveGame(); setNotice('Game saved in Recent positions.'); }}><BookmarkPlus size={16} /> Save game</button>
         </div>
         {newGameOpen ? <section className="new-game-panel" aria-label="Start a new game">
           <label>Play as <select aria-label="New game colour" value={newGameColor} onChange={(event) => setNewGameColor(event.target.value as Color)}>
@@ -279,12 +303,12 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
 
       <section className="side-panel" aria-label="Game controls">
         <section className="opponent-panel" aria-label="Opponent setup">
-          <div className="section-title"><h2>Your opponent</h2><span className="mode-badge">{trappyEnabled ? 'RUTHLESS' : 'STOCKFISH'}</span></div>
+          <div className="section-title"><h2>Your opponent</h2><span className="mode-badge">{trappyEnabled ? 'CUSTOM' : 'STOCKFISH'}</span></div>
           <div className="control-band persona-controls">
-            <button className={trappyEnabled ? 'is-active' : ''} aria-pressed={trappyEnabled} disabled={thinking} onClick={() => setTrappyEnabled(true)} type="button"><Swords size={17} /> Ruthless</button>
+            <button className={trappyEnabled ? 'is-active' : ''} aria-pressed={trappyEnabled} disabled={thinking} onClick={() => setTrappyEnabled(true)} type="button"><Swords size={17} /> Custom style</button>
             <button className={!trappyEnabled ? 'is-active' : ''} aria-pressed={!trappyEnabled} disabled={thinking} onClick={() => setTrappyEnabled(false)} type="button"><Bot size={17} /> Stockfish</button>
           </div>
-          <p className="persona-description">{trappyEnabled ? 'Targets mistakes. Follows through.' : 'Plays the strongest move it finds.'}</p>
+          <p className="persona-description">{trappyEnabled ? 'Uses your explicit playing preferences within the risk limits below.' : 'Plays the strongest move it finds. Custom style controls are inactive.'}</p>
           <SettingsPanel settings={settings} setSettings={setSettings} disabled={thinking} trappyEnabled={trappyEnabled} />
         </section>
         <div className="view-switch" role="group" aria-label="View mode">
@@ -309,16 +333,10 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true }
             : <CommittedMoveReview review={review} />}
         </details> : null}
         <MoveList moves={moveHistory} />
-        <PositionImport currentFen={fen} playerColor={playerColor} onLoad={loadPosition} />
+        <PositionImport active={active} currentFen={fen} playerColor={playerColor} onLoad={loadPosition} />
       </section>
     </main>
   );
-}
-
-function createInitialGame(fen?: string): Chess {
-  if (!fen) return new Chess();
-  try { const position = validatePosition(fen); return position.fen ? new Chess(position.fen) : new Chess(); }
-  catch { return new Chess(); }
 }
 
 function SettingsPanel({ settings, setSettings, disabled, trappyEnabled }: {
@@ -331,6 +349,7 @@ function SettingsPanel({ settings, setSettings, disabled, trappyEnabled }: {
           className={settings.opponentRating === rating ? 'is-active' : ''} aria-pressed={settings.opponentRating === rating}
           onClick={() => setSettings({ ...settings, opponentRating: rating })}>{rating}</button>)}
       </div><p className="rating-note">Helps predict which mistakes to punish. The engine stays strong.</p></> : null}
+    {trappyEnabled ? <PlayingStyleControls settings={settings} onChange={setSettings} disabled={disabled} context="Play" /> : null}
     <details className="search-settings">
       <summary>Advanced settings</summary>
       <p className="muted">Changes apply on the next engine turn.</p>
@@ -354,15 +373,9 @@ function SettingsPanel({ settings, setSettings, disabled, trappyEnabled }: {
           <input aria-label="Replies on a follow-up" disabled={disabled} type="range" min={2} max={10} value={settings.continuationReplies ?? 4}
             onChange={(event) => setSettings({ ...settings, continuationReplies: Number(event.target.value) })} /></label>
       </> : null}
-      <label><span>Practical weight</span><strong>{formatPercent(settings.aggression)}</strong>
-        <input disabled={disabled} aria-label="Practical weight" max={1} min={0} step={0.05} type="range" value={settings.aggression}
-          onChange={(event) => setSettings({ ...settings, aggression: Number(event.target.value) })} /></label>
       <label><span>Custom opponent rating</span><strong>{settings.opponentRating}</strong>
         <input aria-label="Opponent rating" disabled={disabled} max={3000} min={400} step={100} type="range" value={settings.opponentRating}
           onChange={(event) => setSettings({ ...settings, opponentRating: Number(event.target.value) })} /></label>
-      <label><span>Risk against best defense</span><strong>{(settings.maxRiskCp / 100).toFixed(2)} pawns</strong>
-        <input aria-label="Maximum risk" disabled={disabled} max={300} min={0} step={25} type="range" value={settings.maxRiskCp}
-          onChange={(event) => setSettings({ ...settings, maxRiskCp: Number(event.target.value) })} /></label>
       <label><span>Candidate moves</span><strong>{settings.candidateCount}</strong>
         <input aria-label="Candidate moves" disabled={disabled} type="range" min={4} max={24} value={settings.candidateCount}
           onChange={(event) => setSettings({ ...settings, candidateCount: Number(event.target.value) })} /></label>
@@ -387,12 +400,13 @@ function DecisionPanel({ decision, trappyEnabled, fen }: { decision: MoveDecisio
     <div className="section-title"><h2>Engine analysis</h2><span>{engineBadge(decision, trappyEnabled)}</span></div>
     <div className="decision-main">
       <div><small>played</small><strong>{decision.san}</strong></div>
-      <div><small>expected score</small><strong>{formatPercent(decision.selected.expectedScore)}</strong></div>
+      <div><small>model score</small><strong>{decision.policySource === 'maia' ? formatPercent(decision.selected.expectedScore) : '—'}</strong></div>
       <div><small>best defense</small><strong>{formatCp(decision.selected.rootScoreCp)}</strong></div>
     </div>
     <p className="decision-explanation">Risk vs Stockfish’s best move: <strong>{(decision.selected.riskCp / 100).toFixed(2)} pawns</strong>.
       {decision.policySource === 'maia' ? <> Maia reply coverage: <strong>{formatPercent(decision.selected.policyCoverage)}</strong>.</> : null}</p>
     <p className="muted score-note">Expected score is a model estimate from the engine’s perspective, not a measured win rate.</p>
+    {decision.selected.style && decision.styleApplied ? <p className="muted">Style preference: attack +{decision.selected.style.aggressionBonusCp.toFixed(0)}, tension +{decision.selected.style.tensionBonusCp.toFixed(0)} ranking points. These do not change the evaluation or expected score.</p> : null}
     {decision.policySource === 'maia' && decision.selected.mistakeProbability !== undefined ? <p className="decision-explanation">
       Modeled chance of a mistake worth at least a pawn across the searched replies: <strong>{formatPercent(decision.selected.mistakeProbability)}</strong>.
     </p> : null}
@@ -406,7 +420,7 @@ function DecisionPanel({ decision, trappyEnabled, fen }: { decision: MoveDecisio
       {trap.scoreCp > 90_000 ? ' It leads to a forced mate.' : <> It improves the engine’s position by <strong>{(trap.profitCp / 100).toFixed(2)} pawns</strong>.</>}</p>
       {trap.punishment.length ? <p className="punishment-line">Stockfish continuation: {continuationSan(fen, trap.reply, trap.punishment)}</p> : null}</>}
     </div>
-      : <p className="muted">{decision.policySource === 'maia' ? 'Selected for practical outcomes within the risk limit.' : 'Strongest Stockfish move selected.'}</p>}
+      : <p className="muted">{decision.styleApplied ? 'Selected using your playing preferences within the risk limit.' : decision.policySource === 'maia' ? 'Selected for practical outcomes within the risk limit.' : 'Strongest Stockfish move selected.'}</p>}
     {decision.policySource === 'maia' && decision.selected.replies.length ? <div className="reply-list">
       <div className="reply-list-heading"><span>Predicted reply</span><span>Maia</span><span>Outcome</span></div>
       {decision.selected.replies.slice(0, 5).map((reply) => <div key={reply.move}><span>{reply.san}</span><span>{formatPercent(reply.probability)}</span><span>{formatCp(reply.scoreCp)}</span></div>)}
@@ -420,6 +434,7 @@ function DecisionPanel({ decision, trappyEnabled, fen }: { decision: MoveDecisio
 
 function engineBadge(decision: MoveDecision, trappyEnabled: boolean): string {
   if (!trappyEnabled) return 'Stockfish';
+  if (decision.styleApplied) return decision.warning ? 'Custom style · model unavailable' : 'Custom style';
   if (decision.policySource !== 'maia') return decision.warning ? 'Stockfish fallback' : 'Stockfish';
   return decision.selected.trap ? 'Maia trap' : 'Maia practical';
 }

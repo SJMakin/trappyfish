@@ -104,8 +104,8 @@ async function waitForResult(page, fen, timeout = 15000) {
 }
 async function waitForComplete(page) { await page.getByRole('button', { name: 'Stop', exact: true }).waitFor({ state: 'hidden' }); }
 async function openReplies(page) {
-  const tree = page.locator('.human-reply-tree');
-  if (await tree.getAttribute('open') === null) await tree.locator(':scope > summary').click();
+  await page.locator('.analysis-move-tree').waitFor();
+  await page.getByRole('button', { name: 'Expand all', exact: true }).click();
 }
 async function capture(page, path) { await page.evaluate(() => window.scrollTo(0, 0)); await page.screenshot({ path, fullPage: true }); }
 async function assertBoardPieces(page, fen) {
@@ -141,8 +141,10 @@ try {
   assert.match(await results(page).innerText(), /White.?s perspective/);
   assert.match(await results(page).innerText(), /Bxd1/);
   assert.match(await results(page).innerText(), /Maia chance|Maia weighted/);
-  assert.match(await results(page).innerText(), /checkmate/i);
   await openReplies(page);
+  assert.match(await results(page).innerText(), /checkmate/i);
+  assert.equal(await page.getByTestId('engine-hud').isVisible(), true, 'Technical diagnostics are visible alongside the tree');
+  assert.equal(await page.getByRole('table').count() >= 1, true, 'Candidate metrics are inspectable');
   await page.getByTestId('analysis-reply').filter({ hasText: 'Bxd1' }).click();
   await page.getByRole('button', { name: 'End of line', exact: true }).click();
   const mate = new Chess(legal.fen()); for (const move of ['f3e5', 'h5d1', 'c4f7', 'e8e7', 'c3d5']) play(mate, move);
@@ -166,6 +168,9 @@ try {
 
   // A branch can become its own analysis root without changing the imported position.
   await page.getByTestId('analysis-reply').filter({ hasText: 'Bxd1' }).click();
+  const clickedNode = new Chess(legal.fen()); for (const move of ['f3e5', 'h5d1']) play(clickedNode, move);
+  assert.equal(await boardFen(page), clickedNode.fen(), 'Clicking a tree node jumps to its exact position');
+  await page.getByRole('button', { name: 'Start of line', exact: true }).click();
   await page.getByRole('button', { name: 'Next move', exact: true }).click();
   await page.getByRole('button', { name: 'Analyze this branch', exact: true }).first().click();
   await waitForResult(page, baitBoard.fen());
@@ -195,6 +200,23 @@ try {
   await waitForResult(page, legal.fen());
   await waitForComplete(page);
   assert.equal((await page.evaluate(() => window.__analysisCalls.at(-1))).settings.opponentRating, 1400);
+
+  // Playing preferences are independent and travel with the actual search settings.
+  assert.equal(await page.getByLabel('Analysis aggressiveness', { exact: true }).isVisible(), true);
+  for (const [label, value] of [['Analysis trappiness', 0.9], ['Analysis aggressiveness', 0.8], ['Analysis tension', 0.7],
+    ['Analysis risk tolerance', 125], ['Analysis risk when winning', 60]]) {
+    await page.getByLabel(label, { exact: true }).evaluate((input, value) => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, String(value));
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }, value);
+  }
+  assert.equal(await page.getByLabel('Analysis root depth', { exact: true }).inputValue(), '14', 'Style changes must not change search depth');
+  await page.getByRole('button', { name: /^Deep/ }).click();
+  await waitForComplete(page);
+  const styleSettings = (await page.evaluate(() => window.__analysisCalls.at(-1))).settings;
+  assert.equal(styleSettings.trappiness, 0.9); assert.equal(styleSettings.aggression, 0.8); assert.equal(styleSettings.tension, 0.7);
+  assert.equal(styleSettings.maxRiskCp, 125); assert.equal(styleSettings.winningRiskCp, 60);
+  assert.equal(styleSettings.opponentRating, 1400);
 
   // Board exploration permits either side; the player color has no effect on research.
   await analysisBoard(page).locator('[data-square="f3"]').click();

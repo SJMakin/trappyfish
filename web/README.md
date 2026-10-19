@@ -16,7 +16,7 @@ Open http://127.0.0.1:5173. The default workspace is **Analyze**.
 
 ## Screenshot to a plan
 
-1. Upload, paste, or drop a screenshot, or paste a FEN.
+1. Upload, paste, or drop a screenshot, capture a 2D board with **Use webcam**, or paste a FEN.
 2. Review the pieces, side to move, and castling. Use the visual correction palette
    to repair a misread square. Uncertain reads require explicit review.
 3. Click **Analyze position**. A Quick pass appears first, then Deep verification
@@ -28,10 +28,13 @@ Open http://127.0.0.1:5173. The default workspace is **Analyze**.
 6. Use **Analyze this branch**, **Return to analyzed position**, or **Restore imported
    position**. Copy FEN/PGN, export a line as PGN, or choose **Play from here** to practice.
 
-The main trap and strongest defense appear together. Expand **All opponent replies**
-for the complete reply tree, or **Compare all moves** for risky alternatives. **More**
-below the board contains exports, restore and practice tools. On mobile, use the sticky
-**Board & line / Plans** shortcuts to move between the board and analysis.
+The candidate matrix compares objective evaluations, practical model scores, risk,
+mistake mass and final rankings. Select a candidate to explore its **Move tree**:
+shared moves appear once, with branching human replies and engine continuations.
+Click any move to jump to its exact board position; expand or collapse its children,
+or use **Expand all**. **Compare all moves** includes rejected alternatives. **More**
+below the board contains PGN exports, restore and practice tools. On mobile, use the
+sticky **Board & line / Plans** shortcuts to move between the board and analysis.
 
 Recognition uses [fenshot](https://github.com/scoriiu/fenshot) locally. Images are
 never uploaded. The side in check moves next; otherwise the player at the bottom
@@ -44,6 +47,42 @@ under **Correct pieces → Fix incorrect screenshot orientation** and explicitly
 changes the position.
 Screenshots cannot establish castling history, en passant, or move
 counters; the review starts with neutral values and allows corrections.
+
+## Webcam capture
+
+Choose **Use webcam** in the position importer in Analyze or Play AI. Camera access
+is requested only when you open it, with no microphone. Choose or switch cameras,
+center the complete board in the square preview, then select **Capture position**.
+The frame goes through the same local recognition and piece/turn/castling review as
+an uploaded screenshot; it never starts a game or analysis before you confirm it.
+The camera stops after capture, cancel, leaving the workspace, hiding the page, or
+closing the importer. Captured frames are not uploaded or saved in position history.
+
+The current recognizer supports flat **2D chessboards**, such as a board displayed
+on another screen. Physical boards with **3D pieces are not supported** by this
+model. Camera access requires HTTPS or localhost and the browser's camera permission;
+file upload and FEN input remain available when a camera cannot be used.
+
+## Recent positions and saved games
+
+Open **Recent positions** below the workspace navigation to resume an earlier study
+or practice game. Positions you analyze are saved automatically. Practice games
+update one saved entry as you play, including the move history, side you play,
+orientation, engine selection, and individual playing controls. **Save** under the
+analysis board keeps the exact position you are viewing, including an explored
+branch; **Save game** also works before making the first move.
+
+History shows board previews, names, turn/move numbers and saved times. Search or
+filter the entries, rename them, delete individual entries, or clear the list.
+**Resume** restores the saved workspace and controls. Analysis is recalculated for
+the saved position; practice restores its PGN so move lists, undo and game history
+remain available. A damaged optional PGN falls back to the intact saved position.
+
+The latest **40** entries are kept in browser storage on this site, with repeated
+analysis of the same full position combined. Nothing is synced to an account or
+another device. Clearing this site's browser data removes the saved history. If
+browser storage is blocked or full, a visible notice explains that changes last only
+for the current tab; the board and import tools remain usable.
 
 ## Reading the analysis
 
@@ -59,6 +98,45 @@ it is not a calibrated human win-rate forecast. **Mistake chance** counts search
 replies that lose at least a pawn, including conditional second mistakes. Joint and
 conditional probabilities are labeled separately. Unsearched probability receives
 the strongest known defense value rather than being renormalized away.
+
+### Technical analysis HUD
+
+The **Engine internals** panel exposes actual Stockfish search counters, root-depth
+convergence, the selected move's score ledger, reply probability accounting, style
+contributions, and the settings used for the result. The matrix keeps the original
+root score separate from the conservative score after defense verification.
+
+Telemetry counts Stockfish invocations and policy requests, elapsed and policy time,
+reported nodes, depth/selected depth, latest search speed, and hash occupancy.
+Nodes and engine time are cumulative within each Stockfish call; the HUD adds each
+completed call once rather than double-counting MultiPV entries or depth iterations.
+Counters update between Stockfish calls. Missing measurements remain unavailable.
+While a deeper pass runs, its live counters are explicitly separate from the saved
+tree and score ledger. The convergence plot follows the initial root search's leader
+at each reported depth, including partial MultiPV iterations.
+
+The **Score ledger** shows baseline utility, the Maia-weighted expectation including
+unsearched mass, trappiness interpolation, the utility-to-ranking transform, and
+attack/tension bonuses. Probability accounting expands both chance layers without
+renormalizing sampled replies. Mate sentinels are labeled separately from finite
+centipawn evaluations, and recorded engine risk remains authoritative.
+
+The tree shows all returned human replies, strongest defenses, engine setup moves,
+and legal Stockfish PV tails. **cond** is a reply's probability given its parent
+position; **joint** multiplies the human-choice probabilities along the path. Engine
+moves and unevaluated PV nodes have no assigned human probability. Unsearched mass
+is a non-move leaf, credited with the strongest known defense utility. Branch outcome
+scores are not fresh static evaluations of every intermediate board. These are the
+host's evaluated branches and principal variations; Stockfish's wider alpha-beta
+search is exposed through aggregate counters, not a fabricated full search tree.
+
+Use **JSON** in the analysis header to export the complete candidate/reply data,
+diagnostics and settings snapshot. Tree rendering initially permits 500 visible nodes,
+with **Show 500 more** for large expanded trees. A bounded scrolling pane keeps the
+tree manageable and follows the selected board position. At an unresolved choice,
+replay defaults to a known defense; selecting a mistake follows that branch instead.
+Illegal PV suffixes stop at the last
+legal position, preserving promotion, Black's move numbering, and replay/export.
 
 Quick uses root/outcome depths 10/8 and one opponent turn. Deep defaults to 14/12,
 12 main candidates, 12 first replies, and two opponent turns: three likely first
@@ -78,9 +156,40 @@ objective Stockfish lines remain available with an explicit warning.
 
 ## Practice against the AI
 
-Choose **Play AI**. Its default **Ruthless** profile targets mistakes common among
-1000-rated opponents, with Stockfish root depth 12 and outcome depth 10. The
-independent 100cp risk budget tightens to 40cp when clearly winning.
+Choose **Play AI**. **Custom style** exposes independent controls, with no style presets:
+
+| Control | What increasing it does | Default |
+| --- | --- | --- |
+| Trappiness | Favours better expected outcomes against Maia's likely human replies | 100% |
+| Aggressiveness | Favours coordinated king pressure and supported pawn storms | 0% |
+| Tension | Favours keeping pieces and unresolved pawn/piece exchanges in play | 0% |
+| Risk tolerance | Allows a larger evaluation loss compared with the soundest searched move | 1 pawn |
+| Risk when winning | Sets the additional risk cap at +5 pawns or better; the lower cap applies | 0.40 pawns |
+
+Zero means no preference for that parameter. Turning up aggression or tension does
+not change trappiness, risk limits, ratings, or search depth. Defaults preserve the
+previous trap selection; add attack and tension preferences explicitly to taste.
+**Stockfish** bypasses custom style without resetting the controls. In **Analyze**,
+use the visible **Playing style** controls for recommendations. Each workspace
+keeps its own settings, and edits apply to the next move or analysis search.
+
+Attack and tension are bounded ranking preferences, measured on the candidate and
+up to four plies of its strongest known defense continuation. Attacking pressure
+includes control around the king, coordinated attackers and supported advanced
+pawns, discounted by pressure against the AI's own king. Tension counts retained
+material and unresolved contacts between opposing pawns or defended pieces.
+Discovery also checks up to four moves favoured by these preferences beyond the
+usual shortlist. The analysis score details show each preference's contribution.
+Style points never change objective evaluations, Maia probabilities, or model scores.
+They never enlarge the shared risk limit or displace a known forced win with a
+non-mating move. These are style heuristics, not calibrated playing-strength metrics.
+
+Aggression and tension work with trappiness at zero without loading Maia. If Maia
+fails while these preferences are active, the app retains them with Stockfish
+defense verification and explains the fallback.
+
+The default opponent rating is 1000, with Stockfish root depth 12 and outcome depth
+10. Rating and search budgets remain individually adjustable under Advanced settings.
 
 In the game's **Play** view, current predictions, evaluations, and trap arrows stay
 hidden. Post-move review contains committed facts only, so a saved two-turn plan
@@ -98,6 +207,7 @@ currently viewed position.
 npm run build
 npm test
 npm run test:analysis-real
+npm run test:style-real
 ```
 
 With `npm run dev` running:
@@ -107,6 +217,8 @@ npm run test:analysis
 npm run test:screenshot
 npm run test:ux
 npm run test:privacy
+npm run test:webcam
+npm run test:history
 ```
 
 `test:analysis` includes deterministic interaction checks and a real screenshot →
@@ -148,6 +260,15 @@ changes to `web/` deploy automatically. `npm run build:pages` and
 - `docs/trap-comparison.md`: preserved pre-change shallow/deep versus Maia comparison.
 - `docs/ruthless-review.md`: rating/depth review, trap-chain checks, and real punishments.
 - `docs/search-review.md`: risk, conversion, probability, and mate regression tests.
+- `scripts/test-playing-style.ts`: independent style controls, shared risk limits,
+  model-score separation, Black's perspective, and model fallback regressions.
+- `scripts/test-analysis-tree.ts`, `scripts/test-analysis-diagnostics.ts`, and
+  `scripts/test-search-telemetry.ts`: legal tree merging/replay, probability and score
+  reconstruction, actual UCI counters, fallback and cancellation isolation.
+- `scripts/test-position-history.ts`, `scripts/test-workspace-history.ts`,
+  `scripts/test-history-browser.mjs`, and `scripts/test-webcam-browser.mjs`: local
+  persistence, PGN resume, saved controls, storage failure, camera lifecycle,
+  reviewed capture, and stale-request cancellation.
 - `docs/ux-review.md`: the earlier game-interface review, before Analyze became primary.
 
 The design references [FlawChess](https://github.com/flawchess/flawchess), with this

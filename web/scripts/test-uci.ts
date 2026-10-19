@@ -35,6 +35,14 @@ assert.equal(parseInfoLine('info depth 8 score cp 43 upperbound pv e2e4'), null)
 assert.equal(parseInfoLine('info depth 8 score mate -2 pv a1a2')!.score.cp, -99_800);
 assert.equal(parseInfoLine('info depth 8 score mate 1 pv a1a2')!.score.cp, 99_900);
 assert.equal(parseInfoLine('info string hello'), null);
+const counters = parseInfoLine('info depth 18 seldepth 31 multipv 2 score cp -43 nodes 1234567 nps 987654 hashfull 12 tbhits 7 time 1250 pv e2e4 e7e5')!;
+assert.deepEqual({ nodes: counters.nodes, nps: counters.nps, timeMs: counters.timeMs,
+  seldepth: counters.seldepth, hashfull: counters.hashfull, tbhits: counters.tbhits },
+{ nodes: 1234567, nps: 987654, timeMs: 1250, seldepth: 31, hashfull: 12, tbhits: 7 });
+const noCounters = parseInfoLine('info depth 8 score cp 43 pv e2e4')!;
+assert.equal(noCounters.nodes, undefined, 'Unreported engine counters must stay absent');
+assert.equal(noCounters.timeMs, undefined);
+assert.equal(parseInfoLine('info depth 8 score cp 43 nodes 0 nps 0 hashfull 0 tbhits 0 time 0 pv e2e4')!.nodes, 0);
 
 const engine = new UciClient('/stockfish/trappyfish-lite-single.js');
 const result = await engine.analyzeFen(fen, 7, 2);

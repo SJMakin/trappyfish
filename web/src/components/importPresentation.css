@@ -1,0 +1,92 @@
+/* Scoped import styling keeps the review workflow consistent in both workspaces. */
+details.position-import.position-import {
+  min-width: 0;
+  flex-shrink: 0;
+  color: var(--ui-text, #172338);
+  background: var(--ui-surface, #fff);
+  border: 1px solid var(--ui-border, #dce2ea);
+  border-radius: var(--ui-radius, 8px);
+  font-size: 13px;
+  overflow: hidden;
+}
+details.position-import.position-import[open] { border-top: 1px solid var(--ui-border, #dce2ea); }
+details.position-import.position-import > summary {
+  list-style: none;
+  min-height: 44px;
+  padding: 12px 16px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+details.position-import.position-import > summary::-webkit-details-marker { display: none; }
+details.position-import.position-import > summary > svg { color: var(--ui-muted, #5b687b); flex-shrink: 0; }
+details.position-import.position-import > summary::after { color: var(--ui-muted, #5b687b); font-size: 16px; font-weight: 400; }
+details.position-import.position-import > summary:hover { background: #f8fafc; }
+details.position-import.position-import .import-content { min-width: 0; gap: 12px; padding: 0 16px 16px; }
+details.position-import.position-import .image-drop-zone {
+  min-width: 0;
+  border: 1px dashed #bdc9db;
+  border-radius: 6px;
+  padding: 16px;
+  background: #f8fafd;
+  text-align: center;
+}
+details.position-import.position-import .image-import-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+details.position-import.position-import .image-import-actions > button { min-height: 40px; font-size: 12px; padding: 0 12px; }
+details.position-import.position-import .image-drop-zone p { margin: 12px 0 4px; font-size: 12px; line-height: 1.5; color: var(--ui-muted, #5b687b); }
+details.position-import.position-import .image-drop-zone small { display: block; font-size: 11px; line-height: 1.5; color: var(--ui-muted, #5b687b); }
+details.position-import.position-import .import-fen-section { min-width: 0; display: grid; gap: 8px; }
+details.position-import.position-import .fen-label { color: var(--ui-text, #172338); font-size: 12px; font-weight: 600; }
+details.position-import.position-import textarea,
+details.position-import.position-import select {
+  min-width: 0;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #cbd4e0;
+  border-radius: 6px;
+  background: var(--ui-surface, #fff);
+  color: var(--ui-text, #172338);
+}
+details.position-import.position-import textarea { font-size: 12px; line-height: 1.6; resize: vertical; }
+details.position-import.position-import textarea::placeholder { color: #718096; }
+details.position-import.position-import button { border-radius: 6px; gap: 6px; }
+details.position-import.position-import .subtle-button { min-height: 32px; padding: 0 8px; font-size: 11px; }
+details.position-import.position-import .primary-button,
+details.position-import.position-import .load-position {
+  min-height: 40px;
+  background: var(--ui-accent, #2563eb);
+  border-color: var(--ui-accent, #2563eb);
+  color: #fff;
+  font-weight: 600;
+}
+details.position-import.position-import .primary-button:hover:not(:disabled),
+details.position-import.position-import .load-position:hover:not(:disabled) { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+details.position-import.position-import .load-position:disabled { background: #edf1f6; border-color: #e1e7ef; color: #788699; }
+details.position-import.position-import .import-select-row { gap: 12px; }
+details.position-import.position-import .import-select-row label { gap: 6px; font-size: 12px; font-weight: 600; }
+details.position-import.position-import .castling-controls { min-width: 0; gap: 8px; padding: 8px 12px 12px; border-color: var(--ui-border, #dce2ea); border-radius: 6px; }
+details.position-import.position-import .castling-controls legend { font-size: 12px; font-weight: 600; padding: 0 4px; }
+details.position-import.position-import .castling-controls label { font-size: 12px; }
+details.position-import.position-import input[type='checkbox'] { accent-color: var(--ui-accent, #2563eb); }
+details.position-import.position-import .import-preview-heading { flex-wrap: wrap; gap: 8px; }
+details.position-import.position-import .import-preview-heading strong { font-size: 12px; font-weight: 600; }
+details.position-import.position-import .piece-correction-tools { gap: 8px; padding: 12px; border-color: var(--ui-border, #dce2ea); border-radius: 6px; background: #f8fafc; }
+details.position-import.position-import .piece-correction-tools p { color: var(--ui-muted, #5b687b); }
+details.position-import.position-import .piece-palette button { min-height: 36px; }
+details.position-import.position-import .piece-palette button.is-active { background: var(--ui-accent-soft, #eff5ff); border-color: var(--ui-accent, #2563eb); }
+details.position-import.position-import .import-orientation-correction { min-width: 0; font-size: 12px; }
+details.position-import.position-import .import-orientation-correction summary { cursor: pointer; color: var(--ui-muted, #5b687b); padding: 4px 0; }
+details.position-import.position-import .import-orientation-correction button { max-width: 100%; white-space: normal; line-height: 1.4; }
+details.position-import.position-import .import-history-note,
+details.position-import.position-import .scan-confidence,
+details.position-import.position-import .import-next-step { margin: 0; font-size: 11px; line-height: 1.6; color: var(--ui-muted, #5b687b); }
+details.position-import.position-import .import-notice { color: #1e429f; background: var(--ui-accent-soft, #eff5ff); }
+details.position-import.position-import .import-warning { color: #854d0e; background: #fff7e6; }
+details.position-import.position-import .import-preview { overflow: hidden; border-radius: 4px; }
+details.position-import.position-import :is(button, textarea, select, summary):focus-visible { outline: 2px solid var(--ui-accent, #2563eb); outline-offset: 2px; }
+@media (max-width: 480px) {
+  details.position-import.position-import > summary { padding: 12px; }
+  details.position-import.position-import .import-content { padding: 0 12px 12px; }
+  details.position-import.position-import .image-drop-zone { padding: 16px 12px; }
+  details.position-import.position-import .image-import-actions > button { flex: 1 1 160px; }
+}

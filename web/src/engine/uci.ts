@@ -1,6 +1,7 @@
 export type EngineScore = { type: 'cp' | 'mate'; raw: number; cp: number };
 export type AnalysisLine = {
   depth: number; multipv: number; score: EngineScore; pv: string[]; firstMove: string; raw: string;
+  nodes?: number; nps?: number; timeMs?: number; seldepth?: number; hashfull?: number; tbhits?: number;
 };
 export type AnalysisResult = {
   bestMove: string; ponder?: string; lines: AnalysisLine[]; linesByDepth: Map<number, AnalysisLine[]>;
@@ -160,7 +161,14 @@ export function parseInfoLine(line: string): AnalysisLine | null {
   const raw = Number(scoreMatch[2]);
   const cp = type === 'cp' ? raw : Math.sign(raw || 1) * (MATE_SCORE_CP - Math.min(Math.abs(raw), 99) * 100);
   return { depth: Number(depthMatch[1]), multipv: Number(line.match(/\bmultipv\s+(\d+)/)?.[1] ?? 1),
-    score: { type, raw, cp }, pv, firstMove: pv[0], raw: line };
+    score: { type, raw, cp }, pv, firstMove: pv[0], raw: line,
+    nodes: infoInteger(line, 'nodes'), nps: infoInteger(line, 'nps'), timeMs: infoInteger(line, 'time'),
+    seldepth: infoInteger(line, 'seldepth'), hashfull: infoInteger(line, 'hashfull'), tbhits: infoInteger(line, 'tbhits') };
+}
+
+function infoInteger(line: string, token: string): number | undefined {
+  const match = line.match(new RegExp(`\\b${token}\\s+(\\d+)\\b`));
+  return match ? Number(match[1]) : undefined;
 }
 
 function latestLines(linesByDepth: Map<number, Map<number, AnalysisLine>>): AnalysisLine[] {

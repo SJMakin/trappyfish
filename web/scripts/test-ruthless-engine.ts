@@ -61,7 +61,7 @@ test('Default search targets lower-rated opponents and looks for a second mistak
   assert.ok(DEFAULT_TRAPPY_SETTINGS.engineRating >= 2000);
   assert.ok(DEFAULT_TRAPPY_SETTINGS.rootDepth >= 12);
   assert.equal(DEFAULT_TRAPPY_SETTINGS.opponentPlies, 2);
-  assert.equal(DEFAULT_TRAPPY_SETTINGS.aggression, 1);
+  assert.equal(DEFAULT_TRAPPY_SETTINGS.trappiness, 1);
   assert.ok(DEFAULT_TRAPPY_SETTINGS.maxRiskCp <= 100);
 });
 

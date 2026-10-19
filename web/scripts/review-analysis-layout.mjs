@@ -15,9 +15,10 @@ try {
   await page.getByTestId('analysis-progress').filter({ hasText: 'Deep analysis ready' }).waitFor({ timeout: 180000 });
   assert.equal(await page.getByTestId('analysis-board').getAttribute('data-fen'), fen);
   assert.equal(await page.locator('.recommendation').count(), 1, 'Matching practical and sound moves share a recommendation');
-  assert.equal(await page.locator('.human-reply-tree').getAttribute('open'), null);
+  assert.equal(await page.getByTestId('engine-hud').isVisible(), true);
+  assert.equal(await page.getByTestId('analysis-tree').isVisible(), true);
   const rows = [];
-  for (const viewport of [{ width: 1828, height: 846 }, { width: 1366, height: 900 }, { width: 1280, height: 720 }, { width: 390, height: 844 }]) {
+  for (const viewport of [{ width: 1828, height: 846 }, { width: 1366, height: 900 }, { width: 1280, height: 720 }, { width: 390, height: 844 }, { width: 320, height: 768 }]) {
     await page.setViewportSize(viewport);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: `artifacts/layout/after-${viewport.width}.png`, fullPage: true });
@@ -25,30 +26,35 @@ try {
     const row = await page.evaluate(() => {
       const rect = (selector) => { const value = document.querySelector(selector).getBoundingClientRect(); return { top: value.top, bottom: value.bottom, height: value.height }; };
       return { width: innerWidth, height: innerHeight, pageHeight: document.documentElement.scrollHeight, overflow: document.documentElement.scrollWidth > innerWidth,
-        board: rect('.research-board-wrap'), plans: rect('.branch-comparison'), transport: rect('.line-transport') };
+        board: rect('.research-board-wrap'), plans: rect('.analysis-move-tree'), telemetry: rect('.analysis-engine-hud'), transport: rect('.line-transport') };
     });
     rows.push(row);
     assert.equal(row.overflow, false, `${viewport.width}: no horizontal page overflow`);
     if (viewport.width > 780) {
-      assert.ok(row.plans.bottom <= row.height, `${viewport.width}: both useful lines must fit on the first screen`);
       assert.ok(row.transport.bottom <= row.height, `${viewport.width}: replay controls must fit with the board`);
     }
   }
   await page.getByRole('link', { name: /^Plans ·/ }).click();
-  await page.locator('.trap-column > .research-branch-card').click();
+  await page.getByTestId('analysis-reply').first().click();
   const mobileBoard = await page.getByTestId('analysis-board').boundingBox();
-  assert.ok(mobileBoard.y >= 0 && mobileBoard.y + mobileBoard.height < 844, 'Selecting a plan returns mobile users to the visible board');
+  assert.ok(mobileBoard.y >= 0 && mobileBoard.y + mobileBoard.height < 768, 'Selecting a tree move returns mobile users to the visible board');
   await page.getByRole('button', { name: 'End of line', exact: true }).click();
   const strip = await page.locator('.line-move-chips').evaluate((element) => {
     const selected = element.querySelector('.is-active');
     return { selectedLeft: selected.offsetLeft, selectedRight: selected.offsetLeft + selected.offsetWidth, left: element.scrollLeft, right: element.scrollLeft + element.clientWidth };
   });
   assert.ok(strip.selectedLeft >= strip.left - 1 && strip.selectedRight <= strip.right + 1, 'The current move stays visible in the horizontal line strip');
+  const treeSelection = await page.locator('.analysis-move-tree > .analysis-tree-branches').evaluate((container) => {
+    const node = container.querySelector('.analysis-tree-move[aria-pressed="true"]').getBoundingClientRect();
+    const pane = container.getBoundingClientRect();
+    return { top: node.top, bottom: node.bottom, paneTop: pane.top, paneBottom: pane.bottom };
+  });
+  assert.ok(treeSelection.top >= treeSelection.paneTop - 1 && treeSelection.bottom <= treeSelection.paneBottom + 1, 'Replay keeps the selected move visible inside the bounded tree pane');
   await page.locator('.research-more-tools > summary').click();
   assert.equal(await page.getByRole('button', { name: 'Export PGN', exact: true }).isVisible(), true);
   await page.getByRole('button', { name: 'Restore imported position', exact: true }).click();
   assert.equal(await page.getByTestId('analysis-board').getAttribute('data-fen'), fen);
-  await page.locator('.human-reply-tree > summary').click();
+  await page.getByRole('button', { name: 'Expand all', exact: true }).click();
   assert.ok(await page.getByTestId('analysis-reply').count() >= 1, 'All searched replies remain accessible');
   await page.locator('.analysis-score-details > summary').click();
   assert.match(await page.locator('.analysis-score-details').innerText(), /Human reply coverage:/);
@@ -59,5 +65,5 @@ try {
   await writeFile('artifacts/layout/review.json', JSON.stringify({ fen, comparison, errors }, null, 2));
   assert.deepEqual(errors, []);
   console.log(JSON.stringify(comparison, null, 2));
-  console.log('Compact layout passed: actual Maia/Stockfish, desktop viewport fit, mobile plan-to-board navigation, active move visibility, complete reply access, risky alternatives, exports and restore.');
+  console.log('Technical HUD layout passed: real Maia/Stockfish telemetry and branching tree, desktop replay viewport fit, mobile node-to-board navigation, active move visibility, complete reply access, risky alternatives, exports and restore.');
 } finally { await browser.close(); }

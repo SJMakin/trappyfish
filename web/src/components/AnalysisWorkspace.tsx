@@ -1,14 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, type Color, type Square } from 'chess.js';
 import { Chessboard, type ChessboardOptions } from 'react-chessboard';
-import { ArrowLeft, ArrowRight, BrainCircuit, Check, ChevronFirst, ChevronLast, Copy, Download, FlipVertical2, GitBranch, MoreHorizontal, RotateCcw, Search, ShieldCheck, Square as StopIcon, Swords, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookmarkPlus, BrainCircuit, Check, ChevronFirst, ChevronLast, Copy, Download, FlipVertical2, GitBranch, MoreHorizontal, RotateCcw, Search, ShieldCheck, Square as StopIcon, Swords, Zap } from 'lucide-react';
 import { UciClient } from '../engine/uci';
 import { MaiaClient } from '../engine/maia';
 import { DEFAULT_ANALYSIS_SETTINGS, TrappyEngine, moveToUci, opposite, playUci, squarePairFromUci,
   type AnalysisProgress, type CandidateInfo, type PositionAnalysis, type TrappySettings } from '../engine/trappy';
 import { validatePosition } from '../import/position';
+import { getHistorySnapshot, type SavedPosition } from '../history/positionHistory';
+import { rememberAnalysisPosition } from '../history/workspaceHistory';
 import { PositionImport } from './PositionImport';
 import { TrapAnalysisPanel } from './TrapAnalysisPanel';
+import { PlayingStyleControls } from './PlayingStyleControls';
+import { SearchActivity } from './SearchActivity';
 import { candidateLines, legalLine, lineTarget, pieceName, variationToPgn, type ResearchLine } from './analysisView';
 import '../analysis.css';
 
@@ -17,15 +21,16 @@ type ManualBranch = { fens: string[]; moves: string[] };
 const QUICK_SETTINGS: Partial<TrappySettings> = { rootDepth: 10, trapDepth: 8, candidateCount: 8, replyCount: 8, opponentPlies: 1 };
 const LEGAL_EXAMPLE = (() => { const board = new Chess(); for (const move of ['e4', 'e5', 'Nf3', 'Nc6', 'Bc4', 'd6', 'Nc3', 'Bg4', 'h3', 'Bh5']) board.move(move); return board.fen(); })();
 
-export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPosition }: {
-  initialFen?: string; active?: boolean; onPlayFromPosition: (fen: string, playerColor?: Color) => void;
+export function AnalysisWorkspace({ initialFen, active = true, savedPosition, onPlayFromPosition }: {
+  initialFen?: string; active?: boolean; savedPosition?: SavedPosition; onPlayFromPosition: (fen: string, playerColor?: Color) => void;
 }) {
   const startingFen = useMemo(() => validatePosition(initialFen ?? new Chess().fen()).fen ?? new Chess().fen(), [initialFen]);
   const engine = useMemo(() => new TrappyEngine(new UciClient(), new MaiaClient()), []);
   const [importedFen, setImportedFen] = useState(startingFen);
   const [analysisFen, setAnalysisFen] = useState(startingFen);
-  const [orientation, setOrientation] = useState<Color>(startingFen.split(' ')[1] as Color);
-  const [settings, setSettings] = useState<TrappySettings>({ ...DEFAULT_ANALYSIS_SETTINGS });
+  const [orientation, setOrientation] = useState<Color>(savedPosition?.orientation ?? startingFen.split(' ')[1] as Color);
+  const orientationRef = useRef(orientation); orientationRef.current = orientation;
+  const [settings, setSettings] = useState<TrappySettings>({ ...DEFAULT_ANALYSIS_SETTINGS, ...savedPosition?.settings });
   const [searchSettings, setSearchSettings] = useState<TrappySettings>({ ...DEFAULT_ANALYSIS_SETTINGS });
   const [record, setRecord] = useState<AnalysisRecord | null>(null);
   const [busy, setBusy] = useState(false);
@@ -68,12 +73,13 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
     setAnalysisFen(fen); setPly(0); setManual(null); setBranchReturn(null); setSelectedSquare(null); setPromotion(null);
   }, [analysisFen]);
 
-  const analyze = useCallback(async (fen: string, mode: 'quick' | 'deep' | 'progressive' = 'progressive') => {
+  const analyze = useCallback(async (fen: string, mode: 'quick' | 'deep' | 'progressive' = 'progressive', viewOrientation = orientationRef.current) => {
     const validated = validatePosition(fen);
     if (!validated.fen) { setError(validated.error ?? 'Invalid position.'); return; }
     const targetFen = validated.fen;
     searchId.current += 1; engine.cancel(); const id = searchId.current;
     const chosenSettings = { ...settingsRef.current };
+    rememberAnalysisPosition(targetFen, viewOrientation, chosenSettings);
     setSearchSettings(chosenSettings);
     setAnalysisFen(targetFen); setManual(null); setBranchReturn(null); setActiveLine(null); setPly(0);
     setSelectedMove('');
@@ -84,6 +90,7 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
       for (const depth of passes) {
         if (id !== searchId.current) return;
         const passSettings = depth === 'quick' ? { ...chosenSettings, ...QUICK_SETTINGS } : chosenSettings;
+        setSearchSettings(passSettings);
         const key = JSON.stringify([targetFen, passSettings]);
         setPhase(depth); setProgress({ stage: 'root', message: depth === 'quick' ? 'Finding candidates and likely mistakes…' : 'Verifying defenses and deeper trap branches…', completed: 0, total: 1 });
         let next = cache.current.get(key);
@@ -133,11 +140,16 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
   }, [engine]);
 
   const loadAndAnalyze = useCallback((fen: string, color: Color) => {
-    setImportedFen(fen); setOrientation(color); setRecord(null); void analyze(fen, 'progressive');
+    setImportedFen(fen); setOrientation(color); setRecord(null); void analyze(fen, 'progressive', color);
   }, [analyze]);
   useEffect(() => {
     if (active && !started.current && initialFen) { started.current = true; void analyze(startingFen, 'progressive'); }
   }, [active, initialFen, startingFen, analyze]);
+  useEffect(() => {
+    if (active && getHistorySnapshot().entries.some((entry) => entry.kind === 'analysis' && entry.fen === analysisFen)) {
+      rememberAnalysisPosition(analysisFen, orientation, settingsRef.current);
+    }
+  }, [active, analysisFen, orientation]);
   useEffect(() => { if (!active) { searchId.current += 1; engine.cancel(); setBusy(false); setProgress(null); } }, [active, engine]);
   useEffect(() => () => { searchId.current += 1; engine.terminate(); }, [engine]);
   useEffect(() => { if (promotion) promotionDialog.current?.querySelector<HTMLButtonElement>('button')?.focus(); }, [promotion]);
@@ -150,10 +162,11 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
     else if (left + selected.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollTo({ left: left + selected.offsetWidth - strip.clientWidth });
   }, [ply, activeLine?.id, manual]);
 
-  const chooseLine = useCallback((next: ResearchLine) => {
-    setActiveLine(next); setPly(0); setManual(null); setBranchReturn(null); setSelectedSquare(null); setPromotion(null);
+  const chooseLine = useCallback((next: ResearchLine, nextPly = 0) => {
+    setActiveLine(next); setPly(Math.max(0, Math.min(nextPly, legalLine(analysisFen, next.moves).moves.length)));
+    setManual(null); setBranchReturn(null); setSelectedSquare(null); setPromotion(null);
     if (window.matchMedia('(max-width: 780px)').matches) requestAnimationFrame(() => document.getElementById('analysis-position')?.scrollIntoView({ block: 'start' }));
-  }, []);
+  }, [analysisFen]);
   const commitMove = useCallback((from: string, to: string, promoteTo = 'q') => {
     const copy = new Chess(viewFen);
     try {
@@ -199,8 +212,8 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
     showNotation: true, animationDurationInMs: 180, allowDrawingArrows: true, allowDragging: !promotion && !board.isGameOver(),
     canDragPiece: ({ piece }) => piece.pieceType[0] === board.turn(),
     onPieceDrop: ({ sourceSquare, targetSquare }) => Boolean(targetSquare && attemptMove(sourceSquare, targetSquare)), onSquareClick: clickSquare,
-    boardStyle: { borderRadius: 8, boxShadow: '0 12px 38px rgba(21,28,41,.13)' },
-    lightSquareStyle: { backgroundColor: '#ede5d6' }, darkSquareStyle: { backgroundColor: '#80917a' }, squareStyles,
+    boardStyle: { borderRadius: 6, boxShadow: '0 4px 16px rgba(23,35,56,.10)' },
+    lightSquareStyle: { backgroundColor: '#e8edf2' }, darkSquareStyle: { backgroundColor: '#8297ad' }, squareStyles,
     arrows: nextPair && !selectedSquare ? [{ startSquare: nextPair[0], endSquare: nextPair[1], color: activeLine?.kind === 'defense' ? 'rgba(42, 102, 75, .85)' : board.turn() === analysisFen.split(' ')[1] ? 'rgba(36, 90, 142, .85)' : 'rgba(185, 96, 43, .9)' }] : [],
     squareRenderer: ({ square, piece, children }) => <div id={`research-square-${square}`} className="keyboard-square" role="button"
       style={{ width: '100%', height: '100%', ...squareStyles[square] }} tabIndex={keyboardSquare === square ? 0 : -1}
@@ -239,12 +252,12 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
   const navigate = (nextPly: number) => { setPly(nextPly); setSelectedSquare(null); setPromotion(null); };
   const phaseProgress = progress ? Math.max(0, Math.min(1, progress.completed / Math.max(1, progress.total))) : 0;
 
-  return <main className={`analysis-workspace${record || busy ? ' has-analysis' : ''}`}>
-    <section className="research-import-entry" aria-label="Import position for analysis"><PositionImport variant="analysis" initialOpen={!initialFen} currentFen={viewFen} playerColor={orientation} onLoad={loadAndAnalyze} /></section>
-    {record ? <nav className="mobile-analysis-jumps" aria-label="Analysis shortcuts"><a href="#analysis-position">Board &amp; line</a><a href="#analysis-plans">Plans{decision ? ` · ${decision.selected.san}` : ''}</a></nav> : null}
+  return <main className={`analysis-workspace technical-analysis${record || busy ? ' has-analysis' : ''}`}>
+    <section id="analysis-import" className="research-import-entry" aria-label="Import position for analysis"><PositionImport active={active} variant="analysis" initialOpen={!initialFen} currentFen={viewFen} playerColor={orientation} onLoad={loadAndAnalyze} /></section>
+    <nav className="mobile-analysis-jumps" aria-label="Analysis shortcuts"><a href="#analysis-position">Board &amp; line</a><a href="#analysis-import">Import</a><a href="#analysis-plans">{record ? 'Analysis' : 'Settings'}</a></nav>
     <section id="analysis-position" className="research-board-column" aria-label="Analysis chessboard and position import">
-      <div className="research-board-heading"><h2>{board.isCheckmate() ? 'Checkmate' : board.isDraw() ? 'Drawn position' : `${board.turn() === 'w' ? 'White' : 'Black'} to move`}</h2>
-        <span className={`research-pill ${manual || busy ? 'amber' : ''}`}>{manual ? 'Your branch' : busy ? 'Analyzing…' : ply > 0 ? `Line · ply ${ply}` : 'Position analysis'}</span></div>
+      <div className="research-board-heading"><h1>{board.isCheckmate() ? 'Checkmate' : board.isDraw() ? 'Drawn position' : `${board.turn() === 'w' ? 'White' : 'Black'} to move`}</h1>
+        <span className={`research-pill ${manual || busy ? 'amber' : ''}`}>{manual ? 'Your branch' : busy ? 'Analyzing…' : ply > 0 ? `Tree · ply ${ply}` : 'Position analysis'}</span></div>
       <div className="research-board-wrap" data-testid="analysis-board" data-fen={viewFen}><Chessboard options={boardOptions} />
         {promotion ? <div className="promotion-backdrop"><section ref={promotionDialog} className="promotion-dialog" role="dialog" aria-modal="true" aria-labelledby="research-promotion-title"
           onKeyDown={(event) => {
@@ -281,6 +294,7 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
       </section>
       <div className="research-board-tools"><button type="button" onClick={() => setOrientation(opposite(orientation))}><FlipVertical2 size={15} /> Flip</button>
         <button type="button" onClick={copyFen}><Copy size={15} /> Copy FEN</button>
+        <button type="button" aria-label="Save analysis position" onClick={() => { rememberAnalysisPosition(viewFen, orientation, settings); setNotice('Position saved in Recent positions.'); }}><BookmarkPlus size={15} /> Save</button>
         <details className="research-more-tools"><summary aria-label="More board tools"><MoreHorizontal size={17} /> More</summary><div onClick={(event) => {
           if (!(event.target instanceof Element) || !event.target.closest('button')) return;
           const menu = event.currentTarget.closest('details'); menu?.removeAttribute('open'); menu?.querySelector<HTMLElement>('summary')?.focus({ preventScroll: true });
@@ -298,19 +312,22 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
       <section className="research-search-controls" aria-label="Analysis settings">
         <div className="research-settings-row"><label>Opponent rating<select aria-label="Analysis opponent rating" value={settings.opponentRating} onChange={(event) => setSettings({ ...settings, opponentRating: Number(event.target.value) })}>
           {![800, 1000, 1200, 1400, 1800, 2200, 2600].includes(settings.opponentRating) ? <option value={settings.opponentRating}>{settings.opponentRating} · custom</option> : null}
-          {[800, 1000, 1200, 1400, 1800, 2200, 2600].map((rating) => <option key={rating} value={rating}>{rating}{rating === 1000 ? ' · ruthless default' : ''}</option>)}</select></label>
+          {[800, 1000, 1200, 1400, 1800, 2200, 2600].map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
           <div className="analysis-depth-buttons"><button type="button" disabled={busy} onClick={() => void analyze(manual ? viewFen : analysisFen, 'quick')}><Zap size={15} /> Quick</button>
             <button type="button" className="primary-button" disabled={busy} onClick={() => void analyze(manual ? viewFen : analysisFen, 'deep')}><BrainCircuit size={15} /> {record?.depth === 'quick' ? 'Deepen analysis' : 'Deep'}</button></div></div>
+        <div className="analysis-playing-style">
+          <PlayingStyleControls settings={settings} onChange={setSettings} context="Analysis" />
+          <p>Changes apply to your next Quick or Deep analysis.</p>
+        </div>
         <details className="research-advanced"><summary>Customize analysis</summary><div>
           <label>Custom opponent rating<input aria-label="Custom analysis opponent rating" type="number" min={400} max={3000} step={100} value={settings.opponentRating} onChange={(event) => { const rating = Number(event.target.value); if (rating >= 400 && rating <= 3000) setSettings({ ...settings, opponentRating: rating }); }} /></label>
           <label>Root depth<input aria-label="Analysis root depth" type="number" min={6} max={20} value={settings.rootDepth} onChange={(event) => setSettings({ ...settings, rootDepth: Math.max(6, Math.min(20, Number(event.target.value))) })} /></label>
           <label>Outcome depth<input aria-label="Analysis outcome depth" type="number" min={6} max={18} value={settings.trapDepth} onChange={(event) => setSettings({ ...settings, trapDepth: Math.max(6, Math.min(18, Number(event.target.value))) })} /></label>
-          <label>Risk limit (pawns)<input aria-label="Analysis risk limit in pawns" type="number" min={0} max={3} step={0.25} value={settings.maxRiskCp / 100} onChange={(event) => setSettings({ ...settings, maxRiskCp: Math.max(0, Math.min(300, Number(event.target.value) * 100)) })} /></label>
           <label>Candidate moves<input aria-label="Analysis candidates" type="number" min={4} max={24} value={settings.candidateCount} onChange={(event) => setSettings({ ...settings, candidateCount: Math.max(4, Math.min(24, Number(event.target.value))) })} /></label>
           <label>Opponent turns<select aria-label="Analysis opponent turns" value={settings.opponentPlies} onChange={(event) => setSettings({ ...settings, opponentPlies: Number(event.target.value) as 1 | 2 })}><option value={1}>One · faster</option><option value={2}>Two · deeper traps</option></select></label>
         </div><p>Deep uses these settings. Quick uses a smaller one-turn search. Changes apply when you start the next search.</p></details>
         {busy ? <div className="analysis-progress" data-testid="analysis-progress" role="status" aria-live="polite"><div><span><BrainCircuit size={15} /> {phase === 'quick' ? 'Quick scan' : 'Deep analysis'}{record?.depth === 'quick' && phase === 'deep' ? ' · first results below' : ''}</span><button type="button" onClick={stopSearch}><StopIcon size={13} /> Stop</button></div>
-          <p>{progress?.message ?? 'Starting engines…'}</p><progress aria-label="Analysis search progress" value={phaseProgress} max={1} /><small>{phase === 'deep' ? `Stockfish ${searchSettings.rootDepth}/${searchSettings.trapDepth} · up to ${searchSettings.opponentPlies} opponent turns` : 'Stockfish 10/8 · one opponent turn'}. First use also loads the local Maia model.</small></div> : record ? <div className="analysis-complete" data-testid="analysis-progress" role="status"><Check size={15} /> {record.depth === 'deep' ? 'Deep analysis ready' : 'Quick analysis ready'} · {record.settings.opponentRating} opponent · depth {record.settings.rootDepth}/{record.settings.trapDepth}</div> : null}
+          <p>{progress?.message ?? 'Starting engines…'}</p><progress aria-label="Analysis search progress" value={phaseProgress} max={1} /><SearchActivity progress={progress} /><small>Stockfish {searchSettings.rootDepth}/{searchSettings.trapDepth} · up to {searchSettings.opponentPlies} opponent turns. First use also loads the local Maia model.</small></div> : record ? <div className="analysis-complete" data-testid="analysis-progress" role="status"><Check size={15} /> {record.depth === 'deep' ? 'Deep analysis ready' : 'Quick analysis ready'} · {record.settings.opponentRating} opponent · depth {record.settings.rootDepth}/{record.settings.trapDepth}</div> : null}
         {changedSettings && !busy ? <p className="import-warning">Controls changed. Results below still use the settings shown in their search summary. Start a search to update them.</p> : null}
         {error ? <p className="error-strip" role="alert">{error}</p> : null}
       </section>
@@ -318,13 +335,12 @@ export function AnalysisWorkspace({ initialFen, active = true, onPlayFromPositio
       {isBranch ? <section className="research-branch-empty"><GitBranch size={30} /><h2>You’re exploring a new branch</h2><p>The previous analysis belongs to the {analyzedSide} position you started from. Analyze this board to find its own traps and defenses.</p>
         <button type="button" className="primary-button" onClick={() => void analyze(viewFen, 'progressive')}><Search size={16} /> Analyze this branch</button><button type="button" onClick={restoreAnalysis}>Return to analyzed position</button></section>
         : decision ? <>{ply > 0 ? <div className="analysis-position-context">Reviewing a continuation. Candidate scores refer to the starting {analyzedSide}-to-move position.</div> : null}
-          <TrapAnalysisPanel decision={decision} fen={analysisFen} selectedMove={selectedMove} activeLineId={activeLine?.id} maxRiskCp={record!.settings.maxRiskCp} onSelectCandidate={selectCandidate} onSelectLine={chooseLine} /></>
+          <TrapAnalysisPanel decision={decision} fen={analysisFen} selectedMove={selectedMove} activeLineId={activeLine?.id} activeMoves={activeLine?.moves.slice(0, ply)}
+            maxRiskCp={record!.settings.maxRiskCp} settings={record!.settings} busy={busy} progress={progress} onSelectCandidate={selectCandidate} onSelectLine={chooseLine} /></>
           : record?.result.terminal ? <section className="research-terminal"><ShieldCheck size={30} /><h2>{record.result.terminal === 'checkmate' ? 'This position is checkmate' : 'This position is drawn'}</h2><p>There are no live trap lines to analyze. Import another position or return to the imported board.</p></section>
-            : <section className="research-starter"><div className="starter-icon"><CrosshairIcon /></div><h2>{busy ? 'Reading the position…' : 'A screenshot is the starting point.'}</h2>
-              <p>{busy ? 'The first pass finds promising moves. The deeper pass checks defenses and second mistakes.' : 'Import a board, confirm the pieces and side to move, and get a ranked plan without playing a move.'}</p>
-              <ol><li><span>1</span><div><strong>Import your position</strong><p>Upload, paste, or drop a screenshot. FEN works too.</p></div></li>
-                <li><span>2</span><div><strong>Compare the traps and the defense</strong><p>See the targets, human reply chances, and how much risk each move takes.</p></div></li>
-                <li><span>3</span><div><strong>Walk the line. Test your idea.</strong><p>Step through the punishment, make a different move, then analyze that branch.</p></div></li></ol>
+            : <section className="research-starter"><div className="starter-icon"><CrosshairIcon /></div><h2>{busy ? 'Reading the position…' : 'Explore a position'}</h2>
+              <p>{busy ? 'The first pass finds promising moves. The deeper pass checks defenses and second mistakes.' : 'Import a screenshot, use your webcam, paste a FEN, or move either side on the board.'}</p>
+              <p>Compare candidate moves, explore the reply tree, and inspect the engine’s scoring and search telemetry.</p>
               {!busy ? <button type="button" className="example-button" onClick={() => loadAndAnalyze(LEGAL_EXAMPLE, 'w')}><Zap size={16} /> Try Légal’s queen bait <ArrowRight size={16} /></button> : null}
             </section>}
     </section>

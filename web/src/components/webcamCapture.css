@@ -1,0 +1,25 @@
+.image-import-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.webcam-capture { min-width: 0; border: 1px solid var(--ui-border, #dce2ea); border-radius: var(--ui-radius, 8px); padding: 16px; background: var(--ui-surface, #fff); display: grid; gap: 12px; }
+.webcam-capture p, .webcam-capture h3 { margin: 0; }
+.webcam-heading, .webcam-camera-controls, .webcam-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.webcam-heading { justify-content: space-between; }
+.webcam-heading h3 { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 650; color: var(--ui-text, #172338); }
+.webcam-heading h3 > svg { color: var(--ui-muted, #5b687b); }
+.webcam-heading h3:focus { outline: none; }
+.webcam-capture > p, .webcam-capture > small { color: var(--ui-muted, #5b687b); font-size: 12px; line-height: 1.6; }
+.webcam-capture > small { font-size: 11px; }
+.webcam-preview { position: relative; width: min(100%, 420px); aspect-ratio: 1; overflow: hidden; border-radius: 6px; background: #111827; justify-self: center; }
+.webcam-preview video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.webcam-frame { position: absolute; inset: 4px; border: 2px solid #ffffffe0; border-radius: 3px; pointer-events: none; box-shadow: 0 0 0 4px #11182740; }
+.webcam-frame::before, .webcam-frame::after { content: ''; position: absolute; background: #ffffff5c; }
+.webcam-frame::before { top: 0; bottom: 0; width: 1px; left: 50%; }
+.webcam-frame::after { left: 0; right: 0; height: 1px; top: 50%; }
+.webcam-status { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; background: #11182780; text-align: center; padding: 16px; font-size: 13px; }
+.webcam-camera-controls label { flex: 1; min-width: 140px; display: grid; gap: 4px; font-size: 12px; font-weight: 600; }
+.webcam-camera-controls select { width: 100%; min-width: 0; }
+.webcam-capture button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; font-size: 12px; }
+@media (max-width: 480px) {
+  .webcam-capture { padding: 12px; }
+  .webcam-actions > button { flex: 1 1 120px; }
+  .webcam-heading .subtle-button { padding: 4px; }
+}

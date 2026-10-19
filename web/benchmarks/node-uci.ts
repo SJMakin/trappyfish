@@ -1,7 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { resolve } from 'node:path';
-import type { AnalysisLine, AnalysisResult, UciClient } from '../src/engine/uci';
+import { parseInfoLine, type AnalysisLine, type AnalysisResult, type UciClient } from '../src/engine/uci';
 
 /** The same Stockfish 18 lite WASM as the app, driven over a real UCI subprocess. */
 export class NodeUci {
@@ -40,7 +40,7 @@ export class NodeUci {
       let bestMove = '';
       let ponder: string | undefined;
       await this.commandUntil(`go depth ${depth}${searchMoves.length ? ` searchmoves ${searchMoves.join(' ')}` : ''}`, (line) => {
-        const parsed = parseLine(line);
+        const parsed = parseInfoLine(line);
         if (parsed) {
           const atDepth = linesByDepth.get(parsed.depth) ?? new Map<number, AnalysisLine>();
           atDepth.set(parsed.multipv, parsed);
@@ -77,17 +77,4 @@ export class NodeUci {
       this.post(command);
     });
   }
-}
-
-function parseLine(line: string): AnalysisLine | null {
-  if (!line.startsWith('info ') || /\b(?:upperbound|lowerbound)\b/.test(line)) return null;
-  const depth = line.match(/\bdepth\s+(\d+)/);
-  const score = line.match(/\bscore\s+(cp|mate)\s+(-?\d+)/);
-  const moves = line.match(/\bpv\s+(.+)$/);
-  if (!depth || !score || !moves) return null;
-  const type = score[1] as 'cp' | 'mate';
-  const raw = Number(score[2]);
-  const cp = type === 'cp' ? raw : (Math.sign(raw) || 1) * (100_000 - Math.min(Math.abs(raw), 99) * 100);
-  const pv = moves[1].trim().split(/\s+/);
-  return { depth: Number(depth[1]), multipv: Number(line.match(/\bmultipv\s+(\d+)/)?.[1] ?? 1), score: { type, raw, cp }, pv, firstMove: pv[0], raw: line };
 }
