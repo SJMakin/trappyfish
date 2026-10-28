@@ -25,12 +25,15 @@ export function AnalysisWorkspace({ initialFen, active = true, savedPosition, on
   initialFen?: string; active?: boolean; savedPosition?: SavedPosition; onPlayFromPosition: (fen: string, playerColor?: Color) => void;
 }) {
   const startingFen = useMemo(() => validatePosition(initialFen ?? new Chess().fen()).fen ?? new Chess().fen(), [initialFen]);
+  // A returning FEN URL must not replace that study's saved preferences with defaults.
+  const [initialSaved] = useState(() => savedPosition ?? (initialFen
+    ? getHistorySnapshot().entries.find((entry) => entry.kind === 'analysis' && entry.fen === startingFen) : undefined));
   const engine = useMemo(() => new TrappyEngine(new UciClient(), new MaiaClient()), []);
   const [importedFen, setImportedFen] = useState(startingFen);
   const [analysisFen, setAnalysisFen] = useState(startingFen);
-  const [orientation, setOrientation] = useState<Color>(savedPosition?.orientation ?? startingFen.split(' ')[1] as Color);
+  const [orientation, setOrientation] = useState<Color>(initialSaved?.orientation ?? startingFen.split(' ')[1] as Color);
   const orientationRef = useRef(orientation); orientationRef.current = orientation;
-  const [settings, setSettings] = useState<TrappySettings>({ ...DEFAULT_ANALYSIS_SETTINGS, ...savedPosition?.settings });
+  const [settings, setSettings] = useState<TrappySettings>({ ...DEFAULT_ANALYSIS_SETTINGS, ...initialSaved?.settings });
   const [searchSettings, setSearchSettings] = useState<TrappySettings>({ ...DEFAULT_ANALYSIS_SETTINGS });
   const [record, setRecord] = useState<AnalysisRecord | null>(null);
   const [busy, setBusy] = useState(false);
@@ -254,7 +257,7 @@ export function AnalysisWorkspace({ initialFen, active = true, savedPosition, on
 
   return <main className={`analysis-workspace technical-analysis${record || busy ? ' has-analysis' : ''}`}>
     <section id="analysis-import" className="research-import-entry" aria-label="Import position for analysis"><PositionImport active={active} variant="analysis" initialOpen={!initialFen} currentFen={viewFen} playerColor={orientation} onLoad={loadAndAnalyze} /></section>
-    <nav className="mobile-analysis-jumps" aria-label="Analysis shortcuts"><a href="#analysis-position">Board &amp; line</a><a href="#analysis-import">Import</a><a href="#analysis-plans">{record ? 'Analysis' : 'Settings'}</a></nav>
+    <nav className="mobile-analysis-jumps" aria-label="Analysis shortcuts"><a href="#analysis-position">Board &amp; line</a><a href="#analysis-import">Import</a><a href="#analysis-plans">Controls</a>{record ? <a href="#analysis-output">Results</a> : null}</nav>
     <section id="analysis-position" className="research-board-column" aria-label="Analysis chessboard and position import">
       <div className="research-board-heading"><h1>{board.isCheckmate() ? 'Checkmate' : board.isDraw() ? 'Drawn position' : `${board.turn() === 'w' ? 'White' : 'Black'} to move`}</h1>
         <span className={`research-pill ${manual || busy ? 'amber' : ''}`}>{manual ? 'Your branch' : busy ? 'Analyzing…' : ply > 0 ? `Tree · ply ${ply}` : 'Position analysis'}</span></div>
@@ -309,6 +312,7 @@ export function AnalysisWorkspace({ initialFen, active = true, savedPosition, on
     </section>
 
     <section id="analysis-plans" className="research-results-column" aria-label="Trap research">
+      {record ? <a className="research-results-jump" href="#analysis-output">View results · move tree &amp; engine internals <ArrowRight size={15} /></a> : null}
       <section className="research-search-controls" aria-label="Analysis settings">
         <div className="research-settings-row"><label>Opponent rating<select aria-label="Analysis opponent rating" value={settings.opponentRating} onChange={(event) => setSettings({ ...settings, opponentRating: Number(event.target.value) })}>
           {![800, 1000, 1200, 1400, 1800, 2200, 2600].includes(settings.opponentRating) ? <option value={settings.opponentRating}>{settings.opponentRating} · custom</option> : null}
@@ -332,7 +336,7 @@ export function AnalysisWorkspace({ initialFen, active = true, savedPosition, on
         {error ? <p className="error-strip" role="alert">{error}</p> : null}
       </section>
 
-      {isBranch ? <section className="research-branch-empty"><GitBranch size={30} /><h2>You’re exploring a new branch</h2><p>The previous analysis belongs to the {analyzedSide} position you started from. Analyze this board to find its own traps and defenses.</p>
+      <div id="analysis-output" className="analysis-output">{isBranch ? <section className="research-branch-empty"><GitBranch size={30} /><h2>You’re exploring a new branch</h2><p>The previous analysis belongs to the {analyzedSide} position you started from. Analyze this board to find its own traps and defenses.</p>
         <button type="button" className="primary-button" onClick={() => void analyze(viewFen, 'progressive')}><Search size={16} /> Analyze this branch</button><button type="button" onClick={restoreAnalysis}>Return to analyzed position</button></section>
         : decision ? <>{ply > 0 ? <div className="analysis-position-context">Reviewing a continuation. Candidate scores refer to the starting {analyzedSide}-to-move position.</div> : null}
           <TrapAnalysisPanel decision={decision} fen={analysisFen} selectedMove={selectedMove} activeLineId={activeLine?.id} activeMoves={activeLine?.moves.slice(0, ply)}
@@ -342,7 +346,7 @@ export function AnalysisWorkspace({ initialFen, active = true, savedPosition, on
               <p>{busy ? 'The first pass finds promising moves. The deeper pass checks defenses and second mistakes.' : 'Import a screenshot, use your webcam, paste a FEN, or move either side on the board.'}</p>
               <p>Compare candidate moves, explore the reply tree, and inspect the engine’s scoring and search telemetry.</p>
               {!busy ? <button type="button" className="example-button" onClick={() => loadAndAnalyze(LEGAL_EXAMPLE, 'w')}><Zap size={16} /> Try Légal’s queen bait <ArrowRight size={16} /></button> : null}
-            </section>}
+            </section>}</div>
     </section>
   </main>;
 }

@@ -20,7 +20,7 @@ export class NodeUci {
     this.ready = (async () => {
       await this.commandUntil('uci', (line) => line === 'uciok');
       this.post('setoption name Hash value 32');
-      this.post('setoption name UCI_ShowWDL value false');
+      this.post('setoption name UCI_ShowWDL value true');
       await this.commandUntil('isready', (line) => line === 'readyok');
     })();
   }

@@ -89,7 +89,7 @@ try {
   await page.waitForFunction((fen) => document.querySelector('[data-testid="analysis-board"]')?.getAttribute('data-fen') === fen, study.fen);
   assert.equal(await page.getByRole('button', { name: 'Analyze', exact: true }).getAttribute('aria-pressed'), 'true');
   await assertBlackView(page.getByTestId('analysis-board'));
-  for (const [label, value] of [['trappiness', '0.65'], ['aggressiveness', '0.85'], ['tension', '0.75'], ['risk tolerance', '150'], ['risk when winning', '30']]) {
+  for (const [label, value] of [['trappiness', '0.65'], ['king attack', '0.85'], ['tension', '0.75'], ['risk tolerance', '150'], ['risk when winning', '30']]) {
     assert.equal(await page.getByLabel(`Analysis ${label}`, { exact: true }).inputValue(), value);
   }
   assert.equal(await page.getByLabel('Analysis opponent rating', { exact: true }).inputValue(), '1400');
@@ -107,7 +107,7 @@ try {
   await assertBlackView(playBoard);
   assert.deepEqual(await page.locator('.workspace-panel:not([hidden]) .move-row').allTextContents(), ['1.e4e5', '2.Nf3Nc6']);
   assert.match(await page.locator('.workspace-panel:not([hidden]) .board-meta').innerText(), /You play White/);
-  for (const [label, value] of [['trappiness', '0.7'], ['aggressiveness', '0.9'], ['tension', '0.8'], ['risk tolerance', '175'], ['risk when winning', '35']]) {
+  for (const [label, value] of [['trappiness', '0.7'], ['king attack', '0.9'], ['tension', '0.8'], ['risk tolerance', '175'], ['risk when winning', '35']]) {
     assert.equal(await page.getByLabel(`Play ${label}`, { exact: true }).inputValue(), value);
   }
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
@@ -125,7 +125,7 @@ try {
   await openHistory(page);
   await page.getByRole('button', { name: 'Resume Evening game', exact: true }).click();
   assert.equal(await page.getByRole('button', { name: 'Stockfish', exact: true }).getAttribute('aria-pressed'), 'true');
-  assert.equal(await page.getByLabel('Play aggressiveness', { exact: true }).count(), 0);
+  assert.equal(await page.getByLabel('Play king attack', { exact: true }).count(), 0);
   assert.deepEqual(await page.locator('.workspace-panel:not([hidden]) .move-row').allTextContents(), ['1.e4e5']);
 
   await page.setViewportSize({ width: 320, height: 850 });

@@ -34,7 +34,7 @@ try {
       assert.ok(row.transport.bottom <= row.height, `${viewport.width}: replay controls must fit with the board`);
     }
   }
-  await page.getByRole('link', { name: /^Plans ·/ }).click();
+  await page.getByRole('link', { name: 'Results', exact: true }).click();
   await page.getByTestId('analysis-reply').first().click();
   const mobileBoard = await page.getByTestId('analysis-board').boundingBox();
   assert.ok(mobileBoard.y >= 0 && mobileBoard.y + mobileBoard.height < 768, 'Selecting a tree move returns mobile users to the visible board');

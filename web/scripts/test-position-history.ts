@@ -43,7 +43,8 @@ const game = new Chess(setup);
 game.move('d5'); game.move('exd5'); game.move('Nf6'); game.move('Nf3');
 const fullFen = game.fen({ forceEnpassantSquare: true });
 const full = position('roundtrip', { fen: fullFen, startFen: setup, pgn: game.pgn(),
-  settings: { ...DEFAULT_TRAPPY_SETTINGS, trappiness: 0.85, aggression: 0.75, tension: 0.9 }, styleEnabled: true });
+  settings: { ...DEFAULT_TRAPPY_SETTINGS, trappiness: 0.85, aggression: 0.75, tension: 0.9,
+    pawnStorm: 0.65, kingCaution: 0.25, sacrifice: 0.8, sharpness: 0.55, queenRetention: 0.45, drawAversion: 0.7, variety: 0.35 }, styleEnabled: true });
 const disk = driver();
 const store = createPositionHistoryStore(disk.boundary);
 assert.equal(store.getHistorySnapshot(), store.getHistorySnapshot(), 'Reads must keep a stable snapshot reference');
@@ -57,6 +58,9 @@ assert.equal(first(store).pgn, game.pgn());
 assert.equal(first(store).orientation, 'b');
 assert.equal(first(store).settings?.aggression, 0.75);
 assert.equal(first(store).settings?.tension, 0.9);
+for (const key of ['pawnStorm', 'kingCaution', 'sacrifice', 'sharpness', 'queenRetention', 'drawAversion', 'variety'] as const) {
+  assert.equal(first(store).settings?.[key], full.settings![key], `${key} must survive storage and resume`);
+}
 assert.equal(first(store).styleEnabled, true);
 assert.equal(store.getHistorySnapshot().warning, undefined);
 const reloaded = createPositionHistoryStore(disk.boundary);
@@ -176,6 +180,8 @@ assert.match(damaged.getHistorySnapshot().warning!, /could not be saved/);
 const unsafeSettings = position('safe-settings', { settings: {
   ...DEFAULT_TRAPPY_SETTINGS, rootDepth: 999, trapDepth: -1, replyCount: 2.6, trappiness: -8,
   aggression: 44, tension: Number.NaN, maxRiskCp: 5000, winningRiskCp: -3,
+  pawnStorm: 9, kingCaution: -2, sacrifice: Number.NaN, sharpness: Number.POSITIVE_INFINITY,
+  queenRetention: 2, drawAversion: -1, variety: 0.8,
   opponentRating: Number.POSITIVE_INFINITY, engineRating: 99, replyCoverage: 0,
   opponentPlies: 4, continuationReplies: 0, continuationBranches: 80, unknown: '<image frame>',
 } as unknown as SavedPosition['settings'] });
@@ -184,6 +190,8 @@ safeStore.savePosition(unsafeSettings);
 const safe = first(safeStore).settings!;
 assert.equal(safe.rootDepth, 30); assert.equal(safe.trapDepth, 1); assert.equal(safe.replyCount, 3);
 assert.equal(safe.trappiness, 0); assert.equal(safe.aggression, 1); assert.equal(safe.tension, 0);
+assert.equal(safe.pawnStorm, 1); assert.equal(safe.kingCaution, 0); assert.equal(safe.sacrifice, 0);
+assert.equal(safe.sharpness, 0); assert.equal(safe.queenRetention, 1); assert.equal(safe.drawAversion, 0); assert.equal(safe.variety, 0.8);
 assert.equal(safe.maxRiskCp, 300); assert.equal(safe.winningRiskCp, 0);
 assert.equal(safe.opponentRating, DEFAULT_TRAPPY_SETTINGS.opponentRating); assert.equal(safe.engineRating, 400);
 assert.equal(safe.replyCoverage, 0.01); assert.equal(safe.opponentPlies, 2);

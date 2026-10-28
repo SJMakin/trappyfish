@@ -52,6 +52,10 @@ try {
   assert.ok(diagnostics.decision.diagnostics.policyCalls > 0);
   assert.ok(diagnostics.decision.diagnostics.rootTrace.length > 0);
   assert.ok(diagnostics.decision.selected.initialScoreCp !== undefined);
+  const wdl = diagnostics.decision.selected.objectiveWdl;
+  assert.ok(wdl && Math.abs(wdl.win + wdl.draw + wdl.loss - 1) < 1e-9, 'Actual Stockfish WDL reaches the exported conservative evaluation');
+  assert.equal(diagnostics.decision.selection.method, 'analysis');
+  assert.equal(diagnostics.decision.selection.temperatureCp, 0, 'Default analysis stays deterministic');
   assert.deepEqual(errors, []);
   await mkdir('artifacts/analysis', { recursive: true });
   await page.screenshot({ path: 'artifacts/analysis/built-analysis-desktop.png', fullPage: true });

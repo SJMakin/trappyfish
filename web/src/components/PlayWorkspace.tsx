@@ -6,6 +6,7 @@ import { UciClient } from '../engine/uci';
 import { MaiaClient } from '../engine/maia';
 import { PositionImport } from './PositionImport';
 import { PlayingStyleControls } from './PlayingStyleControls';
+import { MoveSelectionDetails } from './AnalysisHud';
 import { validatePosition } from '../import/position';
 import { createHistoryId, type SavedPosition } from '../history/positionHistory';
 import { rememberPracticeGame, restorePracticeGame } from '../history/workspaceHistory';
@@ -406,7 +407,23 @@ function DecisionPanel({ decision, trappyEnabled, fen }: { decision: MoveDecisio
     <p className="decision-explanation">Risk vs Stockfish’s best move: <strong>{(decision.selected.riskCp / 100).toFixed(2)} pawns</strong>.
       {decision.policySource === 'maia' ? <> Maia reply coverage: <strong>{formatPercent(decision.selected.policyCoverage)}</strong>.</> : null}</p>
     <p className="muted score-note">Expected score is a model estimate from the engine’s perspective, not a measured win rate.</p>
-    {decision.selected.style && decision.styleApplied ? <p className="muted">Style preference: attack +{decision.selected.style.aggressionBonusCp.toFixed(0)}, tension +{decision.selected.style.tensionBonusCp.toFixed(0)} ranking points. These do not change the evaluation or expected score.</p> : null}
+    {decision.selected.style && decision.styleApplied ? <details className="candidate-details play-style-details">
+      <summary>Playing preference contributions</summary>
+      <dl className="play-style-ledger">{[
+        ['King attack', decision.selected.style.aggressionBonusCp],
+        ['Pawn storms', decision.selected.style.pawnStormBonusCp ?? 0],
+        ['King caution', -(decision.selected.style.kingCautionPenaltyCp ?? 0)],
+        ['Sacrifice appetite', decision.selected.style.sacrificeBonusCp ?? 0],
+        ['Tension', decision.selected.style.tensionBonusCp],
+        ['Queen retention', decision.selected.style.queenRetentionBonusCp ?? 0],
+        ['Sharpness', decision.selected.style.sharpnessBonusCp ?? 0],
+        ['Draw aversion', -(decision.selected.style.drawAversionPenaltyCp ?? 0)],
+      ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{Math.abs(decision.selected.rootScoreCp) >= 90_000 ? 'Bypassed for mate' : `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(1)} pts`}</dd></div>)}</dl>
+      <p className="muted">These are ranking preferences; they do not change objective evaluation or expected utility. Material invested: {decision.selected.style.materialInvestment === undefined ? 'not recorded' : `${decision.selected.style.materialInvestment.toFixed(2)} pawns`}, separate from evaluation risk.</p>
+      {decision.selected.style.sharpnessAvailable === false ? <p className="muted">Sharpness unavailable: no usable human reply distribution.</p> : null}
+      {decision.selected.style.drawAversionAvailable === false ? <p className="muted">Draw aversion unavailable: no Stockfish WDL estimate was reported.</p> : null}
+    </details> : null}
+    <MoveSelectionDetails decision={decision} />
     {decision.policySource === 'maia' && decision.selected.mistakeProbability !== undefined ? <p className="decision-explanation">
       Modeled chance of a mistake worth at least a pawn across the searched replies: <strong>{formatPercent(decision.selected.mistakeProbability)}</strong>.
     </p> : null}

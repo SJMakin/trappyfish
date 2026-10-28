@@ -1,7 +1,10 @@
 export type EngineScore = { type: 'cp' | 'mate'; raw: number; cp: number };
+/** Stockfish's WDL model, in the side-to-move perspective of the searched FEN. */
+export type Wdl = { win: number; draw: number; loss: number };
 export type AnalysisLine = {
   depth: number; multipv: number; score: EngineScore; pv: string[]; firstMove: string; raw: string;
   nodes?: number; nps?: number; timeMs?: number; seldepth?: number; hashfull?: number; tbhits?: number;
+  wdl?: Wdl;
 };
 export type AnalysisResult = {
   bestMove: string; ponder?: string; lines: AnalysisLine[]; linesByDepth: Map<number, AnalysisLine[]>;
@@ -48,7 +51,7 @@ export class UciClient implements AnalysisEngine {
       this.post('uci');
       await handshake;
       this.assertGeneration(generation);
-      this.post('setoption name UCI_ShowWDL value false');
+      this.post('setoption name UCI_ShowWDL value true');
       // Older custom binaries must also produce objective scores when explicitly selected.
       if (this.enginePath.includes('trappyfish')) this.post('setoption name Trappyfish value false');
       await this.isReady();
@@ -163,7 +166,20 @@ export function parseInfoLine(line: string): AnalysisLine | null {
   return { depth: Number(depthMatch[1]), multipv: Number(line.match(/\bmultipv\s+(\d+)/)?.[1] ?? 1),
     score: { type, raw, cp }, pv, firstMove: pv[0], raw: line,
     nodes: infoInteger(line, 'nodes'), nps: infoInteger(line, 'nps'), timeMs: infoInteger(line, 'time'),
-    seldepth: infoInteger(line, 'seldepth'), hashfull: infoInteger(line, 'hashfull'), tbhits: infoInteger(line, 'tbhits') };
+    seldepth: infoInteger(line, 'seldepth'), hashfull: infoInteger(line, 'hashfull'), tbhits: infoInteger(line, 'tbhits'),
+    wdl: parseWdl(line) };
+}
+
+function parseWdl(line: string): Wdl | undefined {
+  // UCI reports integer per-mille counts summing to 1000. Reject partial,
+  // negative, fractional or malformed triples rather than inventing a model.
+  const metadata = line.slice(0, line.indexOf(' pv '));
+  if ((metadata.match(/\bwdl\b/g) ?? []).length !== 1) return undefined;
+  const match = metadata.match(/\bwdl\s+(\d+)\s+(\d+)\s+(\d+)(?=\s+(?:[a-z]|$)|$)/);
+  if (!match) return undefined;
+  const [win, draw, loss] = match.slice(1).map(Number);
+  if (![win, draw, loss].every(Number.isSafeInteger) || win + draw + loss !== 1000) return undefined;
+  return { win: win / 1000, draw: draw / 1000, loss: loss / 1000 };
 }
 
 function infoInteger(line: string, token: string): number | undefined {

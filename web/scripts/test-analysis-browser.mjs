@@ -73,7 +73,8 @@ async function mockEngine(page) {
           window.__analysisCalls ??= [];
           window.__analysisCalls.push({ fen, settings: { ...settings } });
           onProgress?.({ stage: 'root', completed: 0, total: 1, message: 'Finding strong candidate moves with Stockfish…' });
-          await new Promise(resolve => setTimeout(resolve, window.__analysisDelay ?? 150));
+          if (window.__holdAnalysis) await new Promise(resolve => { window.__releaseAnalysis = resolve; });
+          else await new Promise(resolve => setTimeout(resolve, window.__analysisDelay ?? 150));
           if (generation !== this.generation) throw new Error('Engine search cancelled.');
           const board = new Chess(fen);
           if (board.isGameOver()) return { fen, terminal: board.isCheckmate() ? 'checkmate' : 'draw' };
@@ -181,11 +182,13 @@ try {
   assert.equal(await boardFen(page), legal.fen());
 
   // Deepening and cancellation leave the available preview and analyzed board intact.
-  await page.evaluate(() => { window.__analysisDelay = 1000; });
+  await page.evaluate(() => { window.__holdAnalysis = true; });
   await page.getByLabel('Analysis opponent rating', { exact: true }).selectOption('1200');
   await page.getByRole('button', { name: 'Deep', exact: true }).click();
+  await page.waitForFunction(() => typeof window.__releaseAnalysis === 'function');
   await page.getByRole('button', { name: 'Stop', exact: true }).click();
-  await page.waitForTimeout(1100);
+  await page.evaluate(() => { window.__holdAnalysis = false; window.__releaseAnalysis(); delete window.__releaseAnalysis; });
+  await page.waitForTimeout(100);
   assert.equal(await boardFen(page), legal.fen());
   assert.equal(await page.locator('.error-strip').count(), 0);
   await page.evaluate(() => { window.__analysisDelay = 100; });
@@ -202,8 +205,8 @@ try {
   assert.equal((await page.evaluate(() => window.__analysisCalls.at(-1))).settings.opponentRating, 1400);
 
   // Playing preferences are independent and travel with the actual search settings.
-  assert.equal(await page.getByLabel('Analysis aggressiveness', { exact: true }).isVisible(), true);
-  for (const [label, value] of [['Analysis trappiness', 0.9], ['Analysis aggressiveness', 0.8], ['Analysis tension', 0.7],
+  assert.equal(await page.getByLabel('Analysis king attack', { exact: true }).isVisible(), true);
+  for (const [label, value] of [['Analysis trappiness', 0.9], ['Analysis king attack', 0.8], ['Analysis tension', 0.7],
     ['Analysis risk tolerance', 125], ['Analysis risk when winning', 60]]) {
     await page.getByLabel(label, { exact: true }).evaluate((input, value) => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, String(value));

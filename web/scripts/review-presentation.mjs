@@ -26,17 +26,19 @@ try {
    if (label !== 'before') {
     if (metrics.overflow) failures.push(`${mode} ${viewport.width}: horizontal page overflow`);
     if (errors.length) failures.push(`${mode} ${viewport.width}: ${errors.join('; ')}`);
-    if (metrics.styleControls.length !== 5 || metrics.styleControls.some(control => !control.visible)) failures.push(`${mode} ${viewport.width}: all five independent style controls must remain visible`);
+    if (metrics.styleControls.length !== 12 || metrics.styleControls.some(control => !control.visible)) failures.push(`${mode} ${viewport.width}: all twelve independent style controls must remain visible`);
     if (mode === 'play' && viewport.width > 880 && metrics.boardTools?.bottom > viewport.height) failures.push(`Play ${viewport.width}: board actions below viewport (${metrics.boardTools.bottom})`);
     if (mode === 'analysis' && viewport.width <= 780 && metrics.board?.bottom > viewport.height) failures.push(`Analyze ${viewport.width}: initial board should fit in first viewport (${metrics.board?.bottom})`);
     const before = await page.locator('.workspace-panel:not([hidden]) .playing-style-controls input[type="range"]').evaluateAll(elements => elements.map(element => element.value));
-    const aggression = page.getByRole('slider', { name: `${mode === 'play' ? 'Play' : 'Analysis'} aggressiveness`, exact: true });
+    const attackLabel = `${mode === 'play' ? 'Play' : 'Analysis'} king attack`;
+    const attackIndex = metrics.styleControls.findIndex(control => control.label === attackLabel);
+    const aggression = page.getByRole('slider', { name: attackLabel, exact: true });
     await aggression.focus();
     const outline = await aggression.evaluate(element => ({ style: getComputedStyle(element).outlineStyle, width: getComputedStyle(element).outlineWidth }));
     if (outline.style === 'none' || outline.width === '0px') failures.push(`${mode} ${viewport.width}: keyboard control focus missing`);
     await page.keyboard.press('ArrowRight');
     const after = await page.locator('.workspace-panel:not([hidden]) .playing-style-controls input[type="range"]').evaluateAll(elements => elements.map(element => element.value));
-    if (after[1] === before[1] || before.some((value,index) => index !== 1 && value !== after[index])) failures.push(`${mode} ${viewport.width}: style parameters must respond independently to keyboard input`);
+    if (attackIndex < 0 || after[attackIndex] === before[attackIndex] || before.some((value,index) => index !== attackIndex && value !== after[index])) failures.push(`${mode} ${viewport.width}: style parameters must respond independently to keyboard input`);
    }
    await page.close();
   }

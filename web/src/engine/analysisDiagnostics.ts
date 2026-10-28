@@ -1,4 +1,5 @@
 import { expectedScoreToCp, type CandidateInfo, type MoveDecision, type TrappySettings } from './trappy';
+import { styleBonusCp } from './playingStyle';
 
 /** Display-only derivations. These never alter a move score or invent unsearched branches. */
 export function summarizeAnalysisTree(candidates: CandidateInfo[]) {
@@ -25,6 +26,13 @@ export function deriveScoreLedger(decision: MoveDecision, candidate: CandidateIn
   const forcedOutcome = Math.abs(candidate.rootScoreCp) >= 90_000;
   const attackBonus = candidate.style?.aggressionBonusCp ?? 0;
   const tensionBonus = candidate.style?.tensionBonusCp ?? 0;
+  const pawnStormBonus = candidate.style?.pawnStormBonusCp ?? 0;
+  const kingCautionPenalty = candidate.style?.kingCautionPenaltyCp ?? 0;
+  const sacrificeBonus = candidate.style?.sacrificeBonusCp ?? 0;
+  const queenRetentionBonus = candidate.style?.queenRetentionBonusCp ?? 0;
+  const sharpnessBonus = candidate.style?.sharpnessBonusCp ?? 0;
+  const drawAversionPenalty = candidate.style?.drawAversionPenaltyCp ?? 0;
+  const totalStyleBonus = forcedOutcome ? 0 : styleBonusCp(candidate.style);
   // A failed Maia pass may retry with trappiness = 0 while keeping style preferences.
   const weight = decision.policySource === 'stockfish' ? 0 : settings?.trappiness;
   const omittedMass = modeled ? Math.max(0, 1 - candidate.policyCoverage) : undefined;
@@ -34,8 +42,8 @@ export function deriveScoreLedger(decision: MoveDecision, candidate: CandidateIn
   const blendedUtility = modeled && weight !== undefined
     ? candidate.objectiveScore + weight * (candidate.expectedScore - candidate.objectiveScore) : undefined;
   const reconstructedRanking = forcedOutcome ? candidate.rootScoreCp
-    : modeled && blendedUtility !== undefined ? expectedScoreToCp(blendedUtility) + attackBonus + tensionBonus
-    : !modeled ? candidate.rootScoreCp + attackBonus + tensionBonus : undefined;
+    : modeled && blendedUtility !== undefined ? expectedScoreToCp(blendedUtility) + totalStyleBonus
+    : !modeled ? candidate.rootScoreCp + totalStyleBonus : undefined;
   const refinements = candidate.replies.filter((reply) => reply.continuation && reply.continuation.replies.length > 0)
     .map((reply) => ({
       reply: reply.san,
@@ -48,8 +56,9 @@ export function deriveScoreLedger(decision: MoveDecision, candidate: CandidateIn
     }));
   return {
     modeled, forcedOutcome, weight, attackBonus, tensionBonus,
+    pawnStormBonus, kingCautionPenalty, sacrificeBonus, queenRetentionBonus, sharpnessBonus, drawAversionPenalty, totalStyleBonus,
     omittedMass, omittedContribution, searchedContribution, blendedUtility,
-    baseRanking: candidate.adjustedScoreCp - attackBonus - tensionBonus,
+    baseRanking: candidate.adjustedScoreCp - totalStyleBonus,
     reconstructedRanking, refinements,
     // The engine treats two positive mate encodings as zero risk; sentinel distance
     // is not an objective centipawn loss. Keep its recorded risk authoritative.

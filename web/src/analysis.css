@@ -21,6 +21,9 @@
 .research-board-column, .research-results-column { min-width: 0; }
 .research-board-column { grid-area: board; position: sticky; top: 12px; }
 .research-results-column { grid-area: results; }
+.analysis-output { min-width: 0; scroll-margin-top: 60px; }
+.research-results-jump { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 38px; padding: 6px 12px; margin-bottom: 8px; border: 1px solid #c8dbff; border-radius: 6px; background: #eff5ff; color: #1d4ed8; font-size: 12px; font-weight: 600; text-decoration: none; }
+.research-results-jump:hover { background: #e3edff; }
 .research-board-heading, .research-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .research-board-heading { margin-bottom: 8px; min-height: 28px; }
 .eyebrow { display: block; font-size: 10px; font-weight: 750; letter-spacing: .13em; color: #748071; margin-bottom: 6px; }

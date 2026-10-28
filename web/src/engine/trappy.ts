@@ -1,6 +1,6 @@
 import { Chess, type Color, type Move, type Square } from 'chess.js';
-import type { AnalysisResult } from './uci';
-import { scorePlayingStyle, styleBonusCp, type StylePreferences, type StyleScore } from './playingStyle';
+import type { AnalysisLine, AnalysisResult, Wdl } from './uci';
+import { hasPlayingStyle, scorePlayingStyle, styleBonusCp, type StylePreferences, type StyleScore } from './playingStyle';
 
 export type PolicyMove = { move: string; probability: number };
 export interface OpponentPolicyProvider {
@@ -22,6 +22,7 @@ export type ReplyInfo = {
   move: string; san: string; probability: number; scoreCp: number; expectedScore: number;
   lossCp: number; punishment: string[];
   bestDefense?: boolean;
+  wdl?: Wdl;
   continuation?: {
     move: string; san: string; scoreCp: number; expectedScore: number; policyCoverage: number; replies: ReplyInfo[];
     bestDefenseMove?: string;
@@ -41,6 +42,8 @@ export type CandidateInfo = {
   style?: StyleScore;
   /** Unmodified root search evaluation, before stronger defenses tighten the safety baseline. */
   initialScoreCp?: number; rootDepth?: number;
+  objectiveWdl?: Wdl;
+  selectionProbability?: number;
 };
 export type SearchDiagnostics = {
   elapsedMs: number; stockfishCalls: number; policyCalls: number; policyTimeMs: number;
@@ -57,6 +60,10 @@ export type MoveDecision = {
   riskLimitCp?: number;
   styleApplied?: boolean;
   diagnostics?: SearchDiagnostics;
+  selection?: {
+    method: 'best' | 'sampled' | 'analysis'; temperatureCp: number; randomDraw?: number;
+    probabilities: { move: string; probability: number }[];
+  };
 };
 export type AnalysisProgress = {
   stage: 'root' | 'candidates' | 'replies' | 'complete'; message: string;
@@ -71,7 +78,8 @@ type SearchServices = {
 };
 export const DEFAULT_TRAPPY_SETTINGS: TrappySettings = {
   rootDepth: 12, trapDepth: 10, candidateCount: 10, replyCount: 10, trappiness: 1,
-  aggression: 0, tension: 0, maxRiskCp: 100, winningRiskCp: 40,
+  aggression: 0, tension: 0, pawnStorm: 0, kingCaution: 0, sacrifice: 0, sharpness: 0,
+  queenRetention: 0, drawAversion: 0, variety: 0, maxRiskCp: 100, winningRiskCp: 40,
   opponentRating: 1000, engineRating: 2400, replyCoverage: 0.95,
   opponentPlies: 2, continuationReplies: 4, continuationBranches: 3,
 };
@@ -95,7 +103,8 @@ export function expectedScoreToCp(score: number): number {
 /** Maia opponent chance turns around engine-optimal Stockfish continuations. */
 export class TrappyEngine {
   private generation = 0;
-  constructor(private readonly uci: AnalysisEngine, private readonly policy: OpponentPolicyProvider) {}
+  constructor(private readonly uci: AnalysisEngine, private readonly policy: OpponentPolicyProvider,
+    private readonly random: () => number = Math.random) {}
   cancel(): void { this.generation++; this.uci.cancel?.(); }
   terminate(): void { this.cancel(); this.uci.terminate?.(); this.policy.terminate?.(); }
 
@@ -188,14 +197,14 @@ export class TrappyEngine {
     services.recordRootTrace?.(root);
     const rootCandidates = root.lines.filter((line) => legalByUci.has(line.firstMove))
       .map((line) => candidate(legalByUci.get(line.firstMove)!, line.score.cp, line.pv,
-        line.score.type === 'mate' ? line.score.raw : undefined, line.depth));
+        line.score.type === 'mate' ? line.score.raw : undefined, line.depth, lineWdl(line)));
     if (!rootCandidates.length) throw new Error('Stockfish returned no scored legal candidates.');
     rootCandidates.sort((a, b) => b.rootScoreCp - a.rootScoreCp);
     let best = rootCandidates[0];
-    const hasStyle = Boolean(settings.aggression || settings.tension);
-    if (!trappyEnabled || (!options.analysis && ((!settings.trappiness && !hasStyle) || best.rootScoreCp >= 90_000))) {
+    const hasStyle = hasPlayingStyle(settings);
+    if (!trappyEnabled || (!options.analysis && ((!settings.trappiness && !hasStyle && !settings.variety) || best.rootScoreCp >= 90_000))) {
       options.onProgress?.({ stage: 'complete', completed: 1, total: 1, message: 'Stockfish analysis complete.' });
-      return decision(rootCandidates, best, best, 'stockfish');
+      return applySelection(decision(rootCandidates, best, best, 'stockfish'), [best], 0, options.analysis, this.random);
     }
 
     try {
@@ -207,10 +216,7 @@ export class TrappyEngine {
       const additions = new Set(settings.trappiness > 0
         ? normalizePolicy(ownPolicy, legalByUci).slice(0, 4).map((reply) => reply.move) : []);
       if (hasStyle) {
-        const styleCandidates = legal.map((move) => ({ move: moveToUci(move),
-          score: styleBonusCp(scorePlayingStyle(fen, moveToUci(move), [], settings)) }))
-          .sort((a, b) => b.score - a.score || a.move.localeCompare(b.move));
-        styleCandidates.slice(0, 4).forEach(({ move }) => additions.add(move));
+        styleNominees(fen, legal, settings).forEach((move) => additions.add(move));
       }
       for (const move of legal) {
         const copy = new Chess(fen);
@@ -225,12 +231,14 @@ export class TrappyEngine {
           const line = forced.lines.find((entry) => entry.firstMove === move);
           if (!line) throw new Error(`Stockfish did not score candidate ${move}.`);
           rootCandidates.push(candidate(legalByUci.get(move)!, line.score.cp, line.pv,
-            line.score.type === 'mate' ? line.score.raw : undefined, line.depth));
+            line.score.type === 'mate' ? line.score.raw : undefined, line.depth, lineWdl(line)));
         }
       }
       rootCandidates.sort((a, b) => b.rootScoreCp - a.rootScoreCp);
       best = rootCandidates[0];
-      if (!options.analysis && best.rootScoreCp >= 90_000) return decision(rootCandidates, best, best, 'stockfish');
+      if (!options.analysis && best.rootScoreCp >= 90_000) {
+        return applySelection(decision(rootCandidates, best, best, 'stockfish'), [best], 0, false, this.random);
+      }
       let evaluated = rootCandidates.map((entry) => ({ ...entry }));
       const searched = new Set<string>();
       options.onProgress?.({ stage: 'candidates', completed: 0, total: evaluated.length,
@@ -277,9 +285,12 @@ export class TrappyEngine {
         && (best.rootScoreCp < 90_000 || entry.rootScoreCp >= 90_000));
       eligible.sort((a, b) => b.adjustedScoreCp - a.adjustedScoreCp
         || b.rootScoreCp - a.rootScoreCp || a.move.localeCompare(b.move));
-      const result = decision(evaluated, best, eligible[0] ?? best, settings.trappiness > 0 ? 'maia' : 'stockfish');
+      const result = applySelection(decision(evaluated, best, eligible[0] ?? best,
+        settings.trappiness > 0 || (settings.sharpness ?? 0) > 0 ? 'maia' : 'stockfish'),
+        eligible.filter((entry) => entry.analyzed), Math.abs(best.rootScoreCp) >= 90_000 ? 0 : 100 * (settings.variety ?? 0),
+        options.analysis, this.random);
       result.riskLimitCp = riskLimit(best.rootScoreCp, settings);
-      result.styleApplied = hasStyle;
+      result.styleApplied = hasStyle || Boolean(settings.variety);
       if (options.analysis) result.candidates.sort((a, b) => Number(a.status === 'outside-risk') - Number(b.status === 'outside-risk')
         || b.adjustedScoreCp - a.adjustedScoreCp);
       options.onProgress?.({ stage: 'complete', completed: evaluated.length, total: evaluated.length,
@@ -287,9 +298,18 @@ export class TrappyEngine {
       return result;
     } catch (error) {
       check();
-      // Attacking/tension preferences do not require Maia. Preserve them if the model fails.
-      if (settings.trappiness > 0 && hasStyle) {
-        const fallback = await this.searchMove(fen, { ...settings, trappiness: 0 }, true, options, services);
+      // Disable only the unavailable model-derived contributions. Keep positional
+      // preferences and bounded variety, and make unavailable sharpness explicit.
+      if ((settings.trappiness > 0 || (settings.sharpness ?? 0) > 0)
+        && (hasPlayingStyle({ ...settings, sharpness: 0 }) || settings.variety)) {
+        const fallback = await this.searchMove(fen, { ...settings, trappiness: 0, sharpness: 0 }, true, options, services);
+        if (settings.sharpness) {
+          for (const entry of fallback.candidates) if (Math.abs(entry.rootScoreCp) < 90_000) {
+            entry.style = { ...(entry.style ?? scorePlayingStyle(fen, entry.move, entry.pv?.slice(1) ?? [], {})),
+              sharpnessAvailable: false, sharpness: undefined, sharpnessBonusCp: 0 };
+          }
+          fallback.selected = fallback.candidates.find((entry) => entry.move === fallback.move) ?? fallback.selected;
+        }
         fallback.warning = `Human-reply analysis unavailable; using Stockfish and your playing style. ${error instanceof Error ? error.message : String(error)}`;
         return fallback;
       }
@@ -302,7 +322,16 @@ export class TrappyEngine {
         return { ...entry, riskCp, analyzed: false, status: riskCp > riskLimit(best.rootScoreCp, settings)
           ? 'outside-risk' as const : 'objective-only' as const };
       }) : rootCandidates;
-      return decision(fallbackCandidates, best, best, 'stockfish', warning);
+      if (settings.sharpness) {
+        for (const entry of fallbackCandidates) if (Math.abs(entry.rootScoreCp) < 90_000) {
+          entry.style = measuredStyle(scorePlayingStyle(fen, entry.move, entry.pv?.slice(1) ?? [], settings),
+            settings, entry.objectiveWdl);
+          // In this objective fallback no style contribution was applied.
+          entry.style.sharpnessAvailable = false;
+          entry.style.sharpnessBonusCp = 0;
+        }
+      }
+      return applySelection(decision(fallbackCandidates, best, best, 'stockfish', warning), [best], 0, options.analysis, this.random);
     }
   }
 
@@ -313,23 +342,29 @@ export class TrappyEngine {
     if (after.isGameOver()) {
       const scoreCp = after.isCheckmate() ? 100_000 : 0;
       const expectedScore = after.isCheckmate() ? 1 : 0.5;
+      const objectiveWdl = after.isCheckmate() ? { win: 1, draw: 0, loss: 0 } : { win: 0, draw: 1, loss: 0 };
+      const style = after.isCheckmate() ? undefined : measuredStyle(
+        scorePlayingStyle(board.fen(), entry.move, [], settings), settings, objectiveWdl, 0);
       return { ...entry, riskCp, rootScoreCp: scoreCp, objectiveScore: expectedScore, expectedScore,
-        expectedScoreCp: scoreCp, adjustedScoreCp: scoreCp, policyCoverage: 1, analyzed: true, status: 'evaluated',
+        expectedScoreCp: scoreCp, adjustedScoreCp: scoreCp + styleBonusCp(style), objectiveWdl, style,
+        bonusCp: styleBonusCp(style), policyCoverage: 1, analyzed: true, status: 'evaluated',
         rootMate: after.isCheckmate() ? 1 : undefined };
     }
-    if (settings.trappiness === 0) {
+    if (settings.trappiness === 0 && !settings.sharpness) {
       const defense = await services.uci.analyzeFen(after.fen(), Math.max(1, settings.trapDepth - 1), 1);
       check();
       const line = defense.lines[0];
       if (!line) throw new Error('Stockfish returned no scored defense.');
       const baselineCp = Math.min(entry.rootScoreCp, -line.score.cp);
-      const style = Math.abs(baselineCp) >= 90_000 ? undefined : scorePlayingStyle(board.fen(), entry.move, line.pv, settings);
+      const objectiveWdl = conservativeWdl(entry.rootScoreCp, entry.objectiveWdl, -line.score.cp, reverseWdl(lineWdl(line)));
+      const style = Math.abs(baselineCp) >= 90_000 ? undefined
+        : measuredStyle(scorePlayingStyle(board.fen(), entry.move, line.pv, settings), settings, objectiveWdl);
       const adjustedScoreCp = baselineCp + styleBonusCp(style);
       return { ...entry, rootScoreCp: baselineCp, objectiveScore: cpToExpectedScore(baselineCp),
         expectedScore: cpToExpectedScore(baselineCp), expectedScoreCp: baselineCp, adjustedScoreCp,
         riskCp: Math.max(riskCp, entry.rootScoreCp + riskCp - baselineCp), bonusCp: adjustedScoreCp - entry.rootScoreCp,
         analyzed: true, status: 'evaluated', policyCoverage: 0, replies: [], style,
-        pv: [entry.move, ...line.pv], bestDefenseMove: line.firstMove };
+        pv: [entry.move, ...line.pv], bestDefenseMove: line.firstMove, objectiveWdl };
     }
     const legal = new Map(after.moves({ verbose: true }).map((move) => [moveToUci(move), move]));
     const policy = normalizePolicy(await services.policy.predict(after.fen(), settings.opponentRating, settings.engineRating), legal);
@@ -353,6 +388,8 @@ export class TrappyEngine {
     }
     const referenceCp = entry.rootScoreCp + riskCp;
     let baselineCp = Math.min(entry.rootScoreCp, -bestDefense.score.cp);
+    let objectiveWdl = conservativeWdl(entry.rootScoreCp, entry.objectiveWdl,
+      -bestDefense.score.cp, reverseWdl(lineWdl(bestDefense)));
     // A deeper defense can reveal a worse position than the root pass did.
     // Keep the original best-root reference and tighten risk, rather than weakening the limit.
     riskCp = Math.max(riskCp, referenceCp - baselineCp);
@@ -363,7 +400,11 @@ export class TrappyEngine {
       const played = playUci(replied, reply.move)!;
       let scoreCp: number;
       let punishment: string[] = [];
-      if (replied.isGameOver()) scoreCp = replied.isCheckmate() ? -100_000 : 0;
+      let wdl: Wdl | undefined;
+      if (replied.isGameOver()) {
+        scoreCp = replied.isCheckmate() ? -100_000 : 0;
+        wdl = replied.isCheckmate() ? { win: 0, draw: 0, loss: 1 } : { win: 0, draw: 1, loss: 0 };
+      }
       else {
         const result = reply.move === bestDefense.firstMove ? defense
           : await services.uci.analyzeFen(after.fen(), Math.max(1, settings.trapDepth - 1), 1, [reply.move]);
@@ -371,10 +412,11 @@ export class TrappyEngine {
         const line = result.lines.find((line) => line.firstMove === reply.move);
         if (!line) throw new Error(`Stockfish did not score reply ${reply.move}.`);
         scoreCp = -line.score.cp; // Opponent POV -> fixed root mover POV.
+        wdl = reverseWdl(lineWdl(line));
         punishment = line.pv.slice(1);
       }
       replies.push({ ...reply, san: played.san, scoreCp, expectedScore: cpToExpectedScore(scoreCp),
-        lossCp: Math.max(0, scoreCp - baselineCp), punishment, bestDefense: reply.move === bestDefense.firstMove });
+        lossCp: Math.max(0, scoreCp - baselineCp), punishment, wdl, bestDefense: reply.move === bestDefense.firstMove });
     }
     if ((settings.opponentPlies ?? 1) === 2) {
       const branches = [...replies].sort((a, b) => b.probability - a.probability)
@@ -387,7 +429,10 @@ export class TrappyEngine {
     }
     // A forced branch can uncover a stronger defense than the unrestricted finite search.
     // It belongs in the safety baseline regardless of how rarely Maia predicts it.
-    baselineCp = Math.min(baselineCp, ...replies.map((reply) => reply.scoreCp));
+    for (const reply of replies) {
+      objectiveWdl = conservativeWdl(baselineCp, objectiveWdl, reply.scoreCp, reply.wdl);
+      baselineCp = Math.min(baselineCp, reply.scoreCp);
+    }
     objectiveScore = cpToExpectedScore(baselineCp);
     riskCp = Math.max(riskCp, referenceCp - baselineCp);
     for (const reply of replies) reply.lossCp = Math.max(0, reply.scoreCp - baselineCp);
@@ -399,7 +444,8 @@ export class TrappyEngine {
     const expectedScoreCp = expectedScoreToCp(expectedScore);
     const knownDefense = replies.reduce((best, reply) => reply.scoreCp < best.scoreCp ? reply : best);
     const style = Math.abs(baselineCp) >= 90_000 ? undefined
-      : scorePlayingStyle(board.fen(), entry.move, [knownDefense.move, ...knownDefense.punishment], settings);
+      : measuredStyle(scorePlayingStyle(board.fen(), entry.move, [knownDefense.move, ...knownDefense.punishment], settings),
+        settings, objectiveWdl, utilitySharpness(replies, coverage, objectiveScore));
     const adjustedScoreCp = Math.abs(baselineCp) >= 90_000 ? baselineCp : expectedScoreToCp(adjusted) + styleBonusCp(style);
     const trapReply = replies.filter((reply) => (reply.lossCp >= 80 || reply.continuation?.replies.some((next) =>
       next.lossCp >= 80 && next.probability * reply.probability >= 0.005))
@@ -414,7 +460,7 @@ export class TrappyEngine {
         mass + (next.scoreCp - baselineCp >= 100 ? next.probability : 0), 0) ?? 0), 0);
     return { ...entry, riskCp, rootScoreCp: baselineCp, objectiveScore, expectedScore, expectedScoreCp, adjustedScoreCp,
       analyzed: true, status: 'evaluated', bestDefenseMove: bestDefense.firstMove,
-      mistakeProbability, style,
+      mistakeProbability, style, objectiveWdl,
       bonusCp: adjustedScoreCp - entry.rootScoreCp, policyCoverage: coverage, replies,
       trap: trapReply ? { reply: trapReply.move, replySan: trapReply.san, probability: trapReply.probability,
         profitCp: trapReply.lossCp, scoreCp: trapReply.scoreCp,
@@ -440,7 +486,9 @@ export class TrappyEngine {
     if (after.isGameOver()) {
       const scoreCp = after.isCheckmate() ? 100_000 : 0;
       const expectedScore = after.isCheckmate() ? 1 : 0.5;
-      return { ...reply, scoreCp: Math.min(reply.scoreCp, scoreCp), expectedScore,
+      const wdl = scoreCp <= reply.scoreCp
+        ? after.isCheckmate() ? { win: 1, draw: 0, loss: 0 } : { win: 0, draw: 1, loss: 0 } : reply.wdl;
+      return { ...reply, scoreCp: Math.min(reply.scoreCp, scoreCp), expectedScore, wdl,
         continuation: { move: engineMove, san: played.san, scoreCp, expectedScore, policyCoverage: 1, replies: [] } };
     }
     const legal = new Map(after.moves({ verbose: true }).map((move) => [moveToUci(move), move]));
@@ -469,7 +517,11 @@ export class TrappyEngine {
       const move = playUci(board, next.move)!;
       let scoreCp: number;
       let punishment: string[] = [];
-      if (board.isGameOver()) scoreCp = board.isCheckmate() ? -100_000 : 0;
+      let wdl: Wdl | undefined;
+      if (board.isGameOver()) {
+        scoreCp = board.isCheckmate() ? -100_000 : 0;
+        wdl = board.isCheckmate() ? { win: 0, draw: 0, loss: 1 } : { win: 0, draw: 1, loss: 0 };
+      }
       else {
         const result = next.move === bestDefense.firstMove ? defense
           : await services.uci.analyzeFen(after.fen(), depth, 1, [next.move]);
@@ -477,17 +529,24 @@ export class TrappyEngine {
         const line = result.lines.find((row) => row.firstMove === next.move);
         if (!line) throw new Error(`Stockfish did not score second reply ${next.move}.`);
         scoreCp = -line.score.cp;
+        wdl = reverseWdl(lineWdl(line));
         punishment = line.pv.slice(1);
       }
-      replies.push({ ...next, san: move.san, scoreCp, expectedScore: cpToExpectedScore(scoreCp), lossCp: 0, punishment,
+      replies.push({ ...next, san: move.san, scoreCp, expectedScore: cpToExpectedScore(scoreCp), lossCp: 0, punishment, wdl,
         bestDefense: next.move === bestDefense.firstMove });
     }
     const scoreCp = Math.min(reply.scoreCp, -bestDefense.score.cp, ...replies.map((row) => row.scoreCp));
+    let wdl = conservativeWdl(reply.scoreCp, reply.wdl, -bestDefense.score.cp, reverseWdl(lineWdl(bestDefense)));
+    let wdlBaseline = Math.min(reply.scoreCp, -bestDefense.score.cp);
+    for (const next of replies) {
+      wdl = conservativeWdl(wdlBaseline, wdl, next.scoreCp, next.wdl);
+      wdlBaseline = Math.min(wdlBaseline, next.scoreCp);
+    }
     for (const next of replies) next.lossCp = Math.max(0, next.scoreCp - scoreCp);
     coverage = Math.min(1, coverage);
     const expectedScore = replies.reduce((sum, next) => sum + next.probability * next.expectedScore,
       (1 - coverage) * cpToExpectedScore(scoreCp));
-    return { ...reply, scoreCp, expectedScore,
+    return { ...reply, scoreCp, expectedScore, wdl,
       continuation: { move: engineMove, san: played.san, scoreCp, expectedScore, policyCoverage: coverage, replies,
         bestDefenseMove: bestDefense.firstMove } };
   }
@@ -503,11 +562,124 @@ function maxReported(values: (number | undefined)[]): number | undefined {
   return reported.length ? Math.max(...reported) : undefined;
 }
 
-function candidate(move: Move, cp: number, pv: string[] = [moveToUci(move)], rootMate?: number, rootDepth?: number): CandidateInfo {
+function candidate(move: Move, cp: number, pv: string[] = [moveToUci(move)], rootMate?: number, rootDepth?: number,
+  objectiveWdl?: Wdl): CandidateInfo {
   const score = cpToExpectedScore(cp);
   return { move: moveToUci(move), san: move.san, rootScoreCp: cp, adjustedScoreCp: cp, riskCp: 0,
     bonusCp: 0, expectedScoreCp: cp, expectedScore: score, objectiveScore: score, policyCoverage: 0, replies: [],
-    pv: [...pv], rootMate, initialScoreCp: cp, rootDepth, analyzed: false, status: 'objective-only' };
+    pv: [...pv], rootMate, initialScoreCp: cp, rootDepth, objectiveWdl, analyzed: false, status: 'objective-only' };
+}
+
+function lineWdl(line: AnalysisLine): Wdl | undefined {
+  if (line.score.type === 'mate') return line.score.cp > 0
+    ? { win: 1, draw: 0, loss: 0 } : { win: 0, draw: 0, loss: 1 };
+  return line.wdl;
+}
+
+function reverseWdl(wdl?: Wdl): Wdl | undefined {
+  return wdl ? { win: wdl.loss, draw: wdl.draw, loss: wdl.win } : undefined;
+}
+
+function conservativeWdl(cp: number, wdl: Wdl | undefined, nextCp: number, nextWdl?: Wdl): Wdl | undefined {
+  if (nextCp < cp) return nextWdl;
+  // Equally scored verification cannot erase an available model. A known draw
+  // continuation is stronger evidence than a finite-search draw estimate.
+  if (nextCp === cp) return wdl?.draw === 1 && cp === 0 ? wdl : nextWdl ?? wdl;
+  return wdl;
+}
+
+function measuredStyle(style: StyleScore, settings: TrappySettings, wdl?: Wdl, sharpness?: number): StyleScore {
+  return { ...style, sharpness, sharpnessAvailable: sharpness !== undefined,
+    sharpnessBonusCp: 60 * (settings.sharpness ?? 0) * (sharpness ?? 0),
+    drawProbability: wdl?.draw, drawAversionAvailable: wdl !== undefined,
+    drawAversionPenaltyCp: 60 * (settings.drawAversion ?? 0) * (wdl?.draw ?? 0) };
+}
+
+/** Actual policy-weighted utility dispersion; unsearched mass keeps defensive utility.
+ * Nested replies retain their joint probabilities rather than treating the branch
+ * expectation as a deterministic outcome, which would erase second-turn volatility. */
+export function utilitySharpness(replies: ReplyInfo[], coverage: number, baselineUtility: number): number {
+  const outcomes = [{ probability: Math.max(0, 1 - coverage), utility: baselineUtility }];
+  for (const reply of replies) {
+    const continuation = reply.continuation;
+    if (continuation?.replies.length) {
+      outcomes.push({ probability: reply.probability * Math.max(0, 1 - continuation.policyCoverage),
+        utility: cpToExpectedScore(continuation.scoreCp) });
+      for (const next of continuation.replies) outcomes.push({ probability: reply.probability * next.probability,
+        utility: next.expectedScore });
+    } else outcomes.push({ probability: reply.probability, utility: reply.expectedScore });
+  }
+  const mean = outcomes.reduce((sum, row) => sum + row.probability * row.utility, 0);
+  const variance = outcomes.reduce((sum, row) => sum + row.probability * (row.utility - mean) ** 2, 0);
+  return Math.min(1, 2 * Math.sqrt(Math.max(0, variance)));
+}
+
+/** Nominate independently for each active preference, so one strong feature cannot
+ * crowd every other feature out. At most 12 quiet additions share one root search. */
+function styleNominees(fen: string, legal: Move[], settings: TrappySettings): string[] {
+  if (![settings.aggression, settings.tension, settings.pawnStorm, settings.kingCaution,
+    settings.queenRetention, settings.sacrifice].some(Boolean)) return [];
+  const scores = legal.map((move) => ({ move: moveToUci(move),
+    style: scorePlayingStyle(fen, moveToUci(move), [], settings) }));
+  const contributions: (keyof StyleScore)[] = [];
+  if (settings.aggression) contributions.push('aggressionBonusCp');
+  if (settings.tension) contributions.push('tensionBonusCp');
+  if (settings.pawnStorm) contributions.push('pawnStormBonusCp');
+  if (settings.kingCaution) contributions.push('kingCautionPenaltyCp');
+  if (settings.queenRetention) contributions.push('queenRetentionBonusCp');
+  const nominees = new Set<string>();
+  for (const field of contributions) {
+    const featureValues = scores.map((row) => Number(row.style[field]));
+    if (Math.max(...featureValues) - Math.min(...featureValues) < 1e-9) continue;
+    const sign = field === 'kingCautionPenaltyCp' ? -1 : 1;
+    [...scores].sort((a, b) => sign * (Number(b.style[field]) - Number(a.style[field])) || a.move.localeCompare(b.move))
+      .slice(0, 2).forEach((row) => nominees.add(row.move));
+  }
+  if (settings.sacrifice) {
+    const before = new Chess(fen);
+    const own = before.turn();
+    const pieceValue: Record<string, number> = { p: 1, n: 3, b: 3.25, r: 5, q: 9, k: 0 };
+    const offers = legal.map((move) => {
+      const after = new Chess(fen); after.move(move);
+      // This is only candidate discovery: verified PV investment and compensation
+      // decide the eventual sacrifice bonus, never this speculative exposure.
+      const exposed = after.board().flat().reduce((sum, piece) => sum + (piece && piece.color === own
+        && piece.type !== 'k' && after.isAttacked(piece.square, opposite(own))
+        && (piece.square === move.to || !before.isAttacked(piece.square, opposite(own)))
+        ? pieceValue[piece.type] * (piece.square === move.to ? 2 : 1) : 0), 0);
+      return { move: moveToUci(move), exposed };
+    }).sort((a, b) => b.exposed - a.exposed || a.move.localeCompare(b.move));
+    offers.filter((row) => row.exposed > 0).slice(0, 2).forEach((row) => nominees.add(row.move));
+  }
+  return [...nominees].slice(0, 12);
+}
+
+function applySelection(result: MoveDecision, eligible: CandidateInfo[], temperatureCp: number,
+  analysis = false, random: () => number): MoveDecision {
+  const choices = eligible.length ? eligible : [result.selected];
+  const best = choices[0];
+  const weights = choices.map((entry) => temperatureCp > 0
+    ? Math.exp((entry.adjustedScoreCp - best.adjustedScoreCp) / temperatureCp) : Number(entry.move === best.move));
+  const total = weights.reduce((sum, weight) => sum + weight, 0);
+  const probabilities = new Map(choices.map((entry, index) => [entry.move, weights[index] / total]));
+  let selected = best;
+  let randomDraw: number | undefined;
+  if (!analysis && temperatureCp > 0 && choices.length > 1) {
+    randomDraw = Math.min(1 - Number.EPSILON, Math.max(0, random()));
+    if (!Number.isFinite(randomDraw)) throw new Error('Invalid random sample.');
+    let cumulative = 0;
+    selected = choices.at(-1)!;
+    for (const entry of choices) {
+      cumulative += probabilities.get(entry.move)!;
+      if (randomDraw < cumulative) { selected = entry; break; }
+    }
+  }
+  const candidates = result.candidates.map((entry) => ({ ...entry, selectionProbability: probabilities.get(entry.move) ?? 0 }));
+  selected = candidates.find((entry) => entry.move === selected.move) ?? selected;
+  return { ...result, candidates, selected, move: selected.move, san: selected.san,
+    mode: result.policySource === 'maia' && selected.trap ? 'trappy' : 'standard',
+    selection: { method: analysis ? 'analysis' : randomDraw === undefined ? 'best' : 'sampled', temperatureCp, randomDraw,
+      probabilities: candidates.map((entry) => ({ move: entry.move, probability: entry.selectionProbability ?? 0 })) } };
 }
 function decision(candidates: CandidateInfo[], best: CandidateInfo, selected: CandidateInfo,
   policySource: MoveDecision['policySource'], warning?: string): MoveDecision {
@@ -534,7 +706,8 @@ function validateSettings(settings: TrappySettings): void {
   if (![settings.trappiness, settings.maxRiskCp, settings.opponentRating, settings.engineRating, settings.replyCoverage]
     .every(Number.isFinite) || settings.trappiness < 0 || settings.trappiness > 1 || settings.maxRiskCp < 0
     || settings.replyCoverage <= 0 || settings.replyCoverage > 1) throw new Error('Invalid practical engine settings.');
-  for (const field of ['aggression', 'tension'] as const) {
+  for (const field of ['aggression', 'tension', 'pawnStorm', 'kingCaution', 'sacrifice', 'sharpness',
+    'queenRetention', 'drawAversion', 'variety'] as const) {
     const value = settings[field] ?? 0;
     if (!Number.isFinite(value) || value < 0 || value > 1) throw new Error(`Invalid ${field}.`);
   }

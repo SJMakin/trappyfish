@@ -161,32 +161,50 @@ Choose **Play AI**. **Custom style** exposes independent controls, with no style
 | Control | What increasing it does | Default |
 | --- | --- | --- |
 | Trappiness | Favours better expected outcomes against Maia's likely human replies | 100% |
-| Aggressiveness | Favours coordinated king pressure and supported pawn storms | 0% |
+| King attack | Favours coordinated control around the enemy king | 0% |
+| Pawn storms | Favours supported pawn advances on the enemy king's file and adjacent files | 0% |
+| King caution | Penalizes pressure against the AI's own king | 0% |
+| Sacrifice appetite | Rewards verified material investment with increased attack or activity | 0% |
+| Sharpness | Favours greater dispersion in the outcomes of Maia's plausible replies | 0% |
+| Queen retention | Favours keeping the AI's queen through the verified continuation | 0% |
+| Draw aversion | Penalizes Stockfish's reported draw probability | 0% |
+| Variety | Samples eligible moves in Play; Analyze shows the same selection distribution | 0% |
 | Tension | Favours keeping pieces and unresolved pawn/piece exchanges in play | 0% |
 | Risk tolerance | Allows a larger evaluation loss compared with the soundest searched move | 1 pawn |
 | Risk when winning | Sets the additional risk cap at +5 pawns or better; the lower cap applies | 0.40 pawns |
 
-Zero means no preference for that parameter. Turning up aggression or tension does
-not change trappiness, risk limits, ratings, or search depth. Defaults preserve the
-previous trap selection; add attack and tension preferences explicitly to taste.
+Zero means no preference for that parameter. Editing one control never changes
+another control, risk limits, ratings, or search depth. Defaults preserve the
+previous trap selection. The saved `aggression` field now labels King attack;
+pawn storms and own-king caution have independent controls, initially zero.
 **Stockfish** bypasses custom style without resetting the controls. In **Analyze**,
 use the visible **Playing style** controls for recommendations. Each workspace
 keeps its own settings, and edits apply to the next move or analysis search.
 
-Attack and tension are bounded ranking preferences, measured on the candidate and
-up to four plies of its strongest known defense continuation. Attacking pressure
-includes control around the king, coordinated attackers and supported advanced
-pawns, discounted by pressure against the AI's own king. Tension counts retained
-material and unresolved contacts between opposing pawns or defended pieces.
-Discovery also checks up to four moves favoured by these preferences beyond the
-usual shortlist. The analysis score details show each preference's contribution.
+Positional preferences are measured on the candidate and up to four plies of its
+strongest known defense continuation. Discovery nominates moves for each active
+preference separately and also investigates speculative material offers, alongside
+checks, captures and promotions. Sacrifice investment measures net material change
+after the continuation, requiring increased king pressure or piece activity for a
+bonus. Material investment and objective evaluation loss are separate quantities.
 Style points never change objective evaluations, Maia probabilities, or model scores.
 They never enlarge the shared risk limit or displace a known forced win with a
 non-mating move. These are style heuristics, not calibrated playing-strength metrics.
 
-Aggression and tension work with trappiness at zero without loading Maia. If Maia
-fails while these preferences are active, the app retains them with Stockfish
-defense verification and explains the fallback.
+Sharpness uses actual policy-weighted reply outcomes, including conditional second
+replies and omitted mass at the defensive baseline. It loads Maia even with
+trappiness zero. Other positional preferences, draw aversion and variety work
+without Maia. Draw aversion uses real UCI win/draw/loss values, with an explicit
+unavailable state if the engine does not provide them. It never infers draws from
+centipawns. Model failure keeps supported preferences and explains the fallback.
+
+Variety uses a softmax distribution over verified candidates inside the objective
+risk boundary. Zero selects the best ranking deterministically. Analyze always
+recommends the highest-ranked move and displays the corresponding Play sampling
+probabilities; it does not randomly change recommendations between searches.
+The HUD and JSON export expose every style contribution, raw material investment,
+WDL estimates, sampling temperature and eligible-move probabilities. See
+[the exact style mechanisms and bounds](docs/playing-style.md).
 
 The default opponent rating is 1000, with Stockfish root depth 12 and outcome depth
 10. Rating and search budgets remain individually adjustable under Advanced settings.

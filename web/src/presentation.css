@@ -61,7 +61,7 @@ input[type='range'], input[type='checkbox'] { accent-color: var(--ui-accent); }
 .new-game-panel { border-color: var(--ui-border); }
 .keyboard-square:focus-visible { outline-color: var(--ui-accent); }
 
-/* The five style parameters stay visible, with the risk pair grouped by a rule. */
+/* Independent controls stay visible in named groups, including their risk limits. */
 .playing-style-controls { margin-top: 6px; padding: 10px 12px 12px; border-color: var(--ui-border); border-radius: 6px; gap: 12px; }
 .playing-style-controls legend { color: var(--ui-text); font-size: 13px; }
 .playing-style-controls > p, .style-control small { color: var(--ui-muted); font-size: 12px; line-height: 1.45; }
@@ -69,9 +69,14 @@ input[type='range'], input[type='checkbox'] { accent-color: var(--ui-accent); }
 .style-control-heading { color: var(--ui-text); font-size: 12px; gap: 6px; }
 .style-control-heading output { color: #1d4ed8; font-family: Consolas, monospace; font-size: 12px; font-weight: 500; }
 .style-control input[type='range'] { accent-color: var(--ui-accent); min-height: 24px; }
-.style-control-risk { border-top: 1px solid var(--ui-border); padding-top: 10px; }
-.side-panel .playing-style-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.side-panel .playing-style-controls > p, .side-panel .style-control:nth-of-type(3) { grid-column: 1 / -1; }
+.style-control-group { min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px 16px; grid-column: 1 / -1; border-top: 1px solid var(--ui-border); padding-top: 10px; }
+.style-group-pair, .style-risk-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.style-control-group > h4 { grid-column: 1 / -1; margin: 0; color: #475b76; font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.style-control-group .style-control { grid-column: auto; min-width: 0; }
+.style-control-risk { border-top: 0; padding-top: 0; }
+.side-panel .playing-style-controls { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.side-panel .style-control-group { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.side-panel .playing-style-controls > p { grid-column: 1 / -1; }
 .side-panel .style-control small { font-size: 11px; }
 .side-panel .playing-style-controls > p { font-size: 11px; }
 
@@ -100,9 +105,7 @@ input[type='range'], input[type='checkbox'] { accent-color: var(--ui-accent); }
 .research-settings-row > label { font-size: 12px; color: var(--ui-muted); }
 .research-settings-row select { font-size: 13px; }
 .analysis-depth-buttons button { min-height: 38px; font-size: 12px; }
-.technical-analysis .analysis-playing-style .playing-style-controls { grid-template-columns: repeat(6, minmax(0, 1fr)); background: #fff; padding: 9px 12px 10px; gap: 10px 14px; }
-.analysis-playing-style .style-control { grid-column: span 2; }
-.analysis-playing-style .style-control-risk { grid-column: span 3; }
+.technical-analysis .analysis-playing-style .playing-style-controls { grid-template-columns: minmax(0, 1fr); background: #fff; padding: 9px 12px 10px; gap: 10px; }
 .analysis-playing-style > p { color: var(--ui-muted); font-size: 11px; margin-top: 6px; }
 .research-advanced summary, .research-advanced label, .research-advanced > p { color: var(--ui-muted); font-size: 12px; }
 .research-advanced input, .research-advanced select { border-color: var(--ui-border); }
@@ -152,6 +155,16 @@ input[type='range'], input[type='checkbox'] { accent-color: var(--ui-accent); }
 .hud-details > summary, .hud-pipeline-row b { font-size: 12px; }
 .hud-chart-line { stroke: #2563eb; }
 .hud-chart-point { fill: #2563eb; }
+.hud-style-table th:first-child { white-space: normal; min-width: 125px; }
+.hud-style-table th small { display: block; margin-top: 4px; color: var(--ui-muted); font-size: 9px; font-weight: 400; line-height: 1.5; }
+.hud-style-table td { font-variant-numeric: tabular-nums; }
+.decision .move-selection-details { --hud-line: var(--ui-border); --hud-muted: var(--ui-muted); --hud-tint: #f3f6fb; --hud-mono: Consolas, monospace; margin: 12px 0; border-bottom: 1px solid var(--ui-border); }
+.decision .move-selection-details .hud-accounting, .decision .move-selection-details .hud-note, .decision .move-selection-details summary { padding-left: 0; padding-right: 0; }
+.decision .move-selection-details .hud-table-scroll { padding-left: 0; padding-right: 0; }
+.play-style-ledger { margin: 12px 0; display: grid; gap: 6px; }
+.play-style-ledger > div { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; }
+.play-style-ledger dt { color: var(--ui-muted); }
+.play-style-ledger dd { margin: 0; font-family: Consolas, monospace; text-align: right; }
 
 /* The tree is a dedicated, high contrast reading surface. */
 .analysis-move-tree { --tree-edge: #34465e; --tree-muted: #acb9cb; background: #172338; border-color: #293b54; border-radius: var(--ui-radius); color: #e3eaf5; }
@@ -189,9 +202,7 @@ input[type='range'], input[type='checkbox'] { accent-color: var(--ui-accent); }
 }
 @media (max-width: 1100px) and (min-width: 781px) {
   .analysis-workspace { width: calc(100% - 32px); grid-template-columns: minmax(280px, min(40vw, calc(100dvh - 310px))) minmax(0, 1fr); column-gap: 16px; }
-  .technical-analysis .analysis-playing-style .playing-style-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .analysis-playing-style .style-control { grid-column: auto; }
-  .analysis-playing-style .style-control:nth-of-type(3) { grid-column: 1 / -1; }
+  .analysis-playing-style .style-control-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 880px) {
   .workspace-nav { width: min(100% - 24px, 640px); min-height: 58px; flex-wrap: nowrap; gap: 10px; }
@@ -213,13 +224,12 @@ input[type='range'], input[type='checkbox'] { accent-color: var(--ui-accent); }
   .research-board-heading h1 { font-size: 19px; }
   .research-board-tools > button, .research-more-tools > summary { min-height: 44px; }
   .research-search-controls { padding: 12px; }
-  .technical-analysis .analysis-playing-style .playing-style-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .analysis-playing-style .style-control { grid-column: auto; }
-  .analysis-playing-style .style-control:nth-of-type(3) { grid-column: 1 / -1; }
+  .technical-analysis .analysis-playing-style .playing-style-controls { gap: 12px; }
   .analysis-depth-buttons button { min-height: 44px; }
   .console-internals, .console-exploration > .candidate-investigation { scroll-margin-top: 60px; }
 }
 @media (max-width: 440px) {
+  .style-control-group, .side-panel .style-control-group { grid-template-columns: minmax(0, 1fr); }
   .workspace-brand { gap: 6px; font-size: 16px; letter-spacing: -.5px; }
   .workspace-brand > svg { width: 18px; }
   .workspace-switch button { font-size: 12px; gap: 5px; padding: 0 9px; }

@@ -87,3 +87,21 @@ test('Different winning mate distances retain the engine’s zero-risk classific
   assert.equal(ledger.objectiveGapCp, 0);
   assert.equal(ledger.forcedOutcome, true);
 });
+
+test('Every independent style contribution reconstructs the ranking with signed caution and draw penalties', () => {
+  const style = { attackPressure: 0.2, tension: 0.2, aggressionBonusCp: 12, tensionBonusCp: 8,
+    pawnStorm: 0.4, kingExposure: 0.5, materialInvestment: 2, queenRetention: 1,
+    pawnStormBonusCp: 20, kingCautionPenaltyCp: 30, sacrificeBonusCp: 24, queenRetentionBonusCp: 15,
+    sharpness: 0.3, sharpnessBonusCp: 18, drawProbability: 0.4, drawAversionPenaltyCp: 24 };
+  const total = 12 + 8 + 20 - 30 + 24 + 15 + 18 - 24;
+  const row = candidate({ rootScoreCp: 75, adjustedScoreCp: 75 + total, style });
+  const ledger = deriveScoreLedger(decision(row, { policySource: 'stockfish' }), row, DEFAULT_ANALYSIS_SETTINGS);
+  near(ledger.totalStyleBonus, total);
+  near(ledger.kingCautionPenalty, 30);
+  near(ledger.drawAversionPenalty, 24);
+  near(ledger.sacrificeBonus, 24);
+  near(ledger.sharpnessBonus, 18);
+  near(ledger.baseRanking, 75);
+  near(ledger.reconstructedRanking, row.adjustedScoreCp);
+  assert.equal(row.rootScoreCp, 75, 'Display derivations must not alter the objective evaluation');
+});

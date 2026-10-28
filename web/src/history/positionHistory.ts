@@ -59,7 +59,7 @@ function cleanSettings(input: unknown, kind: SavedPosition['kind']): TrappySetti
   const defaults = kind === 'analysis' ? DEFAULT_ANALYSIS_SETTINGS : DEFAULT_TRAPPY_SETTINGS;
   const number = (key: keyof TrappySettings, min: number, max: number, integer = false): number => {
     const raw = input[key];
-    const safe = typeof raw === 'number' && Number.isFinite(raw) ? raw : defaults[key] as number;
+    const safe = typeof raw === 'number' && Number.isFinite(raw) ? raw : (defaults[key] as number | undefined) ?? 0;
     const bounded = Math.max(min, Math.min(max, safe));
     return integer ? Math.round(bounded) : bounded;
   };
@@ -67,6 +67,9 @@ function cleanSettings(input: unknown, kind: SavedPosition['kind']): TrappySetti
     rootDepth: number('rootDepth', 1, 30, true), trapDepth: number('trapDepth', 1, 30, true),
     candidateCount: number('candidateCount', 1, 30, true), replyCount: number('replyCount', 1, 30, true),
     trappiness: number('trappiness', 0, 1), aggression: number('aggression', 0, 1), tension: number('tension', 0, 1),
+    pawnStorm: number('pawnStorm', 0, 1), kingCaution: number('kingCaution', 0, 1), sacrifice: number('sacrifice', 0, 1),
+    sharpness: number('sharpness', 0, 1), queenRetention: number('queenRetention', 0, 1),
+    drawAversion: number('drawAversion', 0, 1), variety: number('variety', 0, 1),
     maxRiskCp: number('maxRiskCp', 0, 300), winningRiskCp: number('winningRiskCp', 0, 300),
     opponentRating: number('opponentRating', 400, 3000, true), engineRating: number('engineRating', 400, 3000, true),
     replyCoverage: number('replyCoverage', 0.01, 1), opponentPlies: input.opponentPlies === 1 ? 1 : 2,

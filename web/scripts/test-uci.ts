@@ -35,6 +35,17 @@ assert.equal(parseInfoLine('info depth 8 score cp 43 upperbound pv e2e4'), null)
 assert.equal(parseInfoLine('info depth 8 score mate -2 pv a1a2')!.score.cp, -99_800);
 assert.equal(parseInfoLine('info depth 8 score mate 1 pv a1a2')!.score.cp, 99_900);
 assert.equal(parseInfoLine('info string hello'), null);
+assert.deepEqual(parseInfoLine('info depth 8 score cp 43 wdl 200 700 100 pv e2e4')!.wdl,
+  { win: 0.2, draw: 0.7, loss: 0.1 });
+assert.deepEqual(parseInfoLine('info depth 8 score cp -43 wdl 0 0 1000 nodes 10 pv e2e4')!.wdl,
+  { win: 0, draw: 0, loss: 1 });
+for (const invalid of ['-1 901 100', '100 800 99', '100.5 800 99.5', '1e2 800 100', '100 800',
+  '100 800 100 50', '100 1000 100', 'NaN 800 100', '100 800 100 wdl 200 700 100']) {
+  assert.equal(parseInfoLine(`info depth 8 score cp 43 wdl ${invalid} pv e2e4`)!.wdl, undefined,
+    `Malformed WDL must stay unavailable: ${invalid}`);
+}
+assert.equal(parseInfoLine('info depth 8 score cp 43 pv e2e4')!.wdl, undefined);
+assert.equal(parseInfoLine('info depth 8 score cp 43 pv e2e4 wdl 100 800 100')!.wdl, undefined);
 const counters = parseInfoLine('info depth 18 seldepth 31 multipv 2 score cp -43 nodes 1234567 nps 987654 hashfull 12 tbhits 7 time 1250 pv e2e4 e7e5')!;
 assert.deepEqual({ nodes: counters.nodes, nps: counters.nps, timeMs: counters.timeMs,
   seldepth: counters.seldepth, hashfull: counters.hashfull, tbhits: counters.tbhits },
@@ -52,6 +63,7 @@ assert.equal(result.lines.length, 2, 'retain the last complete MultiPV iteration
 assert.equal(result.lines[0].depth, 6);
 const first = FakeWorker.instances[0];
 assert.ok(first.commands.includes('setoption name Trappyfish value false'));
+assert.ok(first.commands.includes('setoption name UCI_ShowWDL value true'));
 assert.ok(first.commands.includes('setoption name Clear Hash'));
 await assert.rejects(engine.analyzeFen(fen + '\nquit', 7), /Invalid/);
 await assert.rejects(engine.analyzeFen(fen, 7, 1, ['e2e4\nquit']), /Invalid/);
