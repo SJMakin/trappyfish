@@ -10,7 +10,7 @@ import { PlaySettings } from './PlaySettings';
 import { OpeningBrowser } from './OpeningBrowser';
 import { GameReview } from './GameReview';
 import { getOpening, matchingBookMoves, compatibleOpeningIds, loadFavouriteIds, type Opening } from '../openings/library';
-import { DEFAULT_PLAY_SETTINGS, identifySearchProfile, applySearchProfile } from '../play/searchProfiles';
+import { initialPlaySettings, identifySearchProfile, applySearchProfile } from '../play/searchProfiles';
 import { publicActivity, type PlayActivity } from '../play/activity';
 import { loadOpeningDefault, saveOpeningDefault } from '../play/openingDefault';
 import { writeDecisionTrace, recordTraceReply, pruneDecisionTraces } from '../history/decisionTraces';
@@ -18,7 +18,7 @@ import { validatePosition } from '../import/position';
 import { createHistoryId, type SavedPosition, type GameOpening, type GameResult } from '../history/positionHistory';
 import { rememberPracticeGame, restorePracticeGame } from '../history/workspaceHistory';
 import {
-  DEFAULT_TRAPPY_SETTINGS, TrappyEngine, moveToUci, opposite, playUci, squarePairFromUci,
+  TrappyEngine, moveToUci, opposite, playUci, squarePairFromUci,
   type TrappySettings,
 } from '../engine/trappy';
 
@@ -44,8 +44,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   const [newGameOpen, setNewGameOpen] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [trappyEnabled, setTrappyEnabled] = useState(savedPosition?.styleEnabled ?? true);
-  const [settings, setSettings] = useState<TrappySettings>(savedPosition?.settings
-    ? { ...DEFAULT_TRAPPY_SETTINGS, ...savedPosition.settings } : { ...DEFAULT_PLAY_SETTINGS });
+  const [settings, setSettings] = useState<TrappySettings>(() => initialPlaySettings(savedPosition));
   const [opening, setOpening] = useState<GameOpening | undefined>(savedPosition?.opening);
   const [result, setResult] = useState<GameResult | undefined>(savedPosition?.result ?? naturalResult(initialGame));
   const [reviewFen, setReviewFen] = useState<string>();

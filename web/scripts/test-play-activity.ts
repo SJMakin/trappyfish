@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { publicActivity } from '../src/play/activity';
-import { applySearchProfile, DEFAULT_PLAY_SETTINGS, identifySearchProfile } from '../src/play/searchProfiles';
+import { applySearchProfile, DEFAULT_PLAY_SETTINGS, identifySearchProfile, initialPlaySettings } from '../src/play/searchProfiles';
 
 const activity = publicActivity({ stage: 'replies', message: 'SECRET Qh4#', candidate: 'e7e5', completed: 2, total: 8,
   diagnostics: { elapsedMs: 1240, stockfishCalls: 6, policyCalls: 2, policyTimeMs: 5, nodes: 12345, maxDepth: 12,
@@ -15,5 +15,9 @@ for (const name of ['Quick', 'Deep'] as const) {
   assert.equal(identifySearchProfile({ ...changed, rootDepth: 11 }), 'Custom');
 }
 assert.equal(DEFAULT_PLAY_SETTINGS.continuationCandidates, 2);
+assert.equal(initialPlaySettings().continuationCandidates, 2);
+assert.equal(initialPlaySettings({}).continuationCandidates, 1, 'Legacy games without settings retain single-continuation behavior');
+assert.equal(initialPlaySettings({ settings: { ...DEFAULT_PLAY_SETTINGS, continuationCandidates: undefined } }).continuationCandidates, 1);
+assert.equal(initialPlaySettings({ settings: DEFAULT_PLAY_SETTINGS }).continuationCandidates, 2);
 assert.equal(identifySearchProfile({ ...DEFAULT_PLAY_SETTINGS, continuationCandidates: undefined }), 'Custom', 'Old saves do not silently acquire wider continuations');
 console.log('Play activity privacy and explicit search budgets passed.');

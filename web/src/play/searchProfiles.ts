@@ -22,3 +22,9 @@ export function identifySearchProfile(settings: TrappySettings): SearchProfile {
   return 'Custom';
 }
 export const DEFAULT_PLAY_SETTINGS = applySearchProfile(DEFAULT_TRAPPY_SETTINGS, 'Deep');
+
+/** Missing legacy fields keep the historical width even when a whole settings record is absent. */
+export function initialPlaySettings(savedGame?: { settings?: TrappySettings }): TrappySettings {
+  return savedGame ? { ...DEFAULT_TRAPPY_SETTINGS, ...savedGame.settings,
+    continuationCandidates: savedGame.settings?.continuationCandidates ?? 1 } : { ...DEFAULT_PLAY_SETTINGS };
+}
