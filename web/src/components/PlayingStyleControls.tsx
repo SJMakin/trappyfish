@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { TrappySettings } from '../engine/trappy';
+import { StyleExamples } from './StyleExamples';
 
 export function PlayingStyleControls({ settings, onChange, disabled = false, context }: {
   settings: TrappySettings; onChange: (settings: TrappySettings) => void; disabled?: boolean; context: 'Play' | 'Analysis';
@@ -55,5 +56,6 @@ export function PlayingStyleControls({ settings, onChange, disabled = false, con
     </label>
     </section>
     <p>All preferences and variety share these risk limits. Sacrificed material is separate from evaluation loss. Forced mates take priority.</p>
+    <StyleExamples />
   </fieldset>;
 }

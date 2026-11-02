@@ -76,7 +76,7 @@ export function PositionHistory({ onResume }: PositionHistoryProps) {
   const renameId = useId();
   const query = search.trim().toLocaleLowerCase();
   const visible = entries.filter((entry) => (kind === 'all' || entry.kind === kind)
-    && (!query || `${entry.name} ${entry.kind} ${entry.fen}`.toLocaleLowerCase().includes(query)));
+    && (!query || `${entry.name} ${entry.kind} ${entry.fen} ${entry.opening?.name ?? ''} ${entry.opening?.eco ?? ''}`.toLocaleLowerCase().includes(query)));
 
   const saveName = (event: FormEvent) => {
     event.preventDefault();
@@ -125,8 +125,8 @@ export function PositionHistory({ onResume }: PositionHistoryProps) {
           {visible.map((entry) => <article className="history-entry" key={entry.id} data-history-id={entry.id}>
             <PositionThumbnail entry={entry} />
             <div className="history-entry-info">
-              <div className="history-entry-heading"><h3 title={entry.name}>{entry.name}</h3><span className="history-kind">{entry.kind === 'game' ? 'Game' : 'Analysis'}</span></div>
-              <p>{positionDescription(entry)}</p>
+              <div className="history-entry-heading"><h3 title={entry.name}>{entry.name}</h3><span className="history-kind">{entry.result ? 'Ended' : entry.kind === 'game' ? 'Game' : 'Analysis'}</span></div>
+              <p>{entry.opening ? `${entry.opening.eco ? `${entry.opening.eco} · ` : ''}${entry.opening.name}` : positionDescription(entry)}</p>
               <time dateTime={new Date(entry.updatedAt).toISOString()}>Saved {dateLabel(entry.updatedAt)}</time>
             </div>
             {renaming === entry.id ? <form className="history-rename-form" onSubmit={saveName}>
@@ -135,10 +135,10 @@ export function PositionHistory({ onResume }: PositionHistoryProps) {
               <div><button type="submit" disabled={!name.trim()}>Save name</button>
                 <button type="button" aria-label="Cancel rename" onClick={() => setRenaming(undefined)}><X size={16} aria-hidden="true" /> Cancel</button></div>
             </form> : <div className="history-entry-actions">
-              <button type="button" className="history-resume" aria-label={`Resume ${entry.name}`} onClick={() => {
+              <button type="button" className="history-resume" aria-label={`${entry.result ? 'Review' : 'Resume'} ${entry.name}`} onClick={() => {
                 onResume(entry); if (history.current) history.current.open = false;
               }}>
-                <ArrowUpRight size={16} aria-hidden="true" /> Resume
+                <ArrowUpRight size={16} aria-hidden="true" /> {entry.result ? 'Review game' : 'Resume'}
               </button>
               <button type="button" className="history-icon-button" aria-label={`Rename ${entry.name}`} title="Rename" onClick={() => { setRenaming(entry.id); setName(entry.name); }}><Pencil size={15} aria-hidden="true" /></button>
               <button type="button" className="history-icon-button" aria-label={`Delete ${entry.name}`} title="Delete" onClick={() => removePosition(entry.id)}><Trash2 size={15} aria-hidden="true" /></button>

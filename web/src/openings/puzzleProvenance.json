@@ -1,0 +1,8 @@
+{
+  "source": "https://database.lichess.org/lichess_db_puzzle.csv.zst",
+  "license": "CC0-1.0",
+  "acquiredAt": "2026-11-01T23:10:29.960764+00:00",
+  "subsetSha256": "d4da7c9ed998a7f20d4c1541bd671801d414e45f19e0c1b37a8909ed017f1cda",
+  "rows": 6,
+  "notes": "Pinned source rows; first Moves entry must be applied before presenting the solver position. Lichess motif labels, not independently inferred labels."
+}

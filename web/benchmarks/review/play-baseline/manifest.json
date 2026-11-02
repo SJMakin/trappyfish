@@ -1,0 +1,46 @@
+{
+  "release": "83483e3c19632ed30490d22630dbd78dda389f33",
+  "capturedUtc": "2026-11-01T23:06:31.7161505Z",
+  "files": [
+    {
+      "name": "analysisDiagnostics.ts",
+      "sha256": "dfcd7b7cdedad0b9bc94352b4bec2ff11b594cceadca21cf8c09ca97e5b60464"
+    },
+    {
+      "name": "analysisLines.ts",
+      "sha256": "8a376106724bfc7d570f2788dc8712f803d24714bda2884dd017100535418928"
+    },
+    {
+      "name": "analysisTree.ts",
+      "sha256": "ae7e6f8faca5401a231e58e2296868408ca98f426e785790f711ffd2a2a20ab1"
+    },
+    {
+      "name": "maia.ts",
+      "sha256": "d2880f12b740e6e4fa9baca338fcbbec46b82e6fac881885577bc333812e234a"
+    },
+    {
+      "name": "maia.worker.ts",
+      "sha256": "f93b03e3b7087dc457de36e941cbe76da96fc69686d0b64700ecaf15cd22d983"
+    },
+    {
+      "name": "maiaEncoding.ts",
+      "sha256": "5796f28b9a975cd50e6dd05ce4ba9f0f22c31e8d05ba9c81c3880ba5bc8fec98"
+    },
+    {
+      "name": "package-lock.json",
+      "sha256": "a1ddabddc44c970f14abf1d14c7a7025b053b9bb0ed72f3f14f0eadb9c955aff"
+    },
+    {
+      "name": "playingStyle.ts",
+      "sha256": "7335b715689a1f0edaedf23f54f972817aadd8f7f62874b97057e983dda1d4ab"
+    },
+    {
+      "name": "trappy.ts",
+      "sha256": "5a00afc8c62545fd8c75bf6723c71c919032f0d53c4745bb182eb7e497054611"
+    },
+    {
+      "name": "uci.ts",
+      "sha256": "b56e189981ed113f1da0252caaca146988cd52f328f508d43f14838bc9c5ab90"
+    }
+  ]
+}

@@ -149,14 +149,18 @@ a search while keeping completed results. Quick results remain usable during Dee
 Results retain their original settings, and late results cannot overwrite a newly
 loaded position. Searches cancel when their workspace is hidden.
 
-The search has a finite horizon and follows one Stockfish-optimal engine continuation
-between opponent turns. It does not search every possible long trap. Maia describes
+The search has a finite horizon. The explicit engine-continuation control compares
+one or two own moves between modeled opponent turns, each with defensive verification.
+It does not search every possible long trap. Maia describes
 population choices, not a guarantee about a particular player. If Maia fails,
 objective Stockfish lines remain available with an explicit warning.
 
 ## Practice against the AI
 
-Choose **Play AI**. **Custom style** exposes independent controls, with no style presets:
+Choose **Play AI**. The fish rival reacts to committed checks, captures and results.
+Its activity panel shows real search phases, nodes, depth and model calls, with no
+move names, evaluations or tactical tells. Open **Opponent settings** for independent
+controls, with no style presets:
 
 | Control | What increasing it does | Default |
 | --- | --- | --- |
@@ -206,16 +210,40 @@ The HUD and JSON export expose every style contribution, raw material investment
 WDL estimates, sampling temperature and eligible-move probabilities. See
 [the exact style mechanisms and bounds](docs/playing-style.md).
 
-The default opponent rating is 1000, with Stockfish root depth 12 and outcome depth
-10. Rating and search budgets remain individually adjustable under Advanced settings.
+The default human reply model is 1000. New games use **Deep**: root/outcome depth
+12/10, 10 candidates and 10 first replies, two opponent turns, three refined first
+replies, four follow-up replies and two own continuations per refined branch.
+**Quick** uses 12/8, eight candidates/eight replies and one opponent turn. Both
+target 95% reply coverage. Every budget is visible and editable; editing values
+labels the budget Custom. Budget choices never change style, risk or ratings.
+Existing games retain their exact settings, including the original one-continuation
+behavior when that setting was absent.
 
-In the game's **Play** view, current predictions, evaluations, and trap arrows stay
-hidden. Post-move review contains committed facts only, so a saved two-turn plan
-cannot reveal a still-live trap. The game's explicit **Analysis** view reveals
-current and saved plans. Both workspaces preserve their positions when switching.
+Tactical explanations open only after checkmate, draw, **Resign & review**, or
+**End unfinished game & review**. The full move timeline and key moments retain
+original decisions, considered bait, actual replies, strongest recorded defenses,
+preference contributions and searched trees. Reweighting is explicitly limited to
+the retained searched candidates. Fresh analysis opens separately and does not
+rewrite the historical decision. Ended games reopen as reviews from local history.
+Decision traces use IndexedDB with a 20 MiB cap; oldest traces can expire while the
+saved PGN remains intact. See [game history and review](docs/game-history.md).
+
+**Explore openings** searches the complete pinned CC0 Lichess catalogue and five
+original trap studies. Preview branches, save local favourites, start at the preview
+position with its PGN prefix, or play into a line from the initial board. Favourites
+can be the explicit default for new games. Book moves receive normal defensive
+verification and yield to forced mate or the risk limit. After a deviation, continue
+freely or request opening guidance and rewind. Guidance is the only deliberate
+midgame move suggestion. Optional human statistics require a request to Lichess;
+offline search and gameplay never make those requests. See [data sources](docs/opening-data.md).
+
+Both workspaces include recorded zero/middle/maximum examples for every control,
+including unchanged choices and a separate fixed-pool comparison. The full
+[behavior calibration](docs/play-calibration.md) distinguishes search-only preparation,
+book-assisted preparation, supplied-mistake punishment and short paired games.
 
 Tap, click, drag, or use the keyboard to move; promotion offers all four pieces.
-**Flip board** preserves the position. **New game** asks for a color before resetting.
+**Flip board** preserves the position. **New game** exposes color, opening and budget before resetting.
 The analysis workspace's **Play from here** explicitly starts practice from its
 currently viewed position.
 
@@ -237,6 +265,8 @@ npm run test:ux
 npm run test:privacy
 npm run test:webcam
 npm run test:history
+npm run test:play
+npm run test:openings-browser
 ```
 
 `test:analysis` includes deterministic interaction checks and a real screenshot →
@@ -249,6 +279,12 @@ screenshot-to-analysis flow with real recognition and engines, without developme
 `test:maia` checks real Node/browser inference parity.
 `test:game` runs two short seeded games against real Maia-1000 choices; it does not
 measure playing strength.
+
+`npm run test:play-ui` starts an isolated dev server and runs Play, opening and
+privacy checks serially. `npm run test:pages` verifies the built Pages path with
+real recognition, analysis, trap selection and punishment. `npm run calibrate:play`
+resumes the full source-hashed release corpus, control examples and paired games;
+this is deliberately separate from fast deterministic tests.
 
 Build preparation copies installed Stockfish and fenshot assets into `public`.
 The Maia and screenshot models load locally when their features are used.

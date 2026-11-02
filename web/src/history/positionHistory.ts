@@ -1,7 +1,14 @@
 import { Chess, type Color } from 'chess.js';
 import { DEFAULT_ANALYSIS_SETTINGS, DEFAULT_TRAPPY_SETTINGS, type TrappySettings } from '../engine/trappy';
 import { validatePosition } from '../import/position';
+import { removeDecisionTraces, retainDecisionTraces } from './decisionTraces';
 
+export type GameOpening = {
+  id: string; name: string; eco?: string; startPly?: number; bookIds?: string[]; bookExitReason?: string;
+};
+export type GameResult = {
+  reason: 'resigned' | 'unfinished' | 'checkmate' | 'draw'; winner?: Color;
+};
 export type SavedPosition = {
   id: string;
   kind: 'analysis' | 'game';
@@ -13,6 +20,9 @@ export type SavedPosition = {
   pgn?: string;
   settings?: TrappySettings;
   styleEnabled?: boolean;
+  opening?: GameOpening;
+  result?: GameResult;
+  searchProfile?: 'quick' | 'deep' | 'custom';
   createdAt: number;
   updatedAt: number;
 };
@@ -43,8 +53,8 @@ function color(input: unknown): input is Color { return input === 'w' || input =
 function time(input: unknown): input is number {
   return typeof input === 'number' && Number.isSafeInteger(input) && input >= 0 && input <= 8_640_000_000_000_000;
 }
-function cleanName(input: unknown, fallback: string): string {
-  return typeof input === 'string' ? input.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, 100) || fallback : fallback;
+function cleanName(input: unknown, fallback: string, maxLength = 100): string {
+  return typeof input === 'string' ? input.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, maxLength) || fallback : fallback;
 }
 function cleanFen(input: unknown): string | undefined {
   if (typeof input !== 'string' || input.length > 200) return;
@@ -75,6 +85,9 @@ function cleanSettings(input: unknown, kind: SavedPosition['kind']): TrappySetti
     replyCoverage: number('replyCoverage', 0.01, 1), opponentPlies: input.opponentPlies === 1 ? 1 : 2,
     continuationReplies: number('continuationReplies', 1, 10, true),
     continuationBranches: number('continuationBranches', 1, 10, true),
+    // Existing games retain the historical single-continuation search.
+    continuationCandidates: typeof input.continuationCandidates === 'number' && Number.isFinite(input.continuationCandidates)
+      ? number('continuationCandidates', 1, 2, true) : 1,
   };
 }
 
@@ -91,6 +104,18 @@ function cleanPosition(input: unknown): { entry?: SavedPosition; repaired?: bool
   };
   if (color(input.playerColor)) entry.playerColor = input.playerColor;
   if (typeof input.styleEnabled === 'boolean') entry.styleEnabled = input.styleEnabled;
+  if (input.searchProfile === 'quick' || input.searchProfile === 'deep' || input.searchProfile === 'custom') entry.searchProfile = input.searchProfile;
+  if (input.kind === 'game' && record(input.opening) && typeof input.opening.id === 'string' && typeof input.opening.name === 'string') {
+    entry.opening = { id: input.opening.id.slice(0, 160), name: cleanName(input.opening.name, 'Opening', 240) };
+    if (typeof input.opening.eco === 'string' && /^[A-E][0-9]{2}$/.test(input.opening.eco)) entry.opening.eco = input.opening.eco;
+    if (typeof input.opening.startPly === 'number' && Number.isSafeInteger(input.opening.startPly) && input.opening.startPly >= 0 && input.opening.startPly <= 1000) entry.opening.startPly = input.opening.startPly;
+    if (Array.isArray(input.opening.bookIds)) entry.opening.bookIds = [...new Set(input.opening.bookIds.filter((id): id is string => typeof id === 'string' && id.length <= 160))];
+    if (typeof input.opening.bookExitReason === 'string') entry.opening.bookExitReason = cleanName(input.opening.bookExitReason, 'Opening line left');
+  }
+  if (input.kind === 'game' && record(input.result) && ['resigned', 'unfinished', 'checkmate', 'draw'].includes(String(input.result.reason))) {
+    entry.result = { reason: input.result.reason as GameResult['reason'] };
+    if (color(input.result.winner)) entry.result.winner = input.result.winner;
+  }
   if (input.startFen !== undefined) {
     entry.startFen = cleanFen(input.startFen);
     if (!entry.startFen) repaired = true;
@@ -154,7 +179,9 @@ function samePosition(a: SavedPosition, b: SavedPosition): boolean {
   return a.id === b.id && a.kind === b.kind && a.name === b.name && a.fen === b.fen
     && a.orientation === b.orientation && a.playerColor === b.playerColor && a.startFen === b.startFen
     && a.pgn === b.pgn && a.styleEnabled === b.styleEnabled && a.createdAt === b.createdAt
-    && JSON.stringify(a.settings) === JSON.stringify(b.settings);
+    && JSON.stringify(a.settings) === JSON.stringify(b.settings)
+    && JSON.stringify(a.opening) === JSON.stringify(b.opening) && JSON.stringify(a.result) === JSON.stringify(b.result)
+    && a.searchProfile === b.searchProfile;
 }
 
 export function createPositionHistoryStore(driver: HistoryDriver) {
@@ -250,7 +277,15 @@ const browserStore = createPositionHistoryStore({
   },
 });
 
-export const { getHistorySnapshot, subscribeHistory, savePosition, renamePosition, removePosition, clearPositionHistory } = browserStore;
+export const { getHistorySnapshot, subscribeHistory, savePosition, renamePosition } = browserStore;
+export function removePosition(id: string): void {
+  browserStore.removePosition(id);
+  void removeDecisionTraces(id);
+}
+export function clearPositionHistory(): void {
+  browserStore.clearPositionHistory();
+  void retainDecisionTraces([]);
+}
 export function createHistoryId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `position_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
 }

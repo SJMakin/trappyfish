@@ -1,0 +1,927 @@
+{
+  "provenance": {
+    "engineSha256": "6fd4c47d72955aaa36d75a74680732fb3d930ff490965827ceaf31cdcbc8b439",
+    "styleSha256": "7335b715689a1f0edaedf23f54f972817aadd8f7f62874b97057e983dda1d4ab",
+    "modelSha256": "f7bd01b3e41dceb5e93eb9f4c61e9c4db8b35411effd1d8c984b006cd74bb804",
+    "stockfishSha256": "a8fbc05ec6920b56d7485826dcb02c5ffd2826bcbf751cf973046f237a9096f1",
+    "corpusSha256": "e22aec46edd75a4370ec66a8ffedf183cd8fc263f5b57845443519365eea8e9f",
+    "seed": 20261101,
+    "randomDraw": 0.3141592653589793
+  },
+  "budget": {
+    "rootDepth": 8,
+    "trapDepth": 7,
+    "candidateCount": 4,
+    "replyCount": 3,
+    "trappiness": 1,
+    "aggression": 0,
+    "tension": 0,
+    "pawnStorm": 0,
+    "kingCaution": 0,
+    "sacrifice": 0,
+    "sharpness": 0,
+    "queenRetention": 0,
+    "drawAversion": 0,
+    "variety": 0,
+    "maxRiskCp": 100,
+    "winningRiskCp": 40,
+    "opponentRating": 1000,
+    "engineRating": 2400,
+    "replyCoverage": 0.95,
+    "opponentPlies": 1,
+    "continuationReplies": 4,
+    "continuationBranches": 3,
+    "continuationCandidates": 1
+  },
+  "method": "Actual Stockfish/Maia at explicit8/7 one-human-turn budget. End-to-end discovery may change the candidate pool; separately re-rank its union without new searches. Independent selector moves checked at depth14. A fixed random draw makes variety examples reproducible; it is not a style preset.",
+  "examples": [
+    {
+      "key": "trappiness",
+      "label": "Trappiness",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p2b/2B1P3/2N2N1P/PPPP1PP1/R1BQK2R w KQkq - 1 6",
+      "levels": [
+        {
+          "value": 0,
+          "move": "g2g4",
+          "san": "g4",
+          "riskCp": 0,
+          "oracleRiskCp": 12,
+          "contributionCp": 2.842170943040401e-14,
+          "candidateCount": 4,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "g2g4",
+          "san": "g4",
+          "riskCp": 0,
+          "oracleRiskCp": 12,
+          "contributionCp": 5.577302117312058,
+          "candidateCount": 7,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "g2g4",
+          "san": "g4",
+          "riskCp": 0,
+          "oracleRiskCp": 12,
+          "contributionCp": 11.191318440307882,
+          "candidateCount": 7,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "e1g1",
+        "san": "O-O",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": -5.684341886080802e-14
+          },
+          {
+            "value": 0.5,
+            "cp": 18.32384329566186
+          },
+          {
+            "value": 1,
+            "cp": 36.678494876399725
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "g4",
+          "move": "g2g4"
+        },
+        {
+          "value": 0.5,
+          "san": "g4",
+          "move": "g2g4"
+        },
+        {
+          "value": 1,
+          "san": "g4",
+          "move": "g2g4"
+        }
+      ]
+    },
+    {
+      "key": "aggression",
+      "label": "King attack",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w - - 3 6",
+      "levels": [
+        {
+          "value": 0,
+          "move": "b1c3",
+          "san": "Nc3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 6,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "b1c3",
+          "san": "Nc3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 5.485714285714287,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "b1c3",
+          "san": "Nc3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 10.971428571428573,
+          "candidateCount": 8,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "f3g5",
+        "san": "Ng5",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 7.114285714285715
+          },
+          {
+            "value": 1,
+            "cp": 14.22857142857143
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "Nc3",
+          "move": "b1c3"
+        },
+        {
+          "value": 0.5,
+          "san": "Nc3",
+          "move": "b1c3"
+        },
+        {
+          "value": 1,
+          "san": "Nc3",
+          "move": "b1c3"
+        }
+      ]
+    },
+    {
+      "key": "tension",
+      "label": "Tension",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5",
+      "levels": [
+        {
+          "value": 0,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 14.2,
+          "candidateCount": 9,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 28.4,
+          "candidateCount": 9,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "c3b5",
+        "san": "Nb5",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 20
+          },
+          {
+            "value": 1,
+            "cp": 40
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "h3",
+          "move": "h2h3"
+        },
+        {
+          "value": 0.5,
+          "san": "h3",
+          "move": "h2h3"
+        },
+        {
+          "value": 1,
+          "san": "h3",
+          "move": "h2h3"
+        }
+      ]
+    },
+    {
+      "key": "pawnStorm",
+      "label": "Pawn storms",
+      "fen": "6k1/5ppp/8/8/8/8/6P1/K5R1 w - - 0 1",
+      "levels": [
+        {
+          "value": 0,
+          "move": "a1b2",
+          "san": "Kb2",
+          "riskCp": 0,
+          "oracleRiskCp": 3,
+          "contributionCp": 0,
+          "candidateCount": 7,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "a1b2",
+          "san": "Kb2",
+          "riskCp": 0,
+          "oracleRiskCp": 3,
+          "contributionCp": 0.625,
+          "candidateCount": 9,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "a1b2",
+          "san": "Kb2",
+          "riskCp": 0,
+          "oracleRiskCp": 3,
+          "contributionCp": 1.25,
+          "candidateCount": 9,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "g2g4",
+        "san": "g4",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 5
+          },
+          {
+            "value": 1,
+            "cp": 10
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "Kb2",
+          "move": "a1b2"
+        },
+        {
+          "value": 0.5,
+          "san": "Kb2",
+          "move": "a1b2"
+        },
+        {
+          "value": 1,
+          "san": "Kb2",
+          "move": "a1b2"
+        }
+      ]
+    },
+    {
+      "key": "kingCaution",
+      "label": "King caution",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w - - 3 6",
+      "levels": [
+        {
+          "value": 0,
+          "move": "b1c3",
+          "san": "Nc3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 6,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "b1c3",
+          "san": "Nc3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": -5.914285714285715,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "b1c3",
+          "san": "Nc3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": -11.82857142857143,
+          "candidateCount": 8,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "h2h3",
+        "san": "h3",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": -6.771428571428571
+          },
+          {
+            "value": 1,
+            "cp": -13.542857142857143
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "Nc3",
+          "move": "b1c3"
+        },
+        {
+          "value": 0.5,
+          "san": "Nc3",
+          "move": "b1c3"
+        },
+        {
+          "value": 1,
+          "san": "Nc3",
+          "move": "b1c3"
+        }
+      ]
+    },
+    {
+      "key": "sacrifice",
+      "label": "Sacrifice appetite",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p2b/2B1P3/2N2N1P/PPPP1PP1/R1BQK2R w KQkq - 1 6",
+      "levels": [
+        {
+          "value": 0,
+          "move": "g2g4",
+          "san": "g4",
+          "riskCp": 0,
+          "oracleRiskCp": 12,
+          "contributionCp": 0,
+          "candidateCount": 7,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "f3e5",
+          "san": "Nxe5",
+          "riskCp": 14,
+          "oracleRiskCp": 0,
+          "contributionCp": 5.3142857142857185,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "f3e5",
+          "san": "Nxe5",
+          "riskCp": 14,
+          "oracleRiskCp": 0,
+          "contributionCp": 10.628571428571437,
+          "candidateCount": 8,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "f3e5",
+        "san": "Nxe5",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 5.3142857142857185
+          },
+          {
+            "value": 1,
+            "cp": 10.628571428571437
+          }
+        ]
+      },
+      "noDifference": false,
+      "note": "Observed moves from fresh searches. Pool membership and defense estimates may also change between settings.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "Nxe5",
+          "move": "f3e5"
+        },
+        {
+          "value": 0.5,
+          "san": "Nxe5",
+          "move": "f3e5"
+        },
+        {
+          "value": 1,
+          "san": "Nxe5",
+          "move": "f3e5"
+        }
+      ]
+    },
+    {
+      "key": "sharpness",
+      "label": "Sharpness",
+      "fen": "r1bqkb1r/pppp1ppp/2n5/1B2p3/4P1n1/5N1P/PPPP1PP1/RNBQ1RK1 b kq - 0 5",
+      "levels": [
+        {
+          "value": 0,
+          "move": "h7h5",
+          "san": "h5",
+          "riskCp": 0,
+          "oracleRiskCp": 15,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "h7h5",
+          "san": "h5",
+          "riskCp": 0,
+          "oracleRiskCp": 15,
+          "contributionCp": 6.415155353310872,
+          "candidateCount": 5,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "h7h5",
+          "san": "h5",
+          "riskCp": 0,
+          "oracleRiskCp": 15,
+          "contributionCp": 12.830310706621743,
+          "candidateCount": 5,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "h7h5",
+        "san": "h5",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 6.415155353310872
+          },
+          {
+            "value": 1,
+            "cp": 12.830310706621743
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "h5",
+          "move": "h7h5"
+        },
+        {
+          "value": 0.5,
+          "san": "h5",
+          "move": "h7h5"
+        },
+        {
+          "value": 1,
+          "san": "h5",
+          "move": "h7h5"
+        }
+      ]
+    },
+    {
+      "key": "queenRetention",
+      "label": "Queen retention",
+      "fen": "r2q1rk1/ppp2ppp/2n1bn2/3p4/3P4/2NBPN2/PPP2PPP/R2Q1RK1 w - - 0 9",
+      "levels": [
+        {
+          "value": 0,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 15,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 30,
+          "candidateCount": 8,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "a2a3",
+        "san": "a3",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 15
+          },
+          {
+            "value": 1,
+            "cp": 30
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "h3",
+          "move": "h2h3"
+        },
+        {
+          "value": 0.5,
+          "san": "h3",
+          "move": "h2h3"
+        },
+        {
+          "value": 1,
+          "san": "h3",
+          "move": "h2h3"
+        }
+      ]
+    },
+    {
+      "key": "drawAversion",
+      "label": "Draw aversion",
+      "fen": "8/8/8/4k3/8/3K4/4P3/8 w - - 0 1",
+      "levels": [
+        {
+          "value": 0,
+          "move": "d3e3",
+          "san": "Ke3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 6,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "d3e3",
+          "san": "Ke3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 6,
+          "probability": 1
+        },
+        {
+          "value": 1,
+          "move": "d3e3",
+          "san": "Ke3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 6,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "d3e3",
+        "san": "Ke3",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 0
+          },
+          {
+            "value": 1,
+            "cp": 0
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "Ke3",
+          "move": "d3e3"
+        },
+        {
+          "value": 0.5,
+          "san": "Ke3",
+          "move": "d3e3"
+        },
+        {
+          "value": 1,
+          "san": "Ke3",
+          "move": "d3e3"
+        }
+      ]
+    },
+    {
+      "key": "variety",
+      "label": "Variety",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "levels": [
+        {
+          "value": 0,
+          "move": "e2e4",
+          "san": "e4",
+          "riskCp": 0,
+          "oracleRiskCp": 7,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 1
+        },
+        {
+          "value": 0.5,
+          "move": "d2d4",
+          "san": "d4",
+          "riskCp": 8,
+          "oracleRiskCp": 25,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 0.20922407298017234
+        },
+        {
+          "value": 1,
+          "move": "d2d4",
+          "san": "d4",
+          "riskCp": 8,
+          "oracleRiskCp": 25,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 0.20543545753564119
+        }
+      ],
+      "effectExample": {
+        "move": "c2c4",
+        "san": "c4",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 0
+          },
+          {
+            "value": 1,
+            "cp": 0
+          }
+        ]
+      },
+      "noDifference": false,
+      "note": "Observed moves from fresh searches. Pool membership and defense estimates may also change between settings.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "e4",
+          "move": "e2e4"
+        },
+        {
+          "value": 0.5,
+          "san": "d4",
+          "move": "d2d4"
+        },
+        {
+          "value": 1,
+          "san": "d4",
+          "move": "d2d4"
+        }
+      ]
+    },
+    {
+      "key": "maxRiskCp",
+      "label": "Risk tolerance",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5",
+      "levels": [
+        {
+          "value": 0,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 150,
+          "move": "h2h3",
+          "san": "h3",
+          "riskCp": 0,
+          "oracleRiskCp": 0,
+          "contributionCp": 0,
+          "candidateCount": 8,
+          "probability": 1
+        },
+        {
+          "value": 300,
+          "move": "f3e5",
+          "san": "Nxe5",
+          "riskCp": 269,
+          "oracleRiskCp": 297,
+          "contributionCp": 0,
+          "candidateCount": 8,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "c3d5",
+        "san": "Nd5",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 0
+          },
+          {
+            "value": 1,
+            "cp": 0
+          }
+        ]
+      },
+      "noDifference": false,
+      "note": "Observed moves from fresh searches. Pool membership and defense estimates may also change between settings.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "h3",
+          "move": "h2h3"
+        },
+        {
+          "value": 150,
+          "san": "h3",
+          "move": "h2h3"
+        },
+        {
+          "value": 300,
+          "san": "Nxe5",
+          "move": "f3e5"
+        }
+      ]
+    },
+    {
+      "key": "winningRiskCp",
+      "label": "Risk when winning",
+      "fen": "4k3/8/8/8/8/8/PPPP4/R3K3 w Q - 0 1",
+      "levels": [
+        {
+          "value": 0,
+          "move": "e1c1",
+          "san": "O-O-O",
+          "riskCp": 0,
+          "oracleRiskCp": 139,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 1
+        },
+        {
+          "value": 150,
+          "move": "e1c1",
+          "san": "O-O-O",
+          "riskCp": 0,
+          "oracleRiskCp": 139,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 1
+        },
+        {
+          "value": 300,
+          "move": "e1c1",
+          "san": "O-O-O",
+          "riskCp": 0,
+          "oracleRiskCp": 139,
+          "contributionCp": 0,
+          "candidateCount": 5,
+          "probability": 1
+        }
+      ],
+      "effectExample": {
+        "move": "a2a4",
+        "san": "a4",
+        "contributions": [
+          {
+            "value": 0,
+            "cp": 0
+          },
+          {
+            "value": 0.5,
+            "cp": 0
+          },
+          {
+            "value": 1,
+            "cp": 0
+          }
+        ]
+      },
+      "noDifference": true,
+      "note": "The chosen move did not change in this position. A preference changes ranking, not a promise to choose a particular move.",
+      "fixedPool": [
+        {
+          "value": 0,
+          "san": "O-O-O",
+          "move": "e1c1"
+        },
+        {
+          "value": 150,
+          "san": "O-O-O",
+          "move": "e1c1"
+        },
+        {
+          "value": 300,
+          "san": "O-O-O",
+          "move": "e1c1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,18 +1,24 @@
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
 
 const appUrl = process.env.TRAPPY_TEST_URL ?? 'http://127.0.0.1:5173';
-const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const channel = process.env.TRAPPY_BROWSER_CHANNEL ?? (process.platform === 'win32' ? 'msedge' : undefined);
+const browser = await chromium.launch({ ...(channel ? { channel } : {}), headless: true });
+await mkdir('artifacts/ux', { recursive: true });
 const errors = [];
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  desktop.setDefaultTimeout(45_000);
   desktop.on('pageerror', (error) => errors.push(error.message));
   const sparse = '4k3/8/8/8/8/8/8/4K2R w - - 0 1';
   await desktop.goto(`${appUrl}/?mode=play&fen=${encodeURIComponent(sparse)}`);
   await desktop.locator('.board-wrap [data-square="h1"] [data-piece="wR"]').waitFor();
+  assert.equal(await desktop.locator('.opponent-settings').evaluate(element => element.open), false, 'Opponent settings start collapsed');
+  assert.match(await desktop.getByLabel('Active opponent settings').innerText(), /Deep/);
+  await desktop.locator('.opponent-settings > summary').click();
   assert.equal(await desktop.getByRole('button', { name: 'Custom style', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await desktop.getByRole('button', { name: '1000', exact: true }).getAttribute('aria-pressed'), 'true');
-  assert.equal(await desktop.getByRole('button', { name: 'Play', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await desktop.getByLabel('Search depth', { exact: true }).isVisible(), false, 'Technical settings must be collapsed by default');
   const setRange = async (page, label, value) => page.getByLabel(label, { exact: true }).evaluate((input, value) => {
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, String(value));
@@ -35,7 +41,7 @@ try {
   assert.equal(await desktop.getByLabel('Play king attack', { exact: true }).inputValue(), '0.8', 'Mode switches preserve explicit controls');
   await desktop.screenshot({ path: 'artifacts/ux/playing-style-desktop.png' });
   await desktop.getByRole('button', { name: '800', exact: true }).click();
-  assert.match(await desktop.locator('.board-meta').innerText(), /800 opponent/);
+  assert.match(await desktop.locator('.board-meta').innerText(), /800 reply model/);
   await desktop.getByRole('button', { name: 'Flip board', exact: true }).click();
   assert.equal(await desktop.locator('.board-wrap [data-piece]').count(), 3, 'Flip must preserve imported position');
   await desktop.getByRole('button', { name: 'New game', exact: true }).click();
@@ -56,9 +62,11 @@ try {
   assert.equal(await desktop.locator('.move-row').first().locator('span').nth(1).innerText(), 'e4');
 
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  mobile.setDefaultTimeout(45_000);
   mobile.on('pageerror', (error) => errors.push(error.message));
   const promotionFen = '4k3/P7/8/8/8/8/8/4K3 w - - 0 1';
   const keyboard = await browser.newPage();
+  keyboard.setDefaultTimeout(45_000);
   keyboard.on('pageerror', (error) => errors.push(error.message));
   await keyboard.goto(`${appUrl}/?mode=play&fen=${encodeURIComponent(promotionFen)}`);
   await keyboard.getByRole('button', { name: 'a7: White pawn', exact: true }).focus();
@@ -99,5 +107,5 @@ try {
   assert.equal(await mobile.getByRole('dialog').count(), 0, 'Escape must cancel promotion without moving');
   assert.equal(await mobile.locator('.board-wrap [data-square="a7"] [data-piece="wP"]').count(), 1);
   assert.deepEqual(errors, []);
-  console.log('UX browser checks passed: Custom style/1000/Play defaults, collapsed advanced settings, rating changes, safe board flip/new game, click legal targets/illegal moves, board keyboard navigation, promotion focus/choice/cancel, preserved game across workspaces, real mobile taps, and no horizontal overflow.');
+  console.log('UX browser checks passed: explicit collapsed opponent settings, Deep budget, independent controls, rating changes, safe board flip/new game, legal targets, board keyboard navigation, promotion focus/choice/cancel, preserved game across workspaces, mobile taps and layout.');
 } finally { await browser.close(); }

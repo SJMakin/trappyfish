@@ -94,9 +94,11 @@ try {
   await mkdir('artifacts/wild-controls', { recursive: true });
   for (const context of ['Analysis', 'Play']) {
     const page = await browser.newPage({ viewport: { width: 1366, height: 1000 } });
+    page.setDefaultTimeout(45_000);
     page.on('pageerror', error => errors.push(error.message));
     await mockEngine(page);
     await page.goto(`${appUrl}/?mode=${context === 'Play' ? 'play' : 'analysis'}&fen=${encodeURIComponent(terminal)}`);
+    if (context === 'Play') await page.locator('.opponent-settings > summary').click();
     await page.getByRole('slider', { name: `${context} king attack`, exact: true }).waitFor();
     assert.equal(Object.keys(await values(page)).length, 12, `${context} exposes twelve controls`);
     for (const [, label, value] of preferences) {
@@ -123,7 +125,8 @@ try {
     // Return through the home URL rather than starting a new imported-FEN analysis.
     await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('fen'); history.replaceState(null, '', url); });
     await page.reload(); await openHistory(page);
-    await page.locator(`[data-history-id="${saved.id}"]`).getByRole('button', { name: /^Resume / }).click();
+    await page.locator(`[data-history-id="${saved.id}"]`).getByRole('button', { name: /^(Resume|Review) / }).click();
+    if (context === 'Play') await page.locator('.opponent-settings > summary').click();
     for (const [, label, value] of preferences) assert.equal(await page.getByRole('slider', { name: `${context} ${label}`, exact: true }).inputValue(), String(value), `Resume restores ${label}`);
     await page.setViewportSize({ width: 320, height: 768 });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${context} controls fit 320px`);
@@ -133,6 +136,7 @@ try {
   }
 
   const hud = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  hud.setDefaultTimeout(45_000);
   hud.on('pageerror', error => errors.push(error.message));
   await mockEngine(hud);
   await hud.goto(`${appUrl}/?fen=${encodeURIComponent(initial)}`);
@@ -164,14 +168,20 @@ try {
   assert.match(await hud.getByTestId('style-internals').innerText(), /WDL is unavailable/);
 
   const play = await browser.newPage({ viewport: { width: 1366, height: 1000 } });
+  play.setDefaultTimeout(45_000);
   play.on('pageerror', error => errors.push(error.message));
   await mockEngine(play);
   await play.goto(`${appUrl}/?mode=play`);
+  await play.locator('.opponent-settings > summary').click();
   await setRange(play, 'Play variety', 0.5);
   await play.locator('.board-wrap [data-square="e2"]').click();
   await play.locator('.board-wrap [data-square="e4"]').click();
-  await play.getByRole('button', { name: 'Analysis', exact: true }).click();
-  const playedSelection = play.locator('.decision [data-testid="move-selection"]').first();
+  await play.locator('.move-row').first().locator('span').nth(2).filter({ hasText: /\S/ }).waitFor();
+  assert.equal(await play.getByTestId('move-selection').isVisible().catch(() => false), false, 'Sampling diagnostics remain hidden during play');
+  await play.getByRole('button', { name: 'End unfinished game & review', exact: true }).click();
+  await play.getByTestId('game-review').waitFor();
+  await play.locator('.recorded-internals > summary').click();
+  const playedSelection = play.locator('.recorded-internals [data-testid="move-selection"]').first();
   await playedSelection.locator(':scope > summary').click();
   assert.match(await playedSelection.innerText(), /Sampled in Play/);
   assert.match(await playedSelection.innerText(), /0\.900000/);

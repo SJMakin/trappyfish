@@ -22,11 +22,13 @@ try {
     if (Date.now() > deadline) throw new Error(`Preview did not start: ${output}`);
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
-  const test = spawn(process.execPath, [fileURLToPath(new URL('./test-analysis-built.mjs', import.meta.url))], {
-    cwd: root, stdio: 'inherit', windowsHide: true, env: { ...process.env, TRAPPY_TEST_URL: url },
-  });
-  const code = await new Promise((resolve, reject) => { test.on('error', reject); test.on('exit', resolve); });
-  if (code !== 0) throw new Error(`Pages browser check failed (${code}).`);
+  for (const script of ['test-analysis-built.mjs', 'test-app-browser.mjs']) {
+    const test = spawn(process.execPath, [fileURLToPath(new URL(`./${script}`, import.meta.url))], {
+      cwd: root, stdio: 'inherit', windowsHide: true, env: { ...process.env, TRAPPY_TEST_URL: url },
+    });
+    const code = await new Promise((resolve, reject) => { test.on('error', reject); test.on('exit', resolve); });
+    if (code !== 0) throw new Error(`Pages browser check ${script} failed (${code}).`);
+  }
 } finally {
   server.kill();
 }

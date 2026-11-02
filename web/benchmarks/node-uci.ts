@@ -26,6 +26,8 @@ export class NodeUci {
   }
 
   asClient(): UciClient { return this as unknown as UciClient; }
+  /** A fully cached calibration still waits for startup before orderly shutdown. */
+  async init(): Promise<void> { await this.ready; }
 
   async analyzeFen(fen: string, depth: number, multipv = 1, searchMoves: string[] = []): Promise<AnalysisResult> {
     const task = this.queue.then(async () => {

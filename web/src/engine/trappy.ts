@@ -17,6 +17,8 @@ export type TrappySettings = StylePreferences & {
   trappiness: number; maxRiskCp: number; winningRiskCp?: number;
   opponentRating: number; engineRating: number; replyCoverage: number;
   opponentPlies?: 1 | 2; continuationReplies?: number; continuationBranches?: number;
+  /** Own moves compared after each refined human reply. Omitted saves retain the original width of one. */
+  continuationCandidates?: number;
 };
 export type ReplyInfo = {
   move: string; san: string; probability: number; scoreCp: number; expectedScore: number;
@@ -26,6 +28,8 @@ export type ReplyInfo = {
   continuation?: {
     move: string; san: string; scoreCp: number; expectedScore: number; policyCoverage: number; replies: ReplyInfo[];
     bestDefenseMove?: string;
+    selectionScoreCp?: number;
+    alternatives?: { move: string; san: string; scoreCp: number; expectedScore: number; selectionScoreCp: number; selected: boolean }[];
   };
 };
 export type TrapInfo = {
@@ -60,6 +64,8 @@ export type MoveDecision = {
   riskLimitCp?: number;
   styleApplied?: boolean;
   diagnostics?: SearchDiagnostics;
+  provenance?: { source: 'search' | 'opening-book';
+    bookExitReason?: 'no-legal-book-move' | 'outside-risk' | 'forced-mate' | 'verification-unavailable' };
   selection?: {
     method: 'best' | 'sampled' | 'analysis'; temperatureCp: number; randomDraw?: number;
     probabilities: { move: string; probability: number }[];
@@ -71,7 +77,7 @@ export type AnalysisProgress = {
   diagnostics?: SearchDiagnostics;
 };
 export type PositionAnalysis = { fen: string; decision?: MoveDecision; terminal?: 'checkmate' | 'draw' };
-type SearchOptions = { analysis?: boolean; onProgress?: (progress: AnalysisProgress) => void };
+export type SearchOptions = { analysis?: boolean; onProgress?: (progress: AnalysisProgress) => void; bookMoves?: string[] };
 type SearchServices = {
   uci: AnalysisEngine; policy: OpponentPolicyProvider;
   recordRootTrace?: (root: AnalysisResult) => void;
@@ -124,6 +130,12 @@ export class TrappyEngine {
 
   async chooseMove(fen: string, settings: TrappySettings, trappyEnabled: boolean,
     options: SearchOptions = {}): Promise<MoveDecision> {
+    if (!trappyEnabled && options.bookMoves !== undefined) {
+      // Book following is independent of the style switch. Saved preferences remain
+      // intact, but disabled preferences must not influence book ranking or sampling.
+      settings = { ...settings, trappiness: 0, aggression: 0, tension: 0, pawnStorm: 0,
+        kingCaution: 0, sacrifice: 0, sharpness: 0, queenRetention: 0, drawAversion: 0, variety: 0 };
+    }
     // Each request owns its counters and wrappers. Cancelled or concurrent searches cannot
     // overwrite the diagnostics of another request, and style fallback retains prior work.
     const started = performance.now();
@@ -179,7 +191,7 @@ export class TrappyEngine {
     const result = await this.searchMove(fen, settings, trappyEnabled, {
       ...options, onProgress: options.onProgress ? publish : undefined,
     }, services);
-    return { ...result, diagnostics: snapshot() };
+    return { ...result, provenance: result.provenance ?? { source: 'search' }, diagnostics: snapshot() };
   }
 
   private async searchMove(fen: string, settings: TrappySettings, trappyEnabled: boolean,
@@ -191,6 +203,8 @@ export class TrappyEngine {
     if (board.isGameOver()) throw new Error('This position is already finished.');
     const legal = board.moves({ verbose: true });
     const legalByUci = new Map(legal.map((move) => [moveToUci(move), move]));
+    const requestedBook = options.bookMoves !== undefined;
+    const bookMoves = new Set((options.bookMoves ?? []).filter((move) => legalByUci.has(move)));
     options.onProgress?.({ stage: 'root', completed: 0, total: 1, message: 'Finding strong candidate moves with Stockfish…' });
     const root = await services.uci.analyzeFen(fen, settings.rootDepth, Math.min(legal.length, settings.candidateCount));
     check();
@@ -202,9 +216,11 @@ export class TrappyEngine {
     rootCandidates.sort((a, b) => b.rootScoreCp - a.rootScoreCp);
     let best = rootCandidates[0];
     const hasStyle = hasPlayingStyle(settings);
-    if (!trappyEnabled || (!options.analysis && ((!settings.trappiness && !hasStyle && !settings.variety) || best.rootScoreCp >= 90_000))) {
+    if ((!requestedBook && !trappyEnabled) || (!options.analysis && ((!requestedBook && !settings.trappiness && !hasStyle && !settings.variety) || best.rootScoreCp >= 90_000))) {
       options.onProgress?.({ stage: 'complete', completed: 1, total: 1, message: 'Stockfish analysis complete.' });
-      return applySelection(decision(rootCandidates, best, best, 'stockfish'), [best], 0, options.analysis, this.random);
+      const result = applySelection(decision(rootCandidates, best, best, 'stockfish'), [best], 0, options.analysis, this.random);
+      result.provenance = { source: 'search', ...(requestedBook ? { bookExitReason: best.rootScoreCp >= 90_000 ? 'forced-mate' as const : 'no-legal-book-move' as const } : {}) };
+      return result;
     }
 
     try {
@@ -215,6 +231,7 @@ export class TrappyEngine {
       check();
       const additions = new Set(settings.trappiness > 0
         ? normalizePolicy(ownPolicy, legalByUci).slice(0, 4).map((reply) => reply.move) : []);
+      bookMoves.forEach((move) => additions.add(move));
       if (hasStyle) {
         styleNominees(fen, legal, settings).forEach((move) => additions.add(move));
       }
@@ -237,7 +254,9 @@ export class TrappyEngine {
       rootCandidates.sort((a, b) => b.rootScoreCp - a.rootScoreCp);
       best = rootCandidates[0];
       if (!options.analysis && best.rootScoreCp >= 90_000) {
-        return applySelection(decision(rootCandidates, best, best, 'stockfish'), [best], 0, false, this.random);
+        const result = applySelection(decision(rootCandidates, best, best, 'stockfish'), [best], 0, false, this.random);
+        result.provenance = { source: 'search', ...(requestedBook ? { bookExitReason: 'forced-mate' as const } : {}) };
+        return result;
       }
       let evaluated = rootCandidates.map((entry) => ({ ...entry }));
       const searched = new Set<string>();
@@ -285,10 +304,14 @@ export class TrappyEngine {
         && (best.rootScoreCp < 90_000 || entry.rootScoreCp >= 90_000));
       eligible.sort((a, b) => b.adjustedScoreCp - a.adjustedScoreCp
         || b.rootScoreCp - a.rootScoreCp || a.move.localeCompare(b.move));
-      const result = applySelection(decision(evaluated, best, eligible[0] ?? best,
+      const eligibleBook = eligible.filter((entry) => bookMoves.has(entry.move) && entry.analyzed);
+      const selectionPool = eligibleBook.length ? eligibleBook : eligible;
+      const result = applySelection(decision(evaluated, best, selectionPool[0] ?? best,
         settings.trappiness > 0 || (settings.sharpness ?? 0) > 0 ? 'maia' : 'stockfish'),
-        eligible.filter((entry) => entry.analyzed), Math.abs(best.rootScoreCp) >= 90_000 ? 0 : 100 * (settings.variety ?? 0),
+        selectionPool.filter((entry) => entry.analyzed), Math.abs(best.rootScoreCp) >= 90_000 ? 0 : 100 * (settings.variety ?? 0),
         options.analysis, this.random);
+      result.provenance = eligibleBook.length ? { source: 'opening-book' } : { source: 'search',
+        ...(requestedBook ? { bookExitReason: bookMoves.size ? 'outside-risk' as const : 'no-legal-book-move' as const } : {}) };
       result.riskLimitCp = riskLimit(best.rootScoreCp, settings);
       result.styleApplied = hasStyle || Boolean(settings.variety);
       if (options.analysis) result.candidates.sort((a, b) => Number(a.status === 'outside-risk') - Number(b.status === 'outside-risk')
@@ -331,7 +354,9 @@ export class TrappyEngine {
           entry.style.sharpnessBonusCp = 0;
         }
       }
-      return applySelection(decision(fallbackCandidates, best, best, 'stockfish', warning), [best], 0, options.analysis, this.random);
+      const fallback = applySelection(decision(fallbackCandidates, best, best, 'stockfish', warning), [best], 0, options.analysis, this.random);
+      fallback.provenance = { source: 'search', ...(requestedBook ? { bookExitReason: 'verification-unavailable' as const } : {}) };
+      return fallback;
     }
   }
 
@@ -474,6 +499,42 @@ export class TrappyEngine {
     check: () => void, services: SearchServices): Promise<ReplyInfo> {
     const after = new Chess(afterCandidate.fen());
     if (!playUci(after, reply.move) || after.isGameOver()) return reply;
+    if ((settings.continuationCandidates ?? 1) > 1) {
+      // Search our alternatives explicitly instead of treating the first Stockfish PV as
+      // a compulsory move. Every alternative receives its own strongest-defense check.
+      const root = await services.uci.analyzeFen(after.fen(), Math.max(1, settings.trapDepth - 2),
+        Math.min(settings.continuationCandidates ?? 1, after.moves().length));
+      check();
+      const bestCp = Math.max(...root.lines.map((line) => line.score.cp));
+      const alternatives: { reply: ReplyInfo; ranking: number }[] = [];
+      for (const line of root.lines) {
+        if (bestCp - line.score.cp > riskLimit(bestCp, settings)
+          || bestCp >= 90_000 && line.score.cp < 90_000) continue;
+        const refined = await this.evaluateContinuation(after, reply, line.firstMove, settings, check, services);
+        const continuation = refined.continuation!;
+        const objective = cpToExpectedScore(refined.scoreCp);
+        const utility = objective + settings.trappiness * (refined.expectedScore - objective);
+        const defense = continuation.replies.find((next) => next.move === continuation.bestDefenseMove);
+        const style = Math.abs(refined.scoreCp) >= 90_000 ? undefined
+          : measuredStyle(scorePlayingStyle(after.fen(), line.firstMove,
+            defense ? [defense.move, ...defense.punishment] : line.pv.slice(1), settings), settings, refined.wdl,
+            utilitySharpness(continuation.replies, continuation.policyCoverage, objective));
+        const ranking = Math.abs(refined.scoreCp) >= 90_000 ? refined.scoreCp : expectedScoreToCp(utility) + styleBonusCp(style);
+        continuation.selectionScoreCp = ranking;
+        alternatives.push({ reply: refined, ranking });
+      }
+      if (!alternatives.length) throw new Error('Stockfish returned no safe trap continuation.');
+      const verifiedBest = Math.max(...alternatives.map((row) => row.reply.scoreCp));
+      const eligible = alternatives.filter((row) => verifiedBest - row.reply.scoreCp <= riskLimit(verifiedBest, settings)
+        && (verifiedBest < 90_000 || row.reply.scoreCp >= 90_000));
+      eligible.sort((a, b) => b.ranking - a.ranking || b.reply.scoreCp - a.reply.scoreCp
+        || a.reply.continuation!.move.localeCompare(b.reply.continuation!.move));
+      const chosen = eligible[0].reply;
+      chosen.continuation!.alternatives = alternatives.map((row) => ({ move: row.reply.continuation!.move,
+        san: row.reply.continuation!.san, scoreCp: row.reply.scoreCp, expectedScore: row.reply.expectedScore,
+        selectionScoreCp: row.ranking, selected: row.reply === chosen }));
+      return chosen;
+    }
     let continuation = reply.punishment;
     if (!continuation.length) {
       const result = await services.uci.analyzeFen(after.fen(), Math.max(1, settings.trapDepth - 2), 1);
@@ -481,6 +542,13 @@ export class TrappyEngine {
       continuation = result.lines[0]?.pv ?? [];
     }
     const engineMove = continuation[0];
+    if (!engineMove) throw new Error('Stockfish returned no legal trap continuation.');
+    return this.evaluateContinuation(after, reply, engineMove, settings, check, services);
+  }
+
+  private async evaluateContinuation(afterReply: Chess, reply: ReplyInfo, engineMove: string,
+    settings: TrappySettings, check: () => void, services: SearchServices): Promise<ReplyInfo> {
+    const after = new Chess(afterReply.fen());
     const played = engineMove ? playUci(after, engineMove) : null;
     if (!played) throw new Error('Stockfish returned no legal trap continuation.');
     if (after.isGameOver()) {
@@ -488,7 +556,7 @@ export class TrappyEngine {
       const expectedScore = after.isCheckmate() ? 1 : 0.5;
       const wdl = scoreCp <= reply.scoreCp
         ? after.isCheckmate() ? { win: 1, draw: 0, loss: 0 } : { win: 0, draw: 1, loss: 0 } : reply.wdl;
-      return { ...reply, scoreCp: Math.min(reply.scoreCp, scoreCp), expectedScore, wdl,
+      return { ...reply, scoreCp: Math.min(reply.scoreCp, scoreCp), expectedScore, wdl, punishment: [engineMove],
         continuation: { move: engineMove, san: played.san, scoreCp, expectedScore, policyCoverage: 1, replies: [] } };
     }
     const legal = new Map(after.moves({ verbose: true }).map((move) => [moveToUci(move), move]));
@@ -546,7 +614,9 @@ export class TrappyEngine {
     coverage = Math.min(1, coverage);
     const expectedScore = replies.reduce((sum, next) => sum + next.probability * next.expectedScore,
       (1 - coverage) * cpToExpectedScore(scoreCp));
+    const defenseReply = replies.find((next) => next.move === bestDefense.firstMove)!;
     return { ...reply, scoreCp, expectedScore, wdl,
+      punishment: [engineMove, defenseReply.move, ...defenseReply.punishment],
       continuation: { move: engineMove, san: played.san, scoreCp, expectedScore, policyCoverage: coverage, replies,
         bestDefenseMove: bestDefense.firstMove } };
   }
@@ -717,8 +787,9 @@ function validateSettings(settings: TrappySettings): void {
   if (settings.opponentPlies !== undefined && settings.opponentPlies !== 1 && settings.opponentPlies !== 2) {
     throw new Error('Invalid opponent lookahead.');
   }
-  for (const field of ['continuationReplies', 'continuationBranches'] as const) {
-    if (settings[field] !== undefined && (!Number.isInteger(settings[field]) || settings[field]! < 1 || settings[field]! > 10)) {
+  for (const field of ['continuationReplies', 'continuationBranches', 'continuationCandidates'] as const) {
+    if (settings[field] !== undefined && (!Number.isInteger(settings[field]) || settings[field]! < 1
+      || settings[field]! > (field === 'continuationCandidates' ? 2 : 10))) {
       throw new Error(`Invalid ${field}.`);
     }
   }

@@ -7,7 +7,8 @@ import { Chess } from 'chess.js';
 const appUrl = process.env.TRAPPY_TEST_URL ?? 'http://127.0.0.1:5173';
 const board = new Chess();
 for (const move of ['e4', 'e5', 'Nf3', 'Nc6', 'Bc4']) board.move(move);
-const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const channel = process.env.TRAPPY_BROWSER_CHANNEL ?? (process.platform === 'win32' ? 'msedge' : undefined);
+const browser = await chromium.launch({ ...(channel ? { channel } : {}), headless: true });
 const errors = [];
 function decision(move, san, reply, trap) {
   const selected = {
@@ -31,6 +32,7 @@ const followUp = decision('d8g5', 'Qg5', {
 }, { reply: 'e5f7', replySan: 'Nxf7', probability: 0.78, profitCp: 600, scoreCp: 600, punishment: ['g5g2'] });
 try {
   const page = await browser.newPage();
+  page.setDefaultTimeout(45_000);
   page.on('pageerror', (error) => errors.push(error.message));
   let intercepted = false;
   await page.route('**/src/engine/trappy.ts*', (route) => {
@@ -51,17 +53,23 @@ try {
   await page.locator('.board-wrap [data-square="f3"]').click();
   await page.locator('.board-wrap [data-square="e5"]').click();
   await page.locator('.board-wrap [data-square="g5"] [data-piece="bQ"]').waitFor();
-  await page.locator('.past-review > summary').click();
-  const review = await page.locator('.past-review').innerText();
-  assert.match(review, /Nxe5/);
-  assert.doesNotMatch(review, /Nxf7|Qg5|Qxg2|Stockfish continuation|Predicted reply|Tempting line/, 'Play review must not disclose the second-turn trap through a saved first-turn plan');
-  assert.equal(await page.locator('.past-review .decision-main').count(), 0);
+  assert.equal(await page.getByTestId('game-review').count(), 0, 'A committed reply must not open tactical explanations during the game');
+  assert.doesNotMatch(await page.locator('.play-workspace').innerText(), /Nxf7|Qxg2|Stockfish continuation|Predicted reply|Tempting line/, 'Live play must not disclose the follow-up trap through old plans or commentary');
   assert.equal(await page.locator('.reply-list').count(), 0);
   assert.equal(await page.locator('.board-wrap marker').count(), 0);
-  await page.getByRole('button', { name: 'Analysis', exact: true }).click();
-  assert.match(await page.locator('.past-review').innerText(), /Nxe5 → Qg5 → Nxf7/);
-  assert.match(await page.locator('.past-review .punishment-line').last().innerText(), /Qg5 Nxf7 Qxg2/, 'Analysis must render the saved continuation against its original position');
-  assert.match(await page.locator('.side-panel > .decision .trap-box').innerText(), /Nxf7/);
+  await page.getByRole('button', { name: 'End unfinished game & review', exact: true }).click();
+  const review = page.getByTestId('game-review'); await review.waitFor();
+  await review.getByRole('heading', { name: 'Why Nd4?', exact: true }).waitFor();
+  assert.match(await review.innerText(), /Nxe5, then Nxf7/);
+  assert.match(await review.locator('.recorded-bait-line').innerText(), /Qg5.*Nxf7.*Qxg2/, 'Post-game review must render the saved continuation against its original root position');
+  assert.doesNotMatch(await review.locator('.recorded-bait-line').innerText(), /incomplete/, 'Second-turn moves must not be inserted twice');
+  await page.reload();
+  await page.locator('.position-history > summary').click();
+  await page.locator('.history-entry').filter({ has: page.getByRole('button', { name: /^Review / }) }).first().getByRole('button', { name: /^Review / }).click();
+  await page.getByTestId('game-review').waitFor();
+  await page.getByTestId('game-review').getByRole('heading', { name: 'Why Nd4?', exact: true }).waitFor();
+  assert.match(await page.getByTestId('game-review').innerText(), /Nxf7/);
+  assert.equal(await page.getByRole('button', { name: 'Resign & review', exact: true }).count(), 0, 'Reloaded ended games remain ended');
   assert.deepEqual(errors, []);
-  console.log('Two-turn plan privacy passed: committed-only Play review hides live follow-up traps; explicit Analysis restores correctly rendered saved plans.');
+  console.log('Two-turn plan privacy passed: live play hides all tactical explanations; ending the game unlocks legal stored continuations, and ended review survives reload.');
 } finally { await browser.close(); }

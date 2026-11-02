@@ -24,9 +24,10 @@ const spare = {
   orientation: 'w', createdAt: now - 300_000, updatedAt: now - 240_000,
 };
 const errors = [];
-const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const channel = process.env.TRAPPY_BROWSER_CHANNEL ?? (process.platform === 'win32' ? 'msedge' : undefined);
+const browser = await chromium.launch({ ...(channel ? { channel } : {}), headless: true });
 await mkdir('artifacts/history', { recursive: true });
-const watchErrors = (page) => page.on('pageerror', (error) => errors.push(error.message));
+const watchErrors = (page) => { page.setDefaultTimeout(45_000); page.on('pageerror', (error) => errors.push(error.message)); };
 async function openHistory(page) {
   const history = page.locator('.position-history');
   if (!await history.evaluate((element) => element.open)) await history.locator(':scope > summary').click();
@@ -107,6 +108,7 @@ try {
   await assertBlackView(playBoard);
   assert.deepEqual(await page.locator('.workspace-panel:not([hidden]) .move-row').allTextContents(), ['1.e4e5', '2.Nf3Nc6']);
   assert.match(await page.locator('.workspace-panel:not([hidden]) .board-meta').innerText(), /You play White/);
+  await page.locator('.opponent-settings > summary').click();
   for (const [label, value] of [['trappiness', '0.7'], ['king attack', '0.9'], ['tension', '0.8'], ['risk tolerance', '175'], ['risk when winning', '35']]) {
     assert.equal(await page.getByLabel(`Play ${label}`, { exact: true }).inputValue(), value);
   }
@@ -124,6 +126,7 @@ try {
   await page.reload();
   await openHistory(page);
   await page.getByRole('button', { name: 'Resume Evening game', exact: true }).click();
+  await page.locator('.opponent-settings > summary').click();
   assert.equal(await page.getByRole('button', { name: 'Stockfish', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await page.getByLabel('Play king attack', { exact: true }).count(), 0);
   assert.deepEqual(await page.locator('.workspace-panel:not([hidden]) .move-row').allTextContents(), ['1.e4e5']);

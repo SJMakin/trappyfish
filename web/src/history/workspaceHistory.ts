@@ -1,7 +1,7 @@
 import { Chess, type Color } from 'chess.js';
 import type { TrappySettings } from '../engine/trappy';
 import { validatePosition } from '../import/position';
-import { createHistoryId, getHistorySnapshot, savePosition, type SavedPosition } from './positionHistory';
+import { createHistoryId, getHistorySnapshot, savePosition, type SavedPosition, type GameOpening, type GameResult } from './positionHistory';
 
 export function rememberAnalysisPosition(fen: string, orientation: Color, settings: TrappySettings): string | undefined {
   const validated = validatePosition(fen);
@@ -30,6 +30,7 @@ export function restorePracticeGame(fen?: string, saved?: SavedPosition): Chess 
 export function rememberPracticeGame(game: Chess, metadata: {
   id: string; createdAt: number; orientation: Color; playerColor: Color;
   settings: TrappySettings; styleEnabled: boolean;
+  opening?: GameOpening; result?: GameResult; searchProfile?: SavedPosition['searchProfile'];
 }): void {
   const existing = getHistorySnapshot().entries.find((entry) => entry.id === metadata.id);
   const moves = game.history({ verbose: true });

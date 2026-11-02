@@ -1,0 +1,75 @@
+.game-review { color: var(--ui-text, #172338); min-width: 0; }
+.game-review-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--ui-border, #dce2ea); padding-bottom: 16px; }
+.game-review-eyebrow { margin: 0 0 4px; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--ui-muted, #5b687b); }
+.game-review-heading h2 { margin: 0; font-size: 22px; font-weight: 650; }
+.game-review-heading > span, .game-review-intro, .game-review p, .game-review small { font-size: 12px; line-height: 1.65; }
+.game-review-heading > span, .game-review-intro, .game-review small { color: var(--ui-muted, #5b687b); }
+.game-review-notice { padding: 10px 12px; border: 1px solid #e4d7b7; border-radius: 6px; background: #fffaf0; color: #75531c; }
+.game-review-moments { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 8px; margin: 16px 0; }
+.game-review-moments > button { padding: 12px; display: flex; text-align: left; gap: 10px; align-items: center; border-radius: 8px; background: #f8fafc; border: 1px solid var(--ui-border, #dce2ea); min-width: 0; }
+.game-review-moments > button > svg { flex-shrink: 0; color: #64748b; }
+.game-review-moments > button > svg:last-child { margin-left: auto; }
+.game-review-moments span { min-width: 0; }
+.game-review-moments b, .game-review-moments small { display: block; }
+.game-review-moments small { margin-top: 4px; }
+.game-review-moments > button.is-selected { border-color: #8caee5; background: #eff5ff; }
+.game-review-layout { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr); gap: 20px; margin-top: 20px; }
+.game-review-timeline h3 { font-size: 12px; display: flex; align-items: center; gap: 7px; margin: 0 0 10px; }
+.game-review-timeline ol { list-style: none; padding: 0; margin: 0; max-height: 640px; overflow: auto; }
+.game-review-timeline li { border-bottom: 1px solid #edf0f5; }
+.game-review-timeline button { display: flex; justify-content: space-between; width: 100%; gap: 8px; background: transparent; border: 0; padding: 10px 8px; border-radius: 4px; text-align: left; font-size: 12px; }
+.game-review-timeline button[aria-pressed="true"] { background: #eff5ff; color: #1d4ed8; }
+.game-review-timeline small { font-size: 10px; }
+.game-review-detail { min-width: 0; }
+.review-position-preview { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 16px 0; padding: 12px; border: 1px solid #e1e7ef; border-radius: 6px; background: #f8fafc; }
+.review-position-preview > div { display: grid; gap: 6px; }
+.review-mini-board { width: min(200px, 100%); margin: 0; }
+.review-mini-board > div { display: grid; grid-template-columns: repeat(8, 1fr); aspect-ratio: 1; border: 1px solid #a4b3c4; border-radius: 3px; overflow: hidden; }
+.review-mini-board > div > span { display: grid; place-items: center; font-family: 'Segoe UI Symbol', 'Noto Sans Symbols 2', 'DejaVu Sans', serif; font-size: 26px; line-height: 1; min-width: 0; }
+.review-mini-board .light { background: #e8edf2; }
+.review-mini-board .dark { background: #8297ad; }
+.review-mini-board .white-piece { color: #fff; text-shadow: 0 0 1px #172338, 0 0 1px #172338; }
+.review-mini-board .black-piece { color: #172338; }
+.review-mini-board figcaption { font-size: 10px; line-height: 1.6; color: #5b687b; margin-top: 5px; }
+.review-position-preview button, .review-position-actions button { font-size: 11px; min-height: 34px; }
+.review-position-actions { display: flex; gap: 6px; }
+.review-fresh-analysis { margin: 12px 0; font-size: 12px; }
+.review-fresh-analysis a { color: #1d4ed8; text-decoration: underline; text-underline-offset: 3px; }
+.review-fresh-analysis p { margin: 4px 0 0; color: #5b687b; }
+.recorded-decision-title { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center; }
+.recorded-decision-title h3 { font-size: 20px; margin: 0; }
+.recorded-decision-title > span { color: #52657c; font-size: 11px; }
+.recorded-decision-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 0; margin: 0; }
+.recorded-decision-facts dt { color: #5b687b; font-size: 10px; margin-bottom: 4px; }
+.recorded-decision-facts dd { margin: 0; font-size: 12px; font-weight: 600; }
+.recorded-decision-story { display: grid; gap: 12px; padding: 16px; background: #f8fafc; border: 1px solid #e1e7ef; border-radius: 8px; }
+.recorded-decision-story h4 { margin: 0 0 5px; font-size: 11px; color: #52657c; }
+.recorded-decision-story p { margin: 0 0 4px; }
+.recorded-bait-line { font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+.recorded-decision > details { margin-top: 12px; border: 1px solid var(--ui-border, #dce2ea); border-radius: 6px; padding: 0 12px 12px; min-width: 0; }
+.recorded-decision > details:not([open]) { padding-bottom: 0; }
+.recorded-decision > details > summary { display: flex; align-items: center; gap: 7px; padding: 12px 0; cursor: pointer; font-size: 12px; font-weight: 600; }
+.recorded-preferences summary span { margin-left: auto; color: #64748b; font-size: 10px; font-weight: 400; }
+.recorded-preferences dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+.recorded-preferences dl > div { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; }
+.recorded-preferences dd { margin: 0; font-variant-numeric: tabular-nums; }
+.recorded-reranking > label { display: grid; gap: 6px; font-size: 11px; margin: 12px 0; }
+.recorded-reranking select { max-width: 100%; min-height: 36px; }
+.recorded-rerank-slider > span { display: flex; justify-content: space-between; }
+.recorded-ranking { margin: 12px 0 0; padding-left: 20px; font-size: 12px; }
+.recorded-ranking li { padding: 6px 0; }
+.recorded-ranking span { float: right; color: #52657c; font-size: 11px; }
+.recorded-continuations h4 { font-size: 12px; margin: 16px 0 6px; }
+.recorded-table-scroll { overflow: auto; }
+.recorded-continuations table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+.recorded-continuations th, .recorded-continuations td { padding: 8px; border-bottom: 1px solid #e1e7ef; white-space: nowrap; }
+.game-review :is(button, summary, input, select):focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+@media (max-width: 680px) {
+  .game-review-layout { grid-template-columns: 1fr; gap: 16px; }
+  .game-review-timeline ol { display: flex; flex-wrap: nowrap; gap: 4px; overflow-x: auto; max-height: none; padding: 4px; }
+  .game-review-timeline li { flex-shrink: 0; border: 1px solid #e1e7ef; border-radius: 4px; }
+  .game-review-timeline button { display: grid; gap: 0; min-width: 76px; }
+  .recorded-decision-facts { gap: 12px; }
+  .recorded-preferences dl { grid-template-columns: 1fr; }
+  .recorded-decision-title h3 { font-size: 18px; }
+}

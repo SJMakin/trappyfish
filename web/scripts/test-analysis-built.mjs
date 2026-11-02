@@ -23,6 +23,8 @@ try {
   await page.getByText('Board detected.', { exact: false }).waitFor({ timeout: 90000 });
   assert.equal((await page.locator('#import-fen').inputValue()).split(' ')[0], fixture.fen().split(' ')[0]);
   await page.getByLabel('Side to move', { exact: true }).selectOption('w');
+  const reviewConfirmation = page.locator('.review-checkbox input');
+  if (await reviewConfirmation.count()) await reviewConfirmation.check();
   const rootFen = await page.locator('#import-fen').inputValue();
   const began = Date.now();
   await page.getByRole('button', { name: 'Analyze position', exact: true }).click();

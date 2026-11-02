@@ -1,0 +1,182 @@
+[
+  {
+    "id": "000Pw",
+    "source": "https://lichess.org/training/000Pw",
+    "gameUrl": "https://lichess.org/game/au2lCK5o#73",
+    "preMistakeFen": "6k1/5p1p/4p3/4q3/3nN3/2Q3P1/PP3P1P/6K1 w - - 2 37",
+    "initialMove": "e4d2",
+    "solverFen": "6k1/5p1p/4p3/4q3/3n4/2Q3P1/PP1N1P1P/6K1 b - - 3 37",
+    "solution": [
+      "d4e2",
+      "g1f1",
+      "e2c3"
+    ],
+    "san": [
+      "Ne2+",
+      "Kf1",
+      "Nxc3"
+    ],
+    "motifs": [
+      "crushing",
+      "endgame",
+      "fork",
+      "short"
+    ],
+    "selectedMotif": "fork",
+    "rating": 1514,
+    "verification": "All database moves replay legally; motif labels supplied by Lichess. Not an independent engine proof."
+  },
+  {
+    "id": "0018S",
+    "source": "https://lichess.org/training/0018S",
+    "gameUrl": "https://lichess.org/game/H1ARO2GL/black#40",
+    "preMistakeFen": "2kr3r/pp3p2/4p2p/1N1p2p1/3Q4/1P1P4/2q2PPP/5RK1 b - - 1 20",
+    "initialMove": "b7b6",
+    "solverFen": "2kr3r/p4p2/1p2p2p/1N1p2p1/3Q4/1P1P4/2q2PPP/5RK1 w - - 0 21",
+    "solution": [
+      "d4a1",
+      "a7a5",
+      "f1c1"
+    ],
+    "san": [
+      "Qa1",
+      "a5",
+      "Rc1"
+    ],
+    "motifs": [
+      "advantage",
+      "endgame",
+      "pin",
+      "short"
+    ],
+    "selectedMotif": "pin",
+    "rating": 2613,
+    "verification": "All database moves replay legally; motif labels supplied by Lichess. Not an independent engine proof."
+  },
+  {
+    "id": "000qP",
+    "source": "https://lichess.org/training/000qP",
+    "gameUrl": "https://lichess.org/game/r4xUR6fC#101",
+    "preMistakeFen": "8/7R/8/5p2/4bk1P/8/2r2K2/6R1 w - - 7 51",
+    "initialMove": "f2f1",
+    "solverFen": "8/7R/8/5p2/4bk1P/8/2r5/5KR1 b - - 8 51",
+    "solution": [
+      "f4f3",
+      "f1e1",
+      "c2c1",
+      "e1d2",
+      "c1g1"
+    ],
+    "san": [
+      "Kf3",
+      "Ke1",
+      "Rc1+",
+      "Kd2",
+      "Rxg1"
+    ],
+    "motifs": [
+      "crushing",
+      "endgame",
+      "exposedKing",
+      "long",
+      "skewer"
+    ],
+    "selectedMotif": "skewer",
+    "rating": 2146,
+    "verification": "All database moves replay legally; motif labels supplied by Lichess. Not an independent engine proof."
+  },
+  {
+    "id": "001h8",
+    "source": "https://lichess.org/training/001h8",
+    "gameUrl": "https://lichess.org/game/IxCahP6X/black#68",
+    "preMistakeFen": "2r3k1/2r4p/4p1p1/1p1q1pP1/p1bP1P1Q/P6R/5B2/2R3K1 b - - 5 34",
+    "initialMove": "c4e2",
+    "solverFen": "2r3k1/2r4p/4p1p1/1p1q1pP1/p2P1P1Q/P6R/4bB2/2R3K1 w - - 6 35",
+    "solution": [
+      "h4h7",
+      "c7h7",
+      "c1c8",
+      "g8g7",
+      "c8c7"
+    ],
+    "san": [
+      "Qxh7+",
+      "Rxh7",
+      "Rxc8+",
+      "Kg7",
+      "Rc7+"
+    ],
+    "motifs": [
+      "crushing",
+      "deflection",
+      "kingsideAttack",
+      "long",
+      "middlegame",
+      "sacrifice"
+    ],
+    "selectedMotif": "deflection",
+    "rating": 1715,
+    "verification": "All database moves replay legally; motif labels supplied by Lichess. Not an independent engine proof."
+  },
+  {
+    "id": "001XA",
+    "source": "https://lichess.org/training/001XA",
+    "gameUrl": "https://lichess.org/game/KZRiN695/black#46",
+    "preMistakeFen": "1qr2rk1/pb2bppp/8/8/2p1N3/P1Bn2P1/2Q2PBP/1R3RK1 b - - 3 23",
+    "initialMove": "b8c7",
+    "solverFen": "2r2rk1/pbq1bppp/8/8/2p1N3/P1Bn2P1/2Q2PBP/1R3RK1 w - - 4 24",
+    "solution": [
+      "b1b7",
+      "c7b7",
+      "e4f6",
+      "e7f6",
+      "g2b7"
+    ],
+    "san": [
+      "Rxb7",
+      "Qxb7",
+      "Nf6+",
+      "Bxf6",
+      "Bxb7"
+    ],
+    "motifs": [
+      "crushing",
+      "discoveredAttack",
+      "long",
+      "master",
+      "middlegame",
+      "sacrifice"
+    ],
+    "selectedMotif": "discoveredAttack",
+    "rating": 1722,
+    "verification": "All database moves replay legally; motif labels supplied by Lichess. Not an independent engine proof."
+  },
+  {
+    "id": "000Zo",
+    "source": "https://lichess.org/training/000Zo",
+    "gameUrl": "https://lichess.org/game/n8Ff742v#69",
+    "preMistakeFen": "4r3/1k6/pp3r2/1b2P2p/3R1p2/P1R2P2/1P4PP/6K1 w - - 0 35",
+    "initialMove": "e5f6",
+    "solverFen": "4r3/1k6/pp3P2/1b5p/3R1p2/P1R2P2/1P4PP/6K1 b - - 0 35",
+    "solution": [
+      "e8e1",
+      "g1f2",
+      "e1f1"
+    ],
+    "san": [
+      "Re1+",
+      "Kf2",
+      "Rf1#"
+    ],
+    "motifs": [
+      "endgame",
+      "mate",
+      "mateIn2",
+      "operaMate",
+      "short"
+    ],
+    "selectedMotif": "mateIn2",
+    "rating": 1363,
+    "verification": "All database moves replay legally; motif labels supplied by Lichess. Not an independent engine proof."
+  }
+]

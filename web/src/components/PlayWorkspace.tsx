@@ -1,24 +1,27 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, type Color, type Move, type Square } from 'chess.js';
 import { Chessboard, type ChessboardOptions } from 'react-chessboard';
-import { BookmarkPlus, Bot, BrainCircuit, Check, Eye, EyeOff, FlipVertical2, RotateCcw, Swords, Undo2 } from 'lucide-react';
+import { BookmarkPlus, BrainCircuit, Check, FlipVertical2, RotateCcw, Undo2 } from 'lucide-react';
 import { UciClient } from '../engine/uci';
 import { MaiaClient } from '../engine/maia';
 import { PositionImport } from './PositionImport';
-import { PlayingStyleControls } from './PlayingStyleControls';
-import { MoveSelectionDetails } from './AnalysisHud';
+import { FishRival, type FishState } from './FishRival';
+import { PlaySettings } from './PlaySettings';
+import { OpeningBrowser } from './OpeningBrowser';
+import { GameReview } from './GameReview';
+import { getOpening, matchingBookMoves, compatibleOpeningIds, loadFavouriteIds, type Opening } from '../openings/library';
+import { DEFAULT_PLAY_SETTINGS, identifySearchProfile, applySearchProfile } from '../play/searchProfiles';
+import { publicActivity, type PlayActivity } from '../play/activity';
+import { loadOpeningDefault, saveOpeningDefault } from '../play/openingDefault';
+import { writeDecisionTrace, recordTraceReply, pruneDecisionTraces } from '../history/decisionTraces';
 import { validatePosition } from '../import/position';
-import { createHistoryId, type SavedPosition } from '../history/positionHistory';
+import { createHistoryId, type SavedPosition, type GameOpening, type GameResult } from '../history/positionHistory';
 import { rememberPracticeGame, restorePracticeGame } from '../history/workspaceHistory';
 import {
   DEFAULT_TRAPPY_SETTINGS, TrappyEngine, moveToUci, opposite, playUci, squarePairFromUci,
-  type MoveDecision, type TrappySettings,
+  type TrappySettings,
 } from '../engine/trappy';
 
-const ENGINE_ARROW = 'rgba(26, 92, 180, 0.75)';
-const TRAP_ARROW = 'rgba(215, 111, 34, 0.9)';
-type Plan = { decision: MoveDecision; fen: string };
-type ReviewedPlan = Plan & { actualReply: string; actualReplySan: string };
 type Promotion = { from: string; to: string };
 
 export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, savedPosition }: { initialFen?: string; initialPlayer?: Color; active?: boolean; savedPosition?: SavedPosition }) {
@@ -41,10 +44,22 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   const [newGameOpen, setNewGameOpen] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [trappyEnabled, setTrappyEnabled] = useState(savedPosition?.styleEnabled ?? true);
-  const [analysis, setAnalysis] = useState(false);
-  const [settings, setSettings] = useState<TrappySettings>({ ...DEFAULT_TRAPPY_SETTINGS, ...savedPosition?.settings });
-  const [plan, setPlan] = useState<Plan | null>(null);
-  const [review, setReview] = useState<ReviewedPlan | null>(null);
+  const [settings, setSettings] = useState<TrappySettings>(savedPosition?.settings
+    ? { ...DEFAULT_TRAPPY_SETTINGS, ...savedPosition.settings } : { ...DEFAULT_PLAY_SETTINGS });
+  const [opening, setOpening] = useState<GameOpening | undefined>(savedPosition?.opening);
+  const [result, setResult] = useState<GameResult | undefined>(savedPosition?.result ?? naturalResult(initialGame));
+  const [reviewFen, setReviewFen] = useState<string>();
+  const [openingBrowserOpen, setOpeningBrowserOpen] = useState(false);
+  const [selectedOpening, setSelectedOpening] = useState<Opening | undefined>(() => savedPosition?.opening ? getOpening(savedPosition.opening.id) : undefined);
+  const [openingChoice, setOpeningChoice] = useState<'free' | 'selected' | 'favourites'>(() => loadFavouriteIds().length ? loadOpeningDefault() : 'free');
+  const [startMode, setStartMode] = useState<'position' | 'line'>('line');
+  const [favouriteIds, setFavouriteIds] = useState<string[]>(loadFavouriteIds);
+  const [showGuidance, setShowGuidance] = useState(false);
+  const [activity, setActivity] = useState<PlayActivity | null>(null);
+  const [searchStartedAt, setSearchStartedAt] = useState(0);
+  const [activityBudget, setActivityBudget] = useState('');
+  const [remark, setRemark] = useState(savedPosition?.result ? 'The score sheet is open.' : 'Your move. I have a fairly respectable poker face.');
+  const [eventState, setEventState] = useState<FishState>('idle');
   const [lastMove, setLastMove] = useState<string | null>(() => {
     const last = gameRef.current.history({ verbose: true }).at(-1); return last ? moveToUci(last) : null;
   });
@@ -60,9 +75,11 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
 
   const saveGame = useCallback(() => {
     historyStarted.current = true;
+    if (result) gameRef.current.setHeader('Result', result.reason === 'unfinished' ? '*' : result.winner === 'w' ? '1-0' : result.winner === 'b' ? '0-1' : '1/2-1/2');
     rememberPracticeGame(gameRef.current, { id: historyId.current, createdAt: historyCreatedAt.current,
-      orientation, playerColor, settings, styleEnabled: trappyEnabled });
-  }, [orientation, playerColor, settings, trappyEnabled]);
+      orientation, playerColor, settings, styleEnabled: trappyEnabled, opening, result,
+      searchProfile: identifySearchProfile(settings).toLowerCase() as 'quick' | 'deep' | 'custom' });
+  }, [orientation, playerColor, settings, trappyEnabled, opening, result]);
   useEffect(() => {
     if (active && (historyStarted.current || gameRef.current.history().length > 0)) saveGame();
   }, [active, fen, historyVersion, saveGame]);
@@ -70,6 +87,8 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   const syncGameState = useCallback(() => {
     setFen(gameRef.current.fen());
     setMoveHistory(gameRef.current.history({ verbose: true }));
+    const ending = naturalResult(gameRef.current);
+    if (ending) setResult(ending);
   }, []);
 
   const clearInteraction = useCallback(() => { setSelectedSquare(null); setPromotion(null); }, []);
@@ -82,21 +101,32 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   const resetGame = useCallback((color = playerColor) => {
     searchIdRef.current += 1;
     trappyEngine.cancel();
-    gameRef.current = new Chess();
+    const next = new Chess();
+    const currentFavourites = loadFavouriteIds();
+    setFavouriteIds(currentFavourites);
+    let gameOpening: GameOpening | undefined;
+    if (openingChoice === 'selected' && selectedOpening) {
+      if (startMode === 'position') next.loadPgn(selectedOpening.pgn);
+      gameOpening = { id: selectedOpening.id, name: selectedOpening.name, eco: selectedOpening.eco,
+        startPly: startMode === 'position' ? next.history().length : 0, bookIds: [selectedOpening.id] };
+    } else if (openingChoice === 'favourites' && currentFavourites.length) {
+      gameOpening = { id: 'favourites', name: 'Favourite openings', startPly: 0, bookIds: currentFavourites };
+    }
+    gameRef.current = next;
     historyId.current = createHistoryId(); historyCreatedAt.current = Date.now(); historyStarted.current = false;
     setHistoryVersion((version) => version + 1);
     setPlayerColor(color);
     setOrientation(color);
     setThinking(false);
-    setPlan(null);
-    setReview(null);
+    setOpening(gameOpening); setResult(undefined); setReviewFen(undefined); setActivity(null); setActivityBudget(''); setShowGuidance(false);
+    setRemark('A fresh score sheet. Let’s make it worth keeping.'); setEventState('idle');
     setLastMove(null);
     setError(null);
     setNotice(null);
     setNewGameOpen(false);
     clearInteraction();
     syncGameState();
-  }, [playerColor, trappyEngine, clearInteraction, syncGameState]);
+  }, [playerColor, trappyEngine, clearInteraction, syncGameState, openingChoice, selectedOpening, startMode, favouriteIds]);
 
   const loadPosition = useCallback((input: string, color: Color) => {
     const position = validatePosition(input);
@@ -110,8 +140,8 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     setOrientation(color);
     setNewGameColor(color);
     setThinking(false);
-    setPlan(null);
-    setReview(null);
+    setOpening(undefined); setResult(naturalResult(gameRef.current)); setReviewFen(undefined); setActivity(null); setActivityBudget(''); setShowGuidance(false);
+    setRemark('A new position. Same fish.'); setEventState('idle');
     setLastMove(null);
     setError(null);
     setNotice('Position loaded.');
@@ -120,31 +150,47 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   }, [trappyEngine, clearInteraction, syncGameState]);
 
   const undoPair = useCallback(() => {
-    if (thinking) return;
+    if (thinking || result || gameRef.current.history().length <= (opening?.startPly ?? 0)) return;
     searchIdRef.current += 1;
     setError(null);
     gameRef.current.undo();
-    if (gameRef.current.turn() !== playerColor) gameRef.current.undo();
-    setPlan(null);
-    setReview(null);
+    if (gameRef.current.turn() !== playerColor && gameRef.current.history().length > (opening?.startPly ?? 0)) gameRef.current.undo();
+    void pruneDecisionTraces(historyId.current, gameRef.current.history().length);
+    setActivity(null); setRemark('Rewound. We can pretend that didn’t happen.'); setEventState('idle');
+    if (opening?.bookIds) setOpening({ ...opening, bookExitReason: undefined });
     setLastMove(null);
     clearInteraction();
     syncGameState();
-  }, [playerColor, syncGameState, thinking, clearInteraction]);
+  }, [playerColor, syncGameState, thinking, clearInteraction, opening, result]);
 
   const makeEngineMove = useCallback(async () => {
     const activeGame = gameRef.current;
-    if (!active || thinking || activeGame.isGameOver() || activeGame.turn() !== engineColor) return;
+    if (!active || thinking || result || activeGame.isGameOver() || activeGame.turn() !== engineColor) return;
     const searchId = ++searchIdRef.current;
     const fenAtStart = activeGame.fen();
     setThinking(true);
+    setSearchStartedAt(performance.now()); setActivity(null); setRemark('Give me a moment with this one.');
+    setActivityBudget(`${identifySearchProfile(settings)} · depth ${settings.rootDepth}/${settings.trapDepth}`);
     setError(null);
     try {
-      const decision = await trappyEngine.chooseMove(fenAtStart, settings, trappyEnabled);
+      const history = activeGame.history({ verbose: true }).map(moveToUci);
+      const bookMoves = opening?.bookIds && !opening.bookExitReason ? matchingBookMoves(history, opening.bookIds) : undefined;
+      const decision = await trappyEngine.chooseMove(fenAtStart, settings, trappyEnabled, {
+        bookMoves, onProgress: (progress) => {
+          if (activeRef.current && searchId === searchIdRef.current) setActivity(publicActivity(progress));
+        },
+      });
       if (!activeRef.current || searchId !== searchIdRef.current || gameRef.current.fen() !== fenAtStart) return;
       const move = playUci(gameRef.current, decision.move);
       if (!move) throw new Error(`Engine produced an illegal move: ${decision.move}`);
-      setPlan({ decision, fen: gameRef.current.fen() });
+      if (decision.warning) setNotice('The human reply model was unavailable for that turn. Stockfish supplied the decision; details are saved for review.');
+      void writeDecisionTrace({ gameId: historyId.current, ply: gameRef.current.history().length, openingExitReason: opening?.bookExitReason,
+        rootFen: fenAtStart, settings: { ...settings }, styleEnabled: trappyEnabled, decision });
+      if (decision.diagnostics) setActivity(publicActivity({ stage: 'complete', completed: 1, total: 1, message: '', diagnostics: decision.diagnostics }));
+      if (opening && bookMoves !== undefined && decision.provenance?.source !== 'opening-book') {
+        setOpening({ ...opening, bookExitReason: decision.provenance?.bookExitReason ?? 'line-complete' });
+      }
+      reactToMove(move, gameRef.current, setRemark, setEventState);
       setLastMove(moveToUci(move));
       syncGameState();
     } catch (err) {
@@ -152,11 +198,11 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     } finally {
       if (searchId === searchIdRef.current) setThinking(false);
     }
-  }, [active, engineColor, settings, syncGameState, thinking, trappyEnabled, trappyEngine]);
+  }, [active, engineColor, settings, syncGameState, thinking, trappyEnabled, trappyEngine, result, opening]);
 
   useEffect(() => {
-    if (active && !error && gameRef.current.turn() === engineColor && !gameRef.current.isGameOver()) void makeEngineMove();
-  }, [active, engineColor, error, fen, makeEngineMove]);
+    if (active && !error && !result && gameRef.current.turn() === engineColor && !gameRef.current.isGameOver()) void makeEngineMove();
+  }, [active, engineColor, error, fen, makeEngineMove, result]);
   useEffect(() => {
     if (active) return;
     searchIdRef.current += 1;
@@ -170,13 +216,18 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   }, [promotion]);
 
   const commitPlayerMove = useCallback((from: string, to: string, promoteTo = 'q'): boolean => {
-    if (thinking || gameRef.current.isGameOver() || gameRef.current.turn() !== playerColor) return false;
+    if (thinking || result || gameRef.current.isGameOver() || gameRef.current.turn() !== playerColor) return false;
     try {
       const move = gameRef.current.move({ from, to, promotion: promoteTo });
       const returnFocusToBoard = promotionDialog.current !== null;
-      if (plan) setReview({ ...plan, actualReply: moveToUci(move), actualReplySan: move.san });
+      const ply = gameRef.current.history().length;
+      const leftBook = opening?.bookIds && !opening.bookExitReason && !compatibleOpeningIds(gameRef.current.history({ verbose: true }).map(moveToUci), opening.bookIds).length;
+      void recordTraceReply(historyId.current, ply - 1, { move: moveToUci(move), san: move.san, ply, ...(leftBook ? { bookExitReason: 'deviation' as const } : {}) });
+      if (leftBook && opening) {
+        setOpening({ ...opening, bookExitReason: 'deviation' });
+      }
+      reactToMove(move, gameRef.current, setRemark, setEventState);
       setLastMove(moveToUci(move));
-      setPlan(null);
       setError(null);
       setNotice(null);
       clearInteraction();
@@ -185,10 +236,10 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
       syncGameState();
       return true;
     } catch { return false; }
-  }, [playerColor, syncGameState, thinking, plan, clearInteraction]);
+  }, [playerColor, syncGameState, thinking, result, opening, clearInteraction]);
 
   const attemptPlayerMove = useCallback((from: string, to: string): boolean => {
-    if (thinking || promotion || gameRef.current.turn() !== playerColor || gameRef.current.isGameOver()) return false;
+    if (thinking || result || promotion || gameRef.current.turn() !== playerColor || gameRef.current.isGameOver()) return false;
     const legal = gameRef.current.moves({ square: from as Square, verbose: true }).filter((move) => move.to === to);
     if (!legal.length) return false;
     if (legal.some((move) => move.isPromotion())) {
@@ -197,21 +248,21 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
       return false;
     }
     return commitPlayerMove(from, to);
-  }, [thinking, promotion, playerColor, commitPlayerMove]);
+  }, [thinking, result, promotion, playerColor, commitPlayerMove]);
 
   const handleDrop = useCallback<NonNullable<ChessboardOptions['onPieceDrop']>>(
     ({ sourceSquare, targetSquare }) => Boolean(targetSquare && attemptPlayerMove(sourceSquare, targetSquare)),
     [attemptPlayerMove],
   );
   const handleSquareClick = useCallback<NonNullable<ChessboardOptions['onSquareClick']>>(({ square }) => {
-    if (thinking || promotion || gameRef.current.isGameOver() || gameRef.current.turn() !== playerColor) return;
+    if (thinking || result || promotion || gameRef.current.isGameOver() || gameRef.current.turn() !== playerColor) return;
     if (selectedSquare && selectedSquare !== square && attemptPlayerMove(selectedSquare, square)) return;
     const piece = gameRef.current.get(square as Square);
     setSelectedSquare(piece?.color === playerColor && selectedSquare !== square ? square as Square : null);
-  }, [thinking, promotion, playerColor, selectedSquare, attemptPlayerMove]);
+  }, [thinking, result, promotion, playerColor, selectedSquare, attemptPlayerMove]);
 
   const styles = useMemo(() => {
-    const result = squareStyles(lastMove, analysis ? plan?.decision.selected.trap?.reply : undefined);
+    const result = squareStyles(reviewFen ? null : lastMove);
     if (selectedSquare) {
       result[selectedSquare] = { boxShadow: 'inset 0 0 0 4px #d47435', backgroundColor: '#ceba81' };
       for (const move of gameRef.current.moves({ square: selectedSquare, verbose: true })) {
@@ -223,12 +274,12 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
       }
     }
     return result;
-  }, [lastMove, analysis, plan, selectedSquare, fen]);
+  }, [lastMove, reviewFen, selectedSquare, fen]);
 
   const boardOptions = useMemo<ChessboardOptions>(() => ({
-    id: 'trappy-board', position: fen, boardOrientation: orientation === 'w' ? 'white' : 'black',
-    animationDurationInMs: 180, showNotation: true, allowDrawingArrows: !promotion,
-    allowDragging: !thinking && !promotion && !game.isGameOver() && game.turn() === playerColor,
+    id: 'trappy-board', position: result && reviewFen ? reviewFen : fen, boardOrientation: orientation === 'w' ? 'white' : 'black',
+    animationDurationInMs: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180, showNotation: true, allowDrawingArrows: !promotion,
+    allowDragging: !thinking && !result && !promotion && !game.isGameOver() && game.turn() === playerColor,
     canDragPiece: ({ piece }) => game.turn() === playerColor && piece.pieceType[0] === playerColor,
     onPieceDrop: handleDrop, onSquareClick: handleSquareClick,
     boardStyle: { borderRadius: 6, boxShadow: '0 4px 16px rgba(23, 35, 56, 0.10)' },
@@ -250,21 +301,41 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
         setKeyboardSquare(destination);
         requestAnimationFrame(() => document.getElementById(`trappy-board-keyboard-${destination}`)?.focus());
       }}>{children}</div>,
-    arrows: analysis ? boardArrows(lastMove, plan?.decision.selected.trap?.reply) : [],
-  }), [fen, orientation, thinking, promotion, game, playerColor, handleDrop, handleSquareClick, styles, analysis, lastMove, plan, keyboardSquare, selectedSquare]);
+    arrows: [],
+  }), [fen, reviewFen, orientation, thinking, result, promotion, game, playerColor, handleDrop, handleSquareClick, styles, lastMove, keyboardSquare, selectedSquare]);
+
+  const endGame = (reason: 'resigned' | 'unfinished') => {
+    searchIdRef.current++; trappyEngine.cancel(); setThinking(false); clearInteraction();
+    setResult({ reason, winner: reason === 'resigned' ? engineColor : undefined });
+    historyStarted.current = true; setHistoryVersion((value) => value + 1);
+  };
+  const rewindToBook = () => {
+    if (!opening?.bookIds) return;
+    searchIdRef.current++; trappyEngine.cancel(); setThinking(false);
+    while (gameRef.current.history().length > (opening.startPly ?? 0)) {
+      if (compatibleOpeningIds(gameRef.current.history({ verbose: true }).map(moveToUci), opening.bookIds).length) break;
+      gameRef.current.undo();
+    }
+    void pruneDecisionTraces(historyId.current, gameRef.current.history().length);
+    setOpening({ ...opening, bookExitReason: undefined }); setActivity(null); clearInteraction(); syncGameState();
+  };
+  const hintMoves = opening?.bookIds ? matchingBookMoves(moveHistory.map(moveToUci), opening.bookIds) : [];
+  const fishState: FishState = result ? result.reason === 'draw' || !result.winner ? 'draw' : result.winner === engineColor ? 'victory' : 'defeat' : thinking ? 'search' : eventState;
 
   return (
-    <main className="app-shell">
+    <main className="app-shell play-workspace">
       <section className="board-column" aria-label="Chess board">
         <header className="panel-header">
-          <div><span className="eyebrow">PRACTICE</span><h1>Play against the engine</h1>
-            <p role="status" aria-live="polite">{statusText(game, playerColor, thinking)}</p></div>
+          <div><span className="eyebrow">{result ? 'THE SCORE SHEET' : 'AT THE BOARD'}</span><h1>{result ? 'Game review' : 'Play Trappyfish'}</h1>
+            <p role="status" aria-live="polite">{result?.reason === 'resigned' ? 'You resigned. The engine wins.' : result?.reason === 'unfinished' ? 'Game ended unfinished.' : statusText(game, playerColor, thinking)}</p></div>
           <div className="status-light" data-active={thinking || undefined} aria-label={thinking ? 'Engine thinking' : 'Ready'}>
             {thinking ? <BrainCircuit size={20} /> : <Check size={20} />}
           </div>
         </header>
         <div className="board-meta"><span>You play {playerColor === 'w' ? 'White' : 'Black'}</span>
-          <span>{trappyEnabled ? `Custom style · ${settings.opponentRating} opponent` : 'Stockfish'}</span></div>
+          <span>{trappyEnabled ? `Custom style · ${settings.opponentRating} reply model` : 'Stockfish'}</span></div>
+        <div className="play-opening-identity"><span>{opening?.eco ?? '♟'}</span><div><strong>{opening?.name ?? 'Free play'}</strong>
+          <small>{opening ? opening.bookExitReason ? 'Continuing with normal search' : 'Following compatible book moves while sound' : 'Your own opening, your own way'}</small></div></div>
         <div className="board-wrap">
           <Chessboard options={boardOptions} />
           {promotion ? <div className="promotion-backdrop">
@@ -288,184 +359,66 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
           </div> : null}
         </div>
         <div className="board-tools">
-          <button type="button" aria-expanded={newGameOpen} onClick={() => setNewGameOpen(!newGameOpen)}><RotateCcw size={16} /> New game</button>
-          <button type="button" disabled={!moveHistory.length || thinking} onClick={undoPair}><Undo2 size={16} /> Undo</button>
+          <button type="button" aria-expanded={newGameOpen} onClick={() => {
+            const currentFavourites = loadFavouriteIds(); setFavouriteIds(currentFavourites);
+            if (openingChoice === 'favourites' && !currentFavourites.length) setOpeningChoice('free');
+            setNewGameOpen(!newGameOpen);
+          }}><RotateCcw size={16} /> New game</button>
+          <button type="button" disabled={moveHistory.length <= (opening?.startPly ?? 0) || thinking || Boolean(result)} onClick={undoPair}><Undo2 size={16} /> Undo</button>
           <button type="button" onClick={() => setOrientation(opposite(orientation))}><FlipVertical2 size={16} /> Flip board</button>
           <button type="button" aria-label="Save practice game" onClick={() => { saveGame(); setNotice('Game saved in Recent positions.'); }}><BookmarkPlus size={16} /> Save game</button>
         </div>
         {newGameOpen ? <section className="new-game-panel" aria-label="Start a new game">
           <label>Play as <select aria-label="New game colour" value={newGameColor} onChange={(event) => setNewGameColor(event.target.value as Color)}>
             <option value="w">White</option><option value="b">Black</option></select></label>
-          <button className="primary-button" type="button" onClick={() => resetGame(newGameColor)}>Start new game</button>
-          <p>This starts from the initial position.</p>
+          <label>Opening <select aria-label="New game opening" value={openingChoice} onChange={(event) => setOpeningChoice(event.target.value as typeof openingChoice)}>
+            <option value="free">Free play</option><option value="selected" disabled={!selectedOpening}>Selected opening{selectedOpening ? ` · ${selectedOpening.name}` : ''}</option>
+            <option value="favourites" disabled={!favouriteIds.length}>Favourites · {favouriteIds.length} lines</option></select></label>
+          {openingChoice === 'selected' ? <label>Start <select aria-label="Opening start mode" value={startMode} onChange={(event) => setStartMode(event.target.value as typeof startMode)}>
+            <option value="line">Play into the opening</option><option value="position">At the selected position</option></select></label> : null}
+          <div className="new-game-budget" role="group" aria-label="New game search budget"><span>Search: {identifySearchProfile(settings)}</span>{(['Quick', 'Deep'] as const).map((profile) => <button key={profile} type="button" aria-pressed={identifySearchProfile(settings) === profile} onClick={() => setSettings(applySearchProfile(settings, profile))}>{profile}</button>)}</div>
+          <p>Depth {settings.rootDepth}/{settings.trapDepth} · {settings.candidateCount} candidates · {settings.replyCount} replies · {settings.opponentPlies ?? 1} opponent turn{settings.opponentPlies === 2 ? `s · ${settings.continuationBranches ?? 3} refined branches · ${settings.continuationReplies ?? 4} follow-up replies · ${settings.continuationCandidates ?? 1} engine continuations` : ''} · {Math.round(settings.replyCoverage * 100)}% coverage.</p>
+          <button type="button" onClick={() => { setOpeningBrowserOpen(true); setFavouriteIds(loadFavouriteIds()); }}>Browse openings</button>
+          <button className="primary-button" type="button" disabled={openingChoice === 'selected' && !selectedOpening} onClick={() => resetGame(newGameColor)}>Start new game</button>
+          <p>{openingChoice === 'selected' && startMode === 'position' ? 'The opening moves are retained in the score sheet.' : 'Starts from the initial position. Your moves remain your choice.'}</p>
         </section> : null}
         <p className="board-hint">Tap a piece, then its destination. You can also drag.</p>
+        {result && reviewFen ? <button type="button" onClick={() => setReviewFen(undefined)}>Return to final position</button> : null}
+        {!result ? <div className="end-game-actions"><button type="button" onClick={() => endGame('resigned')}>Resign & review</button><button type="button" onClick={() => endGame('unfinished')}>End unfinished game & review</button></div> : null}
       </section>
 
       <section className="side-panel" aria-label="Game controls">
-        <section className="opponent-panel" aria-label="Opponent setup">
-          <div className="section-title"><h2>Your opponent</h2><span className="mode-badge">{trappyEnabled ? 'CUSTOM' : 'STOCKFISH'}</span></div>
-          <div className="control-band persona-controls">
-            <button className={trappyEnabled ? 'is-active' : ''} aria-pressed={trappyEnabled} disabled={thinking} onClick={() => setTrappyEnabled(true)} type="button"><Swords size={17} /> Custom style</button>
-            <button className={!trappyEnabled ? 'is-active' : ''} aria-pressed={!trappyEnabled} disabled={thinking} onClick={() => setTrappyEnabled(false)} type="button"><Bot size={17} /> Stockfish</button>
-          </div>
-          <p className="persona-description">{trappyEnabled ? 'Uses your explicit playing preferences within the risk limits below.' : 'Plays the strongest move it finds. Custom style controls are inactive.'}</p>
-          <SettingsPanel settings={settings} setSettings={setSettings} disabled={thinking} trappyEnabled={trappyEnabled} />
-        </section>
-        <div className="view-switch" role="group" aria-label="View mode">
-          <button type="button" className={!analysis ? 'is-active' : ''} aria-pressed={!analysis} onClick={() => setAnalysis(false)}><EyeOff size={16} /> Play</button>
-          <button type="button" className={analysis ? 'is-active' : ''} aria-pressed={analysis} onClick={() => setAnalysis(true)}><Eye size={16} /> Analysis</button>
-        </div>
-        {analysis ? <p className="analysis-notice" role="status">Analysis reveals the engine’s current plans and predicted replies.</p> : null}
+        <FishRival state={fishState} remark={result ? result.reason === 'unfinished' ? 'An unfinished game still has a story.' : result.reason === 'draw' ? 'A draw. We’ll call that mutual respect.' : result.winner === playerColor ? 'Well played. I shall be examining that.' : 'Good game. The score sheet has the details.' : remark}
+          activity={activity} startedAt={searchStartedAt} searchSummary={activityBudget || `${identifySearchProfile(settings)} · depth ${settings.rootDepth}/${settings.trapDepth}`} />
+        <div className="play-settings-summary" aria-label="Active opponent settings"><span>{trappyEnabled ? 'Custom style' : 'Stockfish'} · {identifySearchProfile(settings)}</span><span>Risk ≤ {(settings.maxRiskCp / 100).toFixed(2)} pawns · human model {settings.opponentRating}</span></div>
+        <PlaySettings settings={settings} onChange={setSettings} trappyEnabled={trappyEnabled} onModeChange={setTrappyEnabled} />
         {error ? <div className="error-strip" role="alert">{error}
-          {game.turn() === engineColor ? <button type="button" onClick={() => setError(null)}>Retry search</button> : null}</div> : null}
+          {game.turn() === engineColor && !result ? <button type="button" onClick={() => setError(null)}>Retry search</button> : null}</div> : null}
         {notice ? <p className="import-notice" role="status">{notice}</p> : null}
-        {plan?.decision.warning && !analysis ? <p className="import-warning" role="status">{plan.decision.warning}</p> : null}
-        {analysis ? <DecisionPanel decision={plan?.decision ?? null} trappyEnabled={trappyEnabled} fen={plan?.fen ?? fen} /> : <section className="decision empty-state play-state">
-          <h2>{game.isGameOver() ? 'Game finished' : thinking ? 'Finding the punishment…' : 'No hints. Make your move.'}</h2>
-          <p>{game.isGameOver() ? 'Review the previous move below, or start a new game.' : 'The engine’s plans stay hidden in Play mode.'}</p>
-        </section>}
-        {review ? <details className="past-review" key={review.fen}>
-          <summary>Review your last move: {review.actualReplySan}</summary>
-          <p className="review-intro">The plan behind {review.decision.san}, before you played {review.actualReplySan}.
-            {review.decision.selected.trap?.reply === review.actualReply && !review.decision.selected.trap.nextReply ? ' You took the bait.' : ''}</p>
-          {analysis || game.isGameOver()
-            ? <DecisionPanel decision={review.decision} trappyEnabled={review.decision.mode === 'trappy'} fen={review.fen} />
-            : <CommittedMoveReview review={review} />}
-        </details> : null}
+        {opening && !result ? <section className="opening-guidance"><button type="button" aria-expanded={showGuidance} onClick={() => setShowGuidance(!showGuidance)}>Opening guidance</button>
+          {showGuidance ? <div>{hintMoves.length ? <><p>Next catalogue move{hintMoves.length > 1 ? 's' : ''}: <strong>{hintMoves.map((uci) => { try { const preview = new Chess(fen); return playUci(preview, uci)?.san ?? uci; } catch { return uci; } }).join(', ')}</strong>.</p><p>Continues the selected opening line. This is book guidance, not an evaluation of your move.</p></>
+            : <><p>{opening.bookExitReason === 'deviation' ? 'You have left the selected lines. Continue freely, or return to the last matching position.' : 'No next move is available in the selected lines. Normal search continues.'}</p>
+              {opening.bookExitReason === 'deviation' ? <button type="button" onClick={rewindToBook}>Rewind to opening</button> : null}</>}
+          </div> : null}</section> : null}
         <MoveList moves={moveHistory} />
+        {!result ? <p className="postgame-promise">The plans, alternatives and turning points open after the game.</p> : <p className="postgame-promise">The full score sheet is below the board.</p>}
+        <button className="browse-openings-button" type="button" aria-expanded={openingBrowserOpen} onClick={() => setOpeningBrowserOpen(!openingBrowserOpen)}>Explore openings</button>
         <PositionImport active={active} currentFen={fen} playerColor={playerColor} onLoad={loadPosition} />
       </section>
+      {result ? <div className="play-review-surface"><GameReview gameId={historyId.current} moves={moveHistory} result={result} onSelectPosition={setReviewFen} /></div> : null}
+      {openingBrowserOpen ? <section className="play-library" aria-label="Opening library"><button className="subtle-button" type="button" onClick={() => setOpeningBrowserOpen(false)}>Close opening library</button>
+        <OpeningBrowser selectedId={selectedOpening?.id} initialOpen onSelect={(selected, mode) => {
+          setSelectedOpening(selected); setOpeningChoice('selected'); setStartMode(mode); setNewGameOpen(true); setOpeningBrowserOpen(false);
+          requestAnimationFrame(() => document.querySelector('.new-game-panel')?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+        }} onFreePlay={() => { saveOpeningDefault('free'); setOpeningChoice('free'); setNewGameOpen(true); setOpeningBrowserOpen(false); }} onFavourites={(ids) => {
+          if (!saveOpeningDefault('favourites')) setNotice('The favourites default is kept for this tab because browser storage is unavailable.');
+          setFavouriteIds(ids); setOpeningChoice('favourites'); setNewGameOpen(true); setOpeningBrowserOpen(false);
+        }} />
+      </section> : null}
     </main>
   );
 }
 
-function SettingsPanel({ settings, setSettings, disabled, trappyEnabled }: {
-  settings: TrappySettings; setSettings: (settings: TrappySettings) => void; disabled: boolean; trappyEnabled: boolean;
-}) {
-  return <div className="settings">
-    {trappyEnabled ? <><div className="rating-heading"><span>Your rating</span><strong>{settings.opponentRating}</strong></div>
-      <div className="rating-presets" role="group" aria-label="Opponent rating presets">
-        {[800, 1000, 1400, 1800].map((rating) => <button type="button" key={rating} disabled={disabled}
-          className={settings.opponentRating === rating ? 'is-active' : ''} aria-pressed={settings.opponentRating === rating}
-          onClick={() => setSettings({ ...settings, opponentRating: rating })}>{rating}</button>)}
-      </div><p className="rating-note">Helps predict which mistakes to punish. The engine stays strong.</p></> : null}
-    {trappyEnabled ? <PlayingStyleControls settings={settings} onChange={setSettings} disabled={disabled} context="Play" /> : null}
-    <details className="search-settings">
-      <summary>Advanced settings</summary>
-      <p className="muted">Changes apply on the next engine turn.</p>
-      <label><span>Search depth</span><strong>{settings.rootDepth}</strong>
-        <input aria-label="Search depth" disabled={disabled} max={14} min={6} onChange={(event) => {
-          const depth = Number(event.target.value); setSettings({ ...settings, rootDepth: depth });
-        }} type="range" value={settings.rootDepth} /></label>
-      <label><span>Outcome search depth</span><strong>{settings.trapDepth}</strong>
-        <input aria-label="Outcome search depth" disabled={disabled} max={14} min={6} type="range" value={settings.trapDepth}
-          onChange={(event) => setSettings({ ...settings, trapDepth: Number(event.target.value) })} /></label>
-      <label><span>Opponent turns to model</span>
-        <select aria-label="Opponent turns to model" disabled={disabled} value={settings.opponentPlies ?? 1}
-          onChange={(event) => setSettings({ ...settings, opponentPlies: Number(event.target.value) as 1 | 2 })}>
-          <option value={1}>One turn · faster</option><option value={2}>Two turns · deeper traps</option>
-        </select></label>
-      {(settings.opponentPlies ?? 1) === 2 ? <>
-        <label><span>Follow-up paths</span><strong>{settings.continuationBranches ?? 3}</strong>
-          <input aria-label="Follow-up paths" disabled={disabled} type="range" min={1} max={8} value={settings.continuationBranches ?? 3}
-            onChange={(event) => setSettings({ ...settings, continuationBranches: Number(event.target.value) })} /></label>
-        <label><span>Replies on a follow-up</span><strong>{settings.continuationReplies ?? 4}</strong>
-          <input aria-label="Replies on a follow-up" disabled={disabled} type="range" min={2} max={10} value={settings.continuationReplies ?? 4}
-            onChange={(event) => setSettings({ ...settings, continuationReplies: Number(event.target.value) })} /></label>
-      </> : null}
-      <label><span>Custom opponent rating</span><strong>{settings.opponentRating}</strong>
-        <input aria-label="Opponent rating" disabled={disabled} max={3000} min={400} step={100} type="range" value={settings.opponentRating}
-          onChange={(event) => setSettings({ ...settings, opponentRating: Number(event.target.value) })} /></label>
-      <label><span>Candidate moves</span><strong>{settings.candidateCount}</strong>
-        <input aria-label="Candidate moves" disabled={disabled} type="range" min={4} max={24} value={settings.candidateCount}
-          onChange={(event) => setSettings({ ...settings, candidateCount: Number(event.target.value) })} /></label>
-      <label><span>Replies per candidate</span><strong>{settings.replyCount}</strong>
-        <input aria-label="Replies per candidate" disabled={disabled} type="range" min={3} max={20} value={settings.replyCount}
-          onChange={(event) => setSettings({ ...settings, replyCount: Number(event.target.value) })} /></label>
-      <label><span>Reply probability coverage</span><strong>{formatPercent(settings.replyCoverage)}</strong>
-        <input aria-label="Reply probability coverage" disabled={disabled} type="range" min={0.7} max={1} step={0.01} value={settings.replyCoverage}
-          onChange={(event) => setSettings({ ...settings, replyCoverage: Number(event.target.value) })} /></label>
-      <label><span>Engine rating seen by Maia</span><strong>{settings.engineRating}</strong>
-        <input aria-label="Engine rating" disabled={disabled} type="range" min={400} max={3000} step={100} value={settings.engineRating}
-          onChange={(event) => setSettings({ ...settings, engineRating: Number(event.target.value) })} /></label>
-    </details>
-  </div>;
-}
-
-function DecisionPanel({ decision, trappyEnabled, fen }: { decision: MoveDecision | null; trappyEnabled: boolean; fen: string }) {
-  if (!decision) return <section className="decision empty-state"><h2>Engine analysis</h2>
-    <p>{trappyEnabled ? 'Reply probabilities and outcomes appear after the engine moves.' : 'Stockfish analysis appears after the engine moves.'}</p></section>;
-  const trap = decision.selected.trap;
-  return <section className="decision">
-    <div className="section-title"><h2>Engine analysis</h2><span>{engineBadge(decision, trappyEnabled)}</span></div>
-    <div className="decision-main">
-      <div><small>played</small><strong>{decision.san}</strong></div>
-      <div><small>model score</small><strong>{decision.policySource === 'maia' ? formatPercent(decision.selected.expectedScore) : '—'}</strong></div>
-      <div><small>best defense</small><strong>{formatCp(decision.selected.rootScoreCp)}</strong></div>
-    </div>
-    <p className="decision-explanation">Risk vs Stockfish’s best move: <strong>{(decision.selected.riskCp / 100).toFixed(2)} pawns</strong>.
-      {decision.policySource === 'maia' ? <> Maia reply coverage: <strong>{formatPercent(decision.selected.policyCoverage)}</strong>.</> : null}</p>
-    <p className="muted score-note">Expected score is a model estimate from the engine’s perspective, not a measured win rate.</p>
-    {decision.selected.style && decision.styleApplied ? <details className="candidate-details play-style-details">
-      <summary>Playing preference contributions</summary>
-      <dl className="play-style-ledger">{[
-        ['King attack', decision.selected.style.aggressionBonusCp],
-        ['Pawn storms', decision.selected.style.pawnStormBonusCp ?? 0],
-        ['King caution', -(decision.selected.style.kingCautionPenaltyCp ?? 0)],
-        ['Sacrifice appetite', decision.selected.style.sacrificeBonusCp ?? 0],
-        ['Tension', decision.selected.style.tensionBonusCp],
-        ['Queen retention', decision.selected.style.queenRetentionBonusCp ?? 0],
-        ['Sharpness', decision.selected.style.sharpnessBonusCp ?? 0],
-        ['Draw aversion', -(decision.selected.style.drawAversionPenaltyCp ?? 0)],
-      ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{Math.abs(decision.selected.rootScoreCp) >= 90_000 ? 'Bypassed for mate' : `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(1)} pts`}</dd></div>)}</dl>
-      <p className="muted">These are ranking preferences; they do not change objective evaluation or expected utility. Material invested: {decision.selected.style.materialInvestment === undefined ? 'not recorded' : `${decision.selected.style.materialInvestment.toFixed(2)} pawns`}, separate from evaluation risk.</p>
-      {decision.selected.style.sharpnessAvailable === false ? <p className="muted">Sharpness unavailable: no usable human reply distribution.</p> : null}
-      {decision.selected.style.drawAversionAvailable === false ? <p className="muted">Draw aversion unavailable: no Stockfish WDL estimate was reported.</p> : null}
-    </details> : null}
-    <MoveSelectionDetails decision={decision} />
-    {decision.policySource === 'maia' && decision.selected.mistakeProbability !== undefined ? <p className="decision-explanation">
-      Modeled chance of a mistake worth at least a pawn across the searched replies: <strong>{formatPercent(decision.selected.mistakeProbability)}</strong>.
-    </p> : null}
-    {decision.warning ? <p className="import-warning" role="status">{decision.warning}</p> : null}
-    {trap ? <div className="trap-box">{trap.nextReply && trap.setupSan ? <>
-      <p>Tempting line: <strong>{trap.replySan} → {trap.setupSan} → {trap.nextReply.replySan}</strong>.</p>
-      <p className="punishment-line">Maia estimates {formatPercent(trap.probability)} for {trap.replySan}, then {formatPercent(trap.nextReply.probability)} for {trap.nextReply.replySan} after {trap.setupSan}.
-        {trap.nextReply.scoreCp > 90_000 ? ' That follow-up allows a forced mate.' : <> If that follow-up is played, Stockfish scores the outcome at <strong>{formatCp(trap.nextReply.scoreCp)}</strong>.</>}</p>
-      {trap.punishment.length ? <p className="punishment-line">Stockfish continuation: {continuationSan(fen, trap.reply, trap.punishment)}</p> : null}
-    </> : <><p>Targeted mistake: <strong>{trap.replySan}</strong> ({formatPercent(trap.probability)} Maia probability).
-      {trap.scoreCp > 90_000 ? ' It leads to a forced mate.' : <> It improves the engine’s position by <strong>{(trap.profitCp / 100).toFixed(2)} pawns</strong>.</>}</p>
-      {trap.punishment.length ? <p className="punishment-line">Stockfish continuation: {continuationSan(fen, trap.reply, trap.punishment)}</p> : null}</>}
-    </div>
-      : <p className="muted">{decision.styleApplied ? 'Selected using your playing preferences within the risk limit.' : decision.policySource === 'maia' ? 'Selected for practical outcomes within the risk limit.' : 'Strongest Stockfish move selected.'}</p>}
-    {decision.policySource === 'maia' && decision.selected.replies.length ? <div className="reply-list">
-      <div className="reply-list-heading"><span>Predicted reply</span><span>Maia</span><span>Outcome</span></div>
-      {decision.selected.replies.slice(0, 5).map((reply) => <div key={reply.move}><span>{reply.san}</span><span>{formatPercent(reply.probability)}</span><span>{formatCp(reply.scoreCp)}</span></div>)}
-    </div> : null}
-    <details className="candidate-details"><summary>Other candidates</summary><div className="candidate-list">
-      {decision.candidates.slice(0, 6).map((candidate) => <div className={candidate.trap ? 'candidate has-trap' : 'candidate'} key={candidate.move}>
-        <span>{candidate.san}</span><span>{formatCp(candidate.rootScoreCp)} · {formatPercent(candidate.expectedScore)} expected</span></div>)}
-    </div></details>
-  </section>;
-}
-
-function engineBadge(decision: MoveDecision, trappyEnabled: boolean): string {
-  if (!trappyEnabled) return 'Stockfish';
-  if (decision.styleApplied) return decision.warning ? 'Custom style · model unavailable' : 'Custom style';
-  if (decision.policySource !== 'maia') return decision.warning ? 'Stockfish fallback' : 'Stockfish';
-  return decision.selected.trap ? 'Maia trap' : 'Maia practical';
-}
-function CommittedMoveReview({ review }: { review: ReviewedPlan }) {
-  const reply = review.decision.selected.replies.find((entry) => entry.move === review.actualReply);
-  return <div className="committed-review">
-    <p>You played <strong>{review.actualReplySan}</strong> after <strong>{review.decision.san}</strong>.</p>
-    {reply ? <>
-      <p>Maia estimated <strong>{formatPercent(reply.probability)}</strong> for your committed reply.</p>
-      {reply.scoreCp > 90_000 ? <p>Your reply allowed a forced mate.</p> : <p>Stockfish evaluation after your reply: <strong>{formatCp(reply.scoreCp)}</strong>, from the engine’s perspective.</p>}
-      {Math.abs(reply.scoreCp) <= 90_000 ? <p>Cost against best defense: <strong>{(reply.lossCp / 100).toFixed(2)} pawns</strong>.</p> : null}
-    </> : null}
-  </div>;
-}
 function MoveList({ moves }: { moves: Move[] }) {
   const rows = new Map<number, { white?: Move; black?: Move }>();
   for (const move of moves) {
@@ -480,14 +433,6 @@ function MoveList({ moves }: { moves: Move[] }) {
     {rows.size ? [...rows].map(([number, { white, black }]) => <div className="move-row" key={number}><span>{number}.</span><span>{white?.san ?? ''}</span><span>{black?.san ?? ''}</span></div>)
       : <p className="muted">No moves yet.</p>}
   </div></section>;
-}
-function boardArrows(lastMove: string | null, trapReply?: string) {
-  const arrows = [];
-  const engineMove = lastMove ? squarePairFromUci(lastMove) : null;
-  const trapMove = trapReply ? squarePairFromUci(trapReply) : null;
-  if (engineMove) arrows.push({ startSquare: engineMove[0], endSquare: engineMove[1], color: ENGINE_ARROW });
-  if (trapMove) arrows.push({ startSquare: trapMove[0], endSquare: trapMove[1], color: TRAP_ARROW });
-  return arrows;
 }
 function squareStyles(lastMove: string | null, trapReply?: string): Record<string, React.CSSProperties> {
   const styles: Record<string, React.CSSProperties> = {};
@@ -509,19 +454,17 @@ function statusText(game: Chess, playerColor: Color, thinking: boolean): string 
   if (game.turn() === playerColor) return game.isCheck() ? 'Your move. You are in check.' : 'Your move.';
   return 'Engine to move.';
 }
-function formatCp(cp: number): string {
-  if (Math.abs(cp) > 90_000) return cp > 0 ? 'mate+' : 'mate-';
-  const pawns = cp / 100;
-  return `${pawns >= 0 ? '+' : ''}${pawns.toFixed(2)}`;
+function naturalResult(game: Chess): GameResult | undefined {
+  if (game.isCheckmate()) return { reason: 'checkmate', winner: opposite(game.turn()) };
+  if (game.isDraw() || game.isGameOver()) return { reason: 'draw' };
+  return undefined;
 }
-function formatPercent(value: number): string { return `${(value * 100).toFixed(1)}%`; }
+function reactToMove(move: Move, board: Chess, say: (text: string) => void, show: (state: FishState) => void) {
+  // Only committed, visible events may change the rival's expression or remarks.
+  if (board.isCheck()) { say('Check. A fairly direct sort of conversation.'); show('check'); }
+  else if (move.isPromotion()) { say('A promotion. New management has arrived.'); show('idle'); }
+  else if (move.isCapture() || move.isEnPassant()) { say('A capture. The board is getting lighter.'); show('capture'); }
+  else if (move.isKingsideCastle() || move.isQueensideCastle()) { say('The king has moved house.'); show('idle'); }
+  else { say('Over to you.'); show('idle'); }
+}
 function pieceName(piece: string): string { return ({ P: 'pawn', N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' } as Record<string, string>)[piece] ?? 'piece'; }
-function continuationSan(fen: string, reply: string, continuation: string[]): string {
-  try {
-    const board = new Chess(fen);
-    if (!playUci(board, reply)) return continuation.join(' ');
-    const moves = [];
-    for (const uci of continuation.slice(0, 8)) { const move = playUci(board, uci); if (!move) break; moves.push(move.san); }
-    return moves.length ? moves.join(' ') : continuation.join(' ');
-  } catch { return continuation.join(' '); }
-}

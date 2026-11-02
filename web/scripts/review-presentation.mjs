@@ -12,6 +12,7 @@ try {
  for (const viewport of [{width:1440,height:1000},{width:1366,height:900},{width:1280,height:720},{width:390,height:844},{width:320,height:768}]) {
   for (const mode of ['analysis','play']) {
    const page = await browser.newPage({viewport});
+   page.setDefaultTimeout(45_000);
    const errors = [];
    page.on('pageerror', error => errors.push(error.message));
    await page.goto(`${base}/?mode=${mode}`);
@@ -26,9 +27,16 @@ try {
    if (label !== 'before') {
     if (metrics.overflow) failures.push(`${mode} ${viewport.width}: horizontal page overflow`);
     if (errors.length) failures.push(`${mode} ${viewport.width}: ${errors.join('; ')}`);
-    if (metrics.styleControls.length !== 12 || metrics.styleControls.some(control => !control.visible)) failures.push(`${mode} ${viewport.width}: all twelve independent style controls must remain visible`);
+    if (metrics.styleControls.length !== 12) failures.push(`${mode} ${viewport.width}: all twelve independent style controls must remain available`);
+    if (mode === 'analysis' && metrics.styleControls.some(control => !control.visible)) failures.push(`${mode} ${viewport.width}: analysis style controls must remain visible`);
+    if (mode === 'play' && metrics.styleControls.some(control => control.visible)) failures.push(`${mode} ${viewport.width}: opponent controls must start behind their explicit settings panel`);
     if (mode === 'play' && viewport.width > 880 && metrics.boardTools?.bottom > viewport.height) failures.push(`Play ${viewport.width}: board actions below viewport (${metrics.boardTools.bottom})`);
     if (mode === 'analysis' && viewport.width <= 780 && metrics.board?.bottom > viewport.height) failures.push(`Analyze ${viewport.width}: initial board should fit in first viewport (${metrics.board?.bottom})`);
+    if (mode === 'play') {
+      await page.locator('.opponent-settings > summary').click();
+      if (await page.locator('.opponent-settings .playing-style-controls input:visible').count() !== 12) failures.push(`Play ${viewport.width}: opening settings must expose all twelve controls`);
+      await page.screenshot({path:`artifacts/ui-review/${label}-${mode}-${viewport.width}-settings.png`,fullPage:true});
+    }
     const before = await page.locator('.workspace-panel:not([hidden]) .playing-style-controls input[type="range"]').evaluateAll(elements => elements.map(element => element.value));
     const attackLabel = `${mode === 'play' ? 'Play' : 'Analysis'} king attack`;
     const attackIndex = metrics.styleControls.findIndex(control => control.label === attackLabel);
