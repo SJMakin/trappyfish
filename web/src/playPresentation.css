@@ -65,6 +65,28 @@
 .new-game-budget { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
 .new-game-budget button[aria-pressed='true'] { background: var(--ui-accent-soft); border-color: #96b8fc; color: #1d4ed8; }
 .play-library { grid-column: 1 / -1; min-width: 0; }
+.play-library-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.local-book-library { background: white; border: 1px solid var(--ui-border); border-radius: 8px; min-width: 0; }
+.local-book-library > summary { display: flex; align-items: center; gap: 8px; padding: 13px 14px; font-size: 12px; font-weight: 650; cursor: pointer; }
+.local-book-library > summary small { margin-left: auto; color: var(--ui-muted); font-weight: 400; }
+.local-book-body { border-top: 1px solid var(--ui-border); padding: 12px 14px; }
+.local-book-body > p { font-size: 12px; color: var(--ui-muted); line-height: 1.6; }
+.local-book-body > button { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
+.local-book-retain { display: flex; align-items: start; gap: 7px; font-size: 11px; margin: 12px 0; }
+.local-book-retain input { margin: 3px 0 0; }
+.local-book-body .local-book-note { font-size: 10px; }
+.local-book-list { padding: 0; margin: 14px 0 0; list-style: none; }
+.local-book-list > li { border-top: 1px solid var(--ui-border); padding: 12px 0; min-width: 0; }
+.local-book-list strong { display: block; font-size: 12px; overflow-wrap: anywhere; }
+.local-book-list small { display: block; font-size: 10px; color: var(--ui-muted); margin-top: 4px; }
+.local-book-actions { display: flex; gap: 8px; margin-top: 9px; }
+.local-book-actions > button:first-child { flex: 1; }
+.local-book-actions button { font-size: 11px; }
+.local-book-sources { border-top: 1px solid var(--ui-border); padding-top: 10px; margin-top: 12px; }
+.local-book-sources summary { font-size: 11px; cursor: pointer; }
+.local-book-sources p, .local-book-sources a { font-size: 11px; color: var(--ui-muted); }
+.local-book-sources pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 10px; color: var(--ui-muted); }
+.recorded-book-source { overflow-wrap: anywhere; }
 .play-review-surface { grid-column: 1 / -1; min-width: 0; background: white; padding: 24px; border: 1px solid var(--ui-border); border-radius: 10px; }
 .play-library > button { margin-bottom: 10px; }
 .style-examples { grid-column: 1 / -1; border-top: 1px solid var(--ui-border); padding-top: 10px; min-width: 0; }

@@ -1,0 +1,415 @@
+{
+  "version": 1,
+  "createdAt": "2026-11-02T22:58:10.769Z",
+  "model": "Maia-3 5m",
+  "modelSha256": "f7bd01b3e41dceb5e93eb9f4c61e9c4db8b35411effd1d8c984b006cd74bb804",
+  "sourceSha256": "23f7df4e15ac9d12c81794c40ee3a1c1977b9b0905c1525f03504427c717f8b8",
+  "engineRating": 2400,
+  "humanRatings": [
+    1000,
+    1400
+  ],
+  "method": "Actual local Maia-3 inference using the same board encoding, legal mask and rating conditioning as the app. Each value is a conditional modeled probability for the named reply at the post-bait FEN, with fixed human-model rating 1000 or 1400 and opponent rating 2400. These are not observed human frequencies, measured lure rates, or automatic estimates for the current game controls. No games are simulated.",
+  "positions": [
+    {
+      "id": "trap-legal",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4N2b/2B1P3/2N4P/PPPP1PP1/R1BQK2R b KQkq - 0 6",
+      "mistake": "h5d1",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:10.770Z",
+      "modelProbability": 0.43939756498192467,
+      "status": "available"
+    },
+    {
+      "id": "trap-legal",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4N2b/2B1P3/2N4P/PPPP1PP1/R1BQK2R b KQkq - 0 6",
+      "mistake": "h5d1",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.651Z",
+      "modelProbability": 0.4731276746070201,
+      "status": "available"
+    },
+    {
+      "id": "trap-blackburne",
+      "fen": "r1bqkbnr/pppp1ppp/8/4p3/2BnP3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "mistake": "f3e5",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.697Z",
+      "modelProbability": 0.364907032880935,
+      "status": "available"
+    },
+    {
+      "id": "trap-blackburne",
+      "fen": "r1bqkbnr/pppp1ppp/8/4p3/2BnP3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "mistake": "f3e5",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.736Z",
+      "modelProbability": 0.30995676426324914,
+      "status": "available"
+    },
+    {
+      "id": "trap-fishing-pole",
+      "fen": "r1bqkb1r/pppp1pp1/2n5/1B2p2p/4P1n1/5N1P/PPPP1PP1/RNBQ1RK1 w kq - 0 6",
+      "mistake": "h3g4",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.779Z",
+      "modelProbability": 0.6618511463231861,
+      "status": "available"
+    },
+    {
+      "id": "trap-fishing-pole",
+      "fen": "r1bqkb1r/pppp1pp1/2n5/1B2p2p/4P1n1/5N1P/PPPP1PP1/RNBQ1RK1 w kq - 0 6",
+      "mistake": "h3g4",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.811Z",
+      "modelProbability": 0.541592359211011,
+      "status": "available"
+    },
+    {
+      "id": "trap-englund",
+      "fen": "r1b1kbnr/pppp1ppp/2n5/4P3/1q3B2/5N2/PPP1PPPP/RN1QKB1R w KQkq - 5 5",
+      "mistake": "f4d2",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.847Z",
+      "modelProbability": 0.3075260204770343,
+      "status": "available"
+    },
+    {
+      "id": "trap-englund",
+      "fen": "r1b1kbnr/pppp1ppp/2n5/4P3/1q3B2/5N2/PPP1PPPP/RN1QKB1R w KQkq - 5 5",
+      "mistake": "f4d2",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.882Z",
+      "modelProbability": 0.48750883675521034,
+      "status": "available"
+    },
+    {
+      "id": "trap-elephant",
+      "fen": "r1bqkb1r/pppn1ppp/5n2/3p2B1/3P4/2N5/PP2PPPP/R2QKBNR w KQkq - 0 6",
+      "mistake": "c3d5",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.917Z",
+      "modelProbability": 0.16934602519949088,
+      "status": "available"
+    },
+    {
+      "id": "trap-elephant",
+      "fen": "r1bqkb1r/pppn1ppp/5n2/3p2B1/3P4/2N5/PP2PPPP/R2QKBNR w KQkq - 0 6",
+      "mistake": "c3d5",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.959Z",
+      "modelProbability": 0.17735325992400006,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-fried-liver-attack",
+      "fen": "r1bqkb1r/ppp2ppp/2n2n2/3Pp1N1/2B5/8/PPPP1PPP/RNBQK2R b KQkq - 0 5",
+      "mistake": "f6d5",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:11.995Z",
+      "modelProbability": 0.6378628928694124,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-fried-liver-attack",
+      "fen": "r1bqkb1r/ppp2ppp/2n2n2/3Pp1N1/2B5/8/PPPP1PPP/RNBQK2R b KQkq - 0 5",
+      "mistake": "f6d5",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.032Z",
+      "modelProbability": 0.4619040498641858,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-petrov-queen-trap",
+      "fen": "rnbqkb1r/pppp1ppp/8/4N3/4n3/8/PPPPQPPP/RNB1KB1R b KQkq - 1 4",
+      "mistake": "e4f6",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.069Z",
+      "modelProbability": 0.13937640297988038,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-petrov-queen-trap",
+      "fen": "rnbqkb1r/pppp1ppp/8/4N3/4n3/8/PPPPQPPP/RNB1KB1R b KQkq - 1 4",
+      "mistake": "e4f6",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.102Z",
+      "modelProbability": 0.1894179321490595,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-damiano-defense-trap",
+      "fen": "rnbqkbnr/pppp2pp/5p2/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+      "mistake": "f6e5",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.138Z",
+      "modelProbability": 0.8907872267877639,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-damiano-defense-trap",
+      "fen": "rnbqkbnr/pppp2pp/5p2/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+      "mistake": "f6e5",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.178Z",
+      "modelProbability": 0.8230175463877876,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-scholars-mate",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
+      "mistake": "g8f6",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.202Z",
+      "modelProbability": 0.15659024551781128,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-scholars-mate",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
+      "mistake": "g8f6",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.228Z",
+      "modelProbability": 0.10145874144849214,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-tennison-gambit-scandi",
+      "fen": "rnbqkb1r/ppp1pppp/5n2/6N1/8/3B4/PPP2PPP/RNBQK2R b KQkq - 0 5",
+      "mistake": "h7h6",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.251Z",
+      "modelProbability": 0.33362759410665677,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-tennison-gambit-scandi",
+      "fen": "rnbqkb1r/ppp1pppp/5n2/6N1/8/3B4/PPP2PPP/RNBQK2R b KQkq - 0 5",
+      "mistake": "h7h6",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.273Z",
+      "modelProbability": 0.39104106063981653,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-london-qxb2-trap",
+      "fen": "rnb1kbnr/pp2pppp/1q6/2pp4/3P1B2/2N1P3/PPP2PPP/R2QKBNR b KQkq - 2 4",
+      "mistake": "b6b2",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.294Z",
+      "modelProbability": 0.3677828425277442,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-london-qxb2-trap",
+      "fen": "rnb1kbnr/pp2pppp/1q6/2pp4/3P1B2/2N1P3/PPP2PPP/R2QKBNR b KQkq - 2 4",
+      "mistake": "b6b2",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.318Z",
+      "modelProbability": 0.4134562030088044,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-stafford-gambit-1",
+      "fen": "r1bqk2r/ppp2ppp/2p5/2b3B1/4n3/3P4/PPP2PPP/RN1QKB1R w KQkq - 0 7",
+      "mistake": "g5d8",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.340Z",
+      "modelProbability": 0.6327812458966201,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-stafford-gambit-1",
+      "fen": "r1bqk2r/ppp2ppp/2p5/2b3B1/4n3/3P4/PPP2PPP/RN1QKB1R w KQkq - 0 7",
+      "mistake": "g5d8",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.363Z",
+      "modelProbability": 0.6612733627858158,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-stafford-gambit-2",
+      "fen": "r1bqk2r/ppp2ppp/2p5/2b5/4n3/3P3P/PPP2PP1/RNBQKB1R w KQkq - 0 7",
+      "mistake": "d3e4",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.385Z",
+      "modelProbability": 0.7382546210606257,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-stafford-gambit-2",
+      "fen": "r1bqk2r/ppp2ppp/2p5/2b5/4n3/3P3P/PPP2PP1/RNBQKB1R w KQkq - 0 7",
+      "mistake": "d3e4",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.409Z",
+      "modelProbability": 0.7471300416151263,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-lasker-trap",
+      "fen": "rnbqk1nr/ppp2ppp/8/4P3/1bP5/4p3/PP1B1PPP/RN1QKBNR w KQkq - 0 6",
+      "mistake": "d2b4",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.432Z",
+      "modelProbability": 0.41209324181810936,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-lasker-trap",
+      "fen": "rnbqk1nr/ppp2ppp/8/4P3/1bP5/4p3/PP1B1PPP/RN1QKBNR w KQkq - 0 6",
+      "mistake": "d2b4",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.453Z",
+      "modelProbability": 0.353544514248927,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-noahs-ark-trap",
+      "fen": "r1bqkbnr/2p2ppp/p2p4/1p6/3pP3/1B6/PPP2PPP/RNBQK2R w KQkq - 0 8",
+      "mistake": "d1d4",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.479Z",
+      "modelProbability": 0.5596790053579739,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-noahs-ark-trap",
+      "fen": "r1bqkbnr/2p2ppp/p2p4/1p6/3pP3/1B6/PPP2PPP/RNBQK2R w KQkq - 0 8",
+      "mistake": "d1d4",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.502Z",
+      "modelProbability": 0.718981583574916,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-siberian-trap",
+      "fen": "r1b1kb1r/ppqp1ppp/2n1p3/8/2B1P1n1/2N2N2/PP2QPPP/R1B2RK1 w kq - 6 9",
+      "mistake": "h2h3",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.528Z",
+      "modelProbability": 0.3028956025810361,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-siberian-trap",
+      "fen": "r1b1kb1r/ppqp1ppp/2n1p3/8/2B1P1n1/2N2N2/PP2QPPP/R1B2RK1 w kq - 6 9",
+      "mistake": "h2h3",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.554Z",
+      "modelProbability": 0.373299172970664,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-kieninger-trap",
+      "fen": "r1b1k2r/ppppqppp/2n5/4n3/1bP2B2/P4N2/1P1NPPPP/R2QKB1R w KQkq - 0 8",
+      "mistake": "a3b4",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.577Z",
+      "modelProbability": 0.5520960572271139,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-kieninger-trap",
+      "fen": "r1b1k2r/ppppqppp/2n5/4n3/1bP2B2/P4N2/1P1NPPPP/R2QKB1R w KQkq - 0 8",
+      "mistake": "a3b4",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.603Z",
+      "modelProbability": 0.5222561312365835,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-caro-kann-smothered-mate",
+      "fen": "r1bqkbnr/pp1npppp/2p5/8/3PN3/8/PPP1QPPP/R1B1KBNR b KQkq - 2 5",
+      "mistake": "g8f6",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.623Z",
+      "modelProbability": 0.3198470765989701,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-caro-kann-smothered-mate",
+      "fen": "r1bqkbnr/pp1npppp/2p5/8/3PN3/8/PPP1QPPP/R1B1KBNR b KQkq - 2 5",
+      "mistake": "g8f6",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.645Z",
+      "modelProbability": 0.46843736347906434,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-mortimer-trap",
+      "fen": "r1bqkb1r/ppppnppp/5n2/1B2p3/4P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 1 5",
+      "mistake": "f3e5",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.665Z",
+      "modelProbability": 0.3947823078387558,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-mortimer-trap",
+      "fen": "r1bqkb1r/ppppnppp/5n2/1B2p3/4P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 1 5",
+      "mistake": "f3e5",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.689Z",
+      "modelProbability": 0.40804001041090354,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-qga-b5-trap",
+      "fen": "rnbqkbnr/p3pppp/8/1p6/2pP4/2N2N2/1P2PPPP/R1BQKB1R b KQkq - 1 6",
+      "mistake": "a7a6",
+      "opponentRating": 1000,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.712Z",
+      "modelProbability": 0.22603483995663684,
+      "status": "available"
+    },
+    {
+      "id": "trap-import-qga-b5-trap",
+      "fen": "rnbqkbnr/p3pppp/8/1p6/2pP4/2N2N2/1P2PPPP/R1BQKB1R b KQkq - 1 6",
+      "mistake": "a7a6",
+      "opponentRating": 1400,
+      "engineRating": 2400,
+      "inferredAt": "2026-11-02T22:58:12.733Z",
+      "modelProbability": 0.3425279067067579,
+      "status": "available"
+    }
+  ]
+}

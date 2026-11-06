@@ -6,6 +6,7 @@ const MAX_SINGLE_TRACE_BYTES = 192 * 1024;
 const TRACE_WARNING = 'Detailed engine decisions are kept for this tab because browser storage is unavailable or full. The saved game and moves are kept separately.';
 export type ActualReply = { move: string; san: string; ply: number; bookExitReason?: 'deviation' };
 export type DecisionTrace = {
+  book?: { id: string; name: string };
   gameId: string; ply: number; rootFen: string; settings: TrappySettings; styleEnabled: boolean;
   decision: MoveDecision; createdAt: number; actualReply?: ActualReply;
   openingExitReason?: string;

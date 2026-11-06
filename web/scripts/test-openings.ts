@@ -4,6 +4,7 @@ import { allOpenings, compatibleOpeningIds, getOpening, loadFavouriteIds, matchi
 import { defaultStatisticsFilters, fetchOpeningStatistics } from '../src/openings/statistics';
 import puzzles from '../src/openings/puzzleExamples.json';
 import { trapRepertoire } from '../src/openings/trapRepertoire';
+import { allTrapStudies, selectableTrapStudies } from '../src/openings/trapLibrary';
 
 const storage = new Map<string, string>();
 let rejectStorage = false;
@@ -11,10 +12,10 @@ Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
   getItem: (key: string) => storage.get(key) ?? null,
   setItem: (key: string, value: string) => { if (rejectStorage) throw new Error('quota'); storage.set(key, value); },
 } });
-assert.equal(allOpenings.length, 3870);
+assert.equal(allOpenings.length, 3865 + selectableTrapStudies.length);
 assert.equal(new Set(allOpenings.map((opening) => opening.id)).size, allOpenings.length);
 const catalogueChecks = process.argv.includes('--catalogue') ? allOpenings
-  : allOpenings.filter((opening, index) => opening.id.startsWith('trap-') || index % 700 === 0);
+  : allOpenings.filter((opening, index) => allTrapStudies.some((study) => study.id === opening.id) || index % 700 === 0);
 for (const opening of catalogueChecks) {
   const board = new Chess();
   for (const move of opening.uci) board.move(move);

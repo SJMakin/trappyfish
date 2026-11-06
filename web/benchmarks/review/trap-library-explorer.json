@@ -1,0 +1,17 @@
+{
+  "endpoint": "https://explorer.lichess.org/lichess",
+  "ratings": [
+    1000,
+    1200,
+    1400,
+    1600
+  ],
+  "speeds": [
+    "rapid"
+  ],
+  "responses": [],
+  "authorizationRequired": {
+    "observedAt": "2026-11-02T22:58:52.137Z",
+    "status": 401
+  }
+}

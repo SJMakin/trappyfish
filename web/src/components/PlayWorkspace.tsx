@@ -8,10 +8,12 @@ import { PositionImport } from './PositionImport';
 import { FishRival, type FishState } from './FishRival';
 import { PlaySettings } from './PlaySettings';
 import { OpeningBrowser } from './OpeningBrowser';
+import { LocalBookLibrary } from './LocalBookLibrary';
 import { GameReview } from './GameReview';
 import { getOpening, matchingBookMoves, compatibleOpeningIds, loadFavouriteIds, type Opening } from '../openings/library';
 import { initialPlaySettings, identifySearchProfile, applySearchProfile } from '../play/searchProfiles';
 import { publicActivity, type PlayActivity } from '../play/activity';
+import { loadLocalBook, type LocalBookMetadata } from '../openings/localBooks';
 import { loadOpeningDefault, saveOpeningDefault } from '../play/openingDefault';
 import { writeDecisionTrace, recordTraceReply, pruneDecisionTraces } from '../history/decisionTraces';
 import { validatePosition } from '../import/position';
@@ -49,8 +51,16 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   const [result, setResult] = useState<GameResult | undefined>(savedPosition?.result ?? naturalResult(initialGame));
   const [reviewFen, setReviewFen] = useState<string>();
   const [openingBrowserOpen, setOpeningBrowserOpen] = useState(false);
+  const [openingBrowserMode, setOpeningBrowserMode] = useState<'openings' | 'traps'>('openings');
   const [selectedOpening, setSelectedOpening] = useState<Opening | undefined>(() => savedPosition?.opening ? getOpening(savedPosition.opening.id) : undefined);
-  const [openingChoice, setOpeningChoice] = useState<'free' | 'selected' | 'favourites'>(() => loadFavouriteIds().length ? loadOpeningDefault() : 'free');
+  const [openingChoice, setOpeningChoice] = useState<'free' | 'selected' | 'favourites' | 'polyglot'>(() => loadFavouriteIds().length ? loadOpeningDefault() : 'free');
+  const [localBooks, setLocalBooks] = useState<LocalBookMetadata[]>([]);
+  const [selectedLocalBookId, setSelectedLocalBookId] = useState(savedPosition?.opening?.bookId ?? '');
+  const selectedLocalBook = localBooks.find(book => book.id === selectedLocalBookId) ?? localBooks[0];
+  const [bookProblem, setBookProblem] = useState(false);
+  const [importedHintMoves, setImportedHintMoves] = useState<string[]>([]);
+  const [bookHintLoading, setBookHintLoading] = useState(false);
+  const [bookHintError, setBookHintError] = useState('');
   const [startMode, setStartMode] = useState<'position' | 'line'>('line');
   const [favouriteIds, setFavouriteIds] = useState<string[]>(loadFavouriteIds);
   const [showGuidance, setShowGuidance] = useState(false);
@@ -98,6 +108,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
   }, [promotion, clearInteraction]);
 
   const resetGame = useCallback((color = playerColor) => {
+    if (openingChoice === 'polyglot' && !selectedLocalBook) { setError('Import or choose an opening book first.'); return; }
     searchIdRef.current += 1;
     trappyEngine.cancel();
     const next = new Chess();
@@ -110,6 +121,9 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
         startPly: startMode === 'position' ? next.history().length : 0, bookIds: [selectedOpening.id] };
     } else if (openingChoice === 'favourites' && currentFavourites.length) {
       gameOpening = { id: 'favourites', name: 'Favourite openings', startPly: 0, bookIds: currentFavourites };
+    } else if (openingChoice === 'polyglot' && selectedLocalBook) {
+      gameOpening = { id: `polyglot:${selectedLocalBook.id}`, name: selectedLocalBook.name,
+        source: 'polyglot', bookId: selectedLocalBook.id, startPly: 0 };
     }
     gameRef.current = next;
     historyId.current = createHistoryId(); historyCreatedAt.current = Date.now(); historyStarted.current = false;
@@ -121,11 +135,12 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     setRemark('A fresh score sheet. Let’s make it worth keeping.'); setEventState('idle');
     setLastMove(null);
     setError(null);
+    setBookProblem(false);
     setNotice(null);
     setNewGameOpen(false);
     clearInteraction();
     syncGameState();
-  }, [playerColor, trappyEngine, clearInteraction, syncGameState, openingChoice, selectedOpening, startMode, favouriteIds]);
+  }, [playerColor, trappyEngine, clearInteraction, syncGameState, openingChoice, selectedOpening, startMode, favouriteIds, selectedLocalBook]);
 
   const loadPosition = useCallback((input: string, color: Color) => {
     const position = validatePosition(input);
@@ -143,6 +158,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     setRemark('A new position. Same fish.'); setEventState('idle');
     setLastMove(null);
     setError(null);
+    setBookProblem(false);
     setNotice('Position loaded.');
     clearInteraction();
     syncGameState();
@@ -156,7 +172,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     if (gameRef.current.turn() !== playerColor && gameRef.current.history().length > (opening?.startPly ?? 0)) gameRef.current.undo();
     void pruneDecisionTraces(historyId.current, gameRef.current.history().length);
     setActivity(null); setRemark('Rewound. We can pretend that didn’t happen.'); setEventState('idle');
-    if (opening?.bookIds) setOpening({ ...opening, bookExitReason: undefined });
+    if (opening?.bookIds || opening?.bookId) setOpening({ ...opening, bookExitReason: undefined });
     setLastMove(null);
     clearInteraction();
     syncGameState();
@@ -171,9 +187,22 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     setSearchStartedAt(performance.now()); setActivity(null); setRemark('Give me a moment with this one.');
     setActivityBudget(`${identifySearchProfile(settings)} · depth ${settings.rootDepth}/${settings.trapDepth}`);
     setError(null);
+    setBookProblem(false);
     try {
       const history = activeGame.history({ verbose: true }).map(moveToUci);
-      const bookMoves = opening?.bookIds && !opening.bookExitReason ? matchingBookMoves(history, opening.bookIds) : undefined;
+      let bookMoves = opening?.bookIds && !opening.bookExitReason ? matchingBookMoves(history, opening.bookIds) : undefined;
+      if (opening?.source === 'polyglot' && opening.bookId && !opening.bookExitReason) {
+        try {
+          const book = await loadLocalBook(opening.bookId);
+          if (!activeRef.current || searchId !== searchIdRef.current || gameRef.current.fen() !== fenAtStart) return;
+          if (!book) throw new Error('The book is no longer available in this browser.');
+          bookMoves = book.lookup(activeGame.fen({ forceEnpassantSquare: true })).map(entry => entry.move);
+        } catch (err) {
+          if (searchId !== searchIdRef.current) return;
+          setBookProblem(true);
+          throw new Error(`Opening book unavailable. Reimport ${opening.name}, or continue without it. ${err instanceof Error ? err.message : String(err)}`);
+        }
+      }
       const decision = await trappyEngine.chooseMove(fenAtStart, settings, trappyEnabled, {
         bookMoves, onProgress: (progress) => {
           if (activeRef.current && searchId === searchIdRef.current) setActivity(publicActivity(progress));
@@ -184,6 +213,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
       if (!move) throw new Error(`Engine produced an illegal move: ${decision.move}`);
       if (decision.warning) setNotice('The human reply model was unavailable for that turn. Stockfish supplied the decision; details are saved for review.');
       void writeDecisionTrace({ gameId: historyId.current, ply: gameRef.current.history().length, openingExitReason: opening?.bookExitReason,
+        book: opening?.source === 'polyglot' && opening.bookId ? { id: opening.bookId, name: opening.name } : undefined,
         rootFen: fenAtStart, settings: { ...settings }, styleEnabled: trappyEnabled, decision });
       if (decision.diagnostics) setActivity(publicActivity({ stage: 'complete', completed: 1, total: 1, message: '', diagnostics: decision.diagnostics }));
       if (opening && bookMoves !== undefined && decision.provenance?.source !== 'opening-book') {
@@ -209,7 +239,20 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     setThinking(false);
     clearInteraction();
   }, [active, trappyEngine, clearInteraction]);
-  useEffect(() => () => trappyEngine.terminate(), [trappyEngine]);
+  useEffect(() => () => { activeRef.current = false; searchIdRef.current++; trappyEngine.terminate(); }, [trappyEngine]);
+  useEffect(() => {
+    let current = true; setImportedHintMoves([]); setBookHintError('');
+    if (!active || !showGuidance || opening?.source !== 'polyglot' || !opening.bookId) { setBookHintLoading(false); return; }
+    const bookFen = gameRef.current.fen({ forceEnpassantSquare: true });
+    setBookHintLoading(true);
+    void loadLocalBook(opening.bookId).then(book => {
+      if (!current) return;
+      if (!book) { setBookHintError('Reimport the original book to inspect its moves.'); return; }
+      setImportedHintMoves(book.lookup(bookFen).map(entry => entry.move));
+    }).catch(() => { if (current) setBookHintError('The saved book could not be read. Reimport the original file.'); })
+      .finally(() => { if (current) setBookHintLoading(false); });
+    return () => { current = false; };
+  }, [active, showGuidance, opening?.source, opening?.bookId, fen, localBooks]);
   useEffect(() => {
     if (promotion) promotionDialog.current?.querySelector<HTMLButtonElement>('button')?.focus();
   }, [promotion]);
@@ -318,7 +361,7 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
     void pruneDecisionTraces(historyId.current, gameRef.current.history().length);
     setOpening({ ...opening, bookExitReason: undefined }); setActivity(null); clearInteraction(); syncGameState();
   };
-  const hintMoves = opening?.bookIds ? matchingBookMoves(moveHistory.map(moveToUci), opening.bookIds) : [];
+  const hintMoves = opening?.source === 'polyglot' ? importedHintMoves : opening?.bookIds ? matchingBookMoves(moveHistory.map(moveToUci), opening.bookIds) : [];
   const fishState: FishState = result ? result.reason === 'draw' || !result.winner ? 'draw' : result.winner === engineColor ? 'victory' : 'defeat' : thinking ? 'search' : eventState;
 
   return (
@@ -372,13 +415,17 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
             <option value="w">White</option><option value="b">Black</option></select></label>
           <label>Opening <select aria-label="New game opening" value={openingChoice} onChange={(event) => setOpeningChoice(event.target.value as typeof openingChoice)}>
             <option value="free">Free play</option><option value="selected" disabled={!selectedOpening}>Selected opening{selectedOpening ? ` · ${selectedOpening.name}` : ''}</option>
-            <option value="favourites" disabled={!favouriteIds.length}>Favourites · {favouriteIds.length} lines</option></select></label>
+            <option value="favourites" disabled={!favouriteIds.length}>Favourites · {favouriteIds.length} lines</option><option value="polyglot" disabled={!localBooks.length}>Imported Polyglot book</option></select></label>
+          {openingChoice === 'polyglot' ? <label>Book<select aria-label="New game imported book" value={selectedLocalBook?.id ?? ''} onChange={event => setSelectedLocalBookId(event.target.value)}>{localBooks.map(book => <option key={book.id} value={book.id}>{book.name}</option>)}</select></label> : null}
           {openingChoice === 'selected' ? <label>Start <select aria-label="Opening start mode" value={startMode} onChange={(event) => setStartMode(event.target.value as typeof startMode)}>
             <option value="line">Play into the opening</option><option value="position">At the selected position</option></select></label> : null}
           <div className="new-game-budget" role="group" aria-label="New game search budget"><span>Search: {identifySearchProfile(settings)}</span>{(['Quick', 'Deep'] as const).map((profile) => <button key={profile} type="button" aria-pressed={identifySearchProfile(settings) === profile} onClick={() => setSettings(applySearchProfile(settings, profile))}>{profile}</button>)}</div>
           <p>Depth {settings.rootDepth}/{settings.trapDepth} · {settings.candidateCount} candidates · {settings.replyCount} replies · {settings.opponentPlies ?? 1} opponent turn{settings.opponentPlies === 2 ? `s · ${settings.continuationBranches ?? 3} refined branches · ${settings.continuationReplies ?? 4} follow-up replies · ${settings.continuationCandidates ?? 1} engine continuations` : ''} · {Math.round(settings.replyCoverage * 100)}% coverage.</p>
-          <button type="button" onClick={() => { setOpeningBrowserOpen(true); setFavouriteIds(loadFavouriteIds()); }}>Browse openings</button>
-          <button className="primary-button" type="button" disabled={openingChoice === 'selected' && !selectedOpening} onClick={() => resetGame(newGameColor)}>Start new game</button>
+          <button type="button" onClick={() => {
+            setOpeningBrowserMode('openings'); setOpeningBrowserOpen(true); setFavouriteIds(loadFavouriteIds());
+            requestAnimationFrame(() => document.getElementById('play-opening-library')?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+          }}>Browse openings</button>
+          <button className="primary-button" type="button" disabled={openingChoice === 'selected' && !selectedOpening || openingChoice === 'polyglot' && !selectedLocalBook} onClick={() => resetGame(newGameColor)}>Start new game</button>
           <p>{openingChoice === 'selected' && startMode === 'position' ? 'The opening moves are retained in the score sheet.' : 'Starts from the initial position. Your moves remain your choice.'}</p>
         </section> : null}
         <p className="board-hint">Tap a piece, then its destination. You can also drag.</p>
@@ -392,21 +439,32 @@ export function PlayWorkspace({ initialFen, initialPlayer = 'w', active = true, 
         <div className="play-settings-summary" aria-label="Active opponent settings"><span>{trappyEnabled ? 'Custom style' : 'Stockfish'} · {identifySearchProfile(settings)}</span><span>Risk ≤ {(settings.maxRiskCp / 100).toFixed(2)} pawns · human model {settings.opponentRating}</span></div>
         <PlaySettings settings={settings} onChange={setSettings} trappyEnabled={trappyEnabled} onModeChange={setTrappyEnabled} />
         {error ? <div className="error-strip" role="alert">{error}
-          {game.turn() === engineColor && !result ? <button type="button" onClick={() => setError(null)}>Retry search</button> : null}</div> : null}
+          {game.turn() === engineColor && !result ? <button type="button" onClick={() => setError(null)}>Retry search</button> : null}
+          {bookProblem && !result ? <button type="button" onClick={() => { setOpening(previous => previous ? { ...previous, bookExitReason: 'book-unavailable' } : previous); setBookProblem(false); setError(null); }}>Continue without book</button> : null}</div> : null}
         {notice ? <p className="import-notice" role="status">{notice}</p> : null}
         {opening && !result ? <section className="opening-guidance"><button type="button" aria-expanded={showGuidance} onClick={() => setShowGuidance(!showGuidance)}>Opening guidance</button>
-          {showGuidance ? <div>{hintMoves.length ? <><p>Next catalogue move{hintMoves.length > 1 ? 's' : ''}: <strong>{hintMoves.map((uci) => { try { const preview = new Chess(fen); return playUci(preview, uci)?.san ?? uci; } catch { return uci; } }).join(', ')}</strong>.</p><p>Continues the selected opening line. This is book guidance, not an evaluation of your move.</p></>
+          {showGuidance ? <div>{bookHintLoading ? <p>Reading local book…</p> : bookHintError ? <p>{bookHintError}</p> : hintMoves.length ? <><p>{opening.source === 'polyglot' ? 'Available book moves' : `Next catalogue move${hintMoves.length > 1 ? 's' : ''}`}: <strong>{hintMoves.map((uci) => { try { const preview = new Chess(fen); return playUci(preview, uci)?.san ?? uci; } catch { return uci; } }).join(', ')}</strong>.</p><p>This is book guidance, not an evaluation of your move. Engine choices still receive the normal risk checks.</p></>
             : <><p>{opening.bookExitReason === 'deviation' ? 'You have left the selected lines. Continue freely, or return to the last matching position.' : 'No next move is available in the selected lines. Normal search continues.'}</p>
               {opening.bookExitReason === 'deviation' ? <button type="button" onClick={rewindToBook}>Rewind to opening</button> : null}</>}
           </div> : null}</section> : null}
         <MoveList moves={moveHistory} />
         {!result ? <p className="postgame-promise">The plans, alternatives and turning points open after the game.</p> : <p className="postgame-promise">The full score sheet is below the board.</p>}
-        <button className="browse-openings-button" type="button" aria-expanded={openingBrowserOpen} onClick={() => setOpeningBrowserOpen(!openingBrowserOpen)}>Explore openings</button>
+        <div className="play-library-actions">{(['openings', 'traps'] as const).map((mode) => <button className="browse-openings-button" key={mode} type="button" aria-controls="play-opening-library"
+          aria-expanded={openingBrowserOpen && openingBrowserMode === mode} onClick={() => {
+            const openingLibrary = !openingBrowserOpen || openingBrowserMode !== mode;
+            setOpeningBrowserMode(mode); setOpeningBrowserOpen(openingLibrary);
+            if (openingLibrary) requestAnimationFrame(() => document.getElementById('play-opening-library')?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+          }}>Explore {mode}</button>)}</div>
+        <LocalBookLibrary onChange={setLocalBooks} onChoose={book => {
+          setSelectedLocalBookId(book.id); setOpeningChoice('polyglot'); setNewGameOpen(true);
+          requestAnimationFrame(() => document.querySelector('.new-game-panel')?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+        }} />
         <PositionImport active={active} currentFen={fen} playerColor={playerColor} onLoad={loadPosition} />
       </section>
       {result ? <div className="play-review-surface"><GameReview gameId={historyId.current} moves={moveHistory} result={result} onSelectPosition={setReviewFen} /></div> : null}
-      {openingBrowserOpen ? <section className="play-library" aria-label="Opening library"><button className="subtle-button" type="button" onClick={() => setOpeningBrowserOpen(false)}>Close opening library</button>
-        <OpeningBrowser selectedId={selectedOpening?.id} initialOpen onSelect={(selected, mode) => {
+      {openingBrowserOpen ? <section className="play-library" id="play-opening-library" aria-label="Opening library"><button className="subtle-button" type="button" onClick={() => setOpeningBrowserOpen(false)}>Close opening library</button>
+        <OpeningBrowser libraryMode={openingBrowserMode} onLibraryModeChange={setOpeningBrowserMode} selectedId={selectedOpening?.id} initialOpen onSelect={(selected, mode, options) => {
+          if (options?.playerColor) setNewGameColor(options.playerColor);
           setSelectedOpening(selected); setOpeningChoice('selected'); setStartMode(mode); setNewGameOpen(true); setOpeningBrowserOpen(false);
           requestAnimationFrame(() => document.querySelector('.new-game-panel')?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
         }} onFreePlay={() => { saveOpeningDefault('free'); setOpeningChoice('free'); setNewGameOpen(true); setOpeningBrowserOpen(false); }} onFavourites={(ids) => {

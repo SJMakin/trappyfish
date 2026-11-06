@@ -228,14 +228,38 @@ rewrite the historical decision. Ended games reopen as reviews from local histor
 Decision traces use IndexedDB with a 20 MiB cap; oldest traces can expire while the
 saved PGN remains intact. See [game history and review](docs/game-history.md).
 
-**Explore openings** searches the complete pinned CC0 Lichess catalogue and five
-original trap studies. Preview branches, save local favourites, start at the preview
-position with its PGN prefix, or play into a line from the initial board. Favourites
-can be the explicit default for new games. Book moves receive normal defensive
-verification and yield to forced mate or the risk limit. After a deviation, continue
-freely or request opening guidance and rewind. Guidance is the only deliberate
-midgame move suggestion. Optional human statistics require a request to Lichess;
-offline search and gameplay never make those requests. See [data sources](docs/opening-data.md).
+**Explore openings** searches the complete pinned CC0 Lichess catalogue.
+**Explore traps** adds side and motif filters, replayable bait/reply/punishment
+branches and defensive alternatives. The library retains **20 audited studies**,
+of which **19 are selectable**: the London study is excluded after independent
+Stockfish checks found a poor illustrative punishment. The five original studies
+and their calibration remain unchanged. **Face this trap** and **Play this trap**
+both prepare a game before the bait; they choose the opposing and trapping side,
+respectively. Confirm the remaining settings in the New game panel.
+
+Preview positions retain their PGN prefix; playing into a line starts at the initial
+board. Save local favourites or make them the explicit default for new games.
+Book moves receive normal defensive verification and yield to forced mate or the
+risk limit. After leaving a catalogue line, continue freely or request opening
+guidance and rewind. Guidance is the only deliberate midgame move suggestion.
+The evidence panel separates real finite-depth Stockfish checks from Maia reply
+estimates. Observed human frequencies remain unavailable in the checked-in sample
+because Lichess returned HTTP 401; no success rates are invented. Optional live
+statistics require an explicit request to Lichess.
+
+Under **Opening book files**, import an unzipped Polyglot `.bin`, then choose
+**Use for new game** and confirm the game settings. Importing never changes the
+current game or its controls. Books stay in this browser, with a **128 MiB total**
+limit, IndexedDB persistence and a visible tab-only fallback. Files are identified
+by their SHA-256 contents and are never uploaded. Position lookup handles
+transpositions; positive weights mark active moves and give no ranking bonus.
+Styles and variety choose among moves that pass the normal risk checks.
+Removing a file preserves saved games and decision traces. A resumed game whose
+book is missing pauses for reimport of the original file or an explicit
+**Continue without book** choice. See [data sources](docs/opening-data.md),
+[the Polyglot reader](docs/polyglot-reader.md) and
+[attacking-engine research](docs/attacking-engine-ideas.md). Stockfish and Maia
+remain the engines; proposed Tal-inspired experiments are documented separately.
 
 Both workspaces include recorded zero/middle/maximum examples for every control,
 including unchanged choices and a separate fixed-pool comparison. The full
@@ -267,6 +291,8 @@ npm run test:webcam
 npm run test:history
 npm run test:play
 npm run test:openings-browser
+npm run test:traps-browser
+npm run test:books-browser
 ```
 
 `test:analysis` includes deterministic interaction checks and a real screenshot →
@@ -314,6 +340,11 @@ changes to `web/` deploy automatically. `npm run build:pages` and
 - `docs/trap-comparison.md`: preserved pre-change shallow/deep versus Maia comparison.
 - `docs/ruthless-review.md`: rating/depth review, trap-chain checks, and real punishments.
 - `docs/search-review.md`: risk, conversion, probability, and mate regression tests.
+- [Trap library evidence](docs/trap-library-evidence.md): independent Stockfish
+  measurements, quarantine reasons, Maia references and unavailable observed counts.
+- [Opening data](docs/opening-data.md), [local Polyglot reader](docs/polyglot-reader.md)
+  and [attacking-engine ideas](docs/attacking-engine-ideas.md): provenance, local
+  import behavior, reader licensing and future experiments.
 - `scripts/test-playing-style.ts`: independent style controls, shared risk limits,
   model-score separation, Black's perspective, and model fallback regressions.
 - `scripts/test-analysis-tree.ts`, `scripts/test-analysis-diagnostics.ts`, and

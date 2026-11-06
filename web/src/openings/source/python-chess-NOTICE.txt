@@ -1,0 +1,7 @@
+Polyglot hashing constants
+
+The canonical 781-entry table is adapted from python-chess by Niklas Fiekas and contributors.
+python-chess is licensed under the GNU GPL version 3 or any later version at your option.
+Pinned source: https://github.com/niklasf/python-chess/blob/0c6bdaccfcb3b09cdbe94b0f81e948cb2a356015/chess/polyglot.py
+Corresponding original source is retained as python-chess-polyglot.py; the full license is in python-chess-LICENSE.txt.
+The TypeScript reader and hashing implementation are project adaptations.

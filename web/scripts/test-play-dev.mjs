@@ -16,7 +16,7 @@ try {
     if (Date.now() > deadline) throw new Error(`Play test server did not start: ${output}`);
     await new Promise(resolve => setTimeout(resolve, 200));
   }
-  for (const script of ['test-play-experience.mjs', 'test-openings-browser.mjs', 'test-plan-privacy.mjs']) {
+  for (const script of ['test-play-experience.mjs', 'test-openings-browser.mjs', 'test-trap-browser.mjs', 'test-local-books-browser.mjs', 'test-plan-privacy.mjs']) {
     const test = spawn(process.execPath, [`scripts/${script}`], { cwd: root, windowsHide: true, stdio: 'inherit', env: { ...process.env, TRAPPY_TEST_URL: url } });
     const code = await new Promise((resolve, reject) => { test.on('error', reject); test.on('exit', resolve); });
     if (code !== 0) throw new Error(`${script} failed (${code}).`);

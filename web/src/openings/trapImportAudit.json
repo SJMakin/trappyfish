@@ -1,0 +1,490 @@
+{
+  "version": 1,
+  "sourceSha256": "6c1d0ecaf6b75795064ddff657272969247957ab881d45923a5ce409f068dcfa",
+  "sourceCount": 19,
+  "includedStudies": 15,
+  "rows": [
+    {
+      "sourceId": "fried-liver-attack",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 6,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 2,
+              "canonicalSan": "Kxf7",
+              "legalAlternatives": 41,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Ke6",
+              "legalAlternatives": 6,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "petrov-queen-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 4,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": []
+        }
+      ]
+    },
+    {
+      "sourceId": "damiano-defense-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 6,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": []
+        }
+      ]
+    },
+    {
+      "sourceId": "scholars-mate",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 2,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 1,
+              "canonicalSan": "Qxf7#",
+              "legalAlternatives": 42,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "legal-mate",
+      "leadInFenVerified": true,
+      "included": false,
+      "excludedReason": "Existing project study retained for this family.",
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 5,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 2,
+              "canonicalSan": "Bxf7+",
+              "legalAlternatives": 39,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 3,
+              "canonicalSan": "Ke7",
+              "legalAlternatives": 0,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Nd5#",
+              "legalAlternatives": 37,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "tennison-gambit-scandi",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 6,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 2,
+              "canonicalSan": "Kxf7",
+              "legalAlternatives": 34,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Kxg6",
+              "legalAlternatives": 2,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "london-qxb2-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 6,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [
+            {
+              "moveIndex": 5,
+              "suppliedSan": "Qxa4",
+              "canonicalSan": "Qxa4+"
+            }
+          ],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 3,
+              "canonicalSan": "c3",
+              "legalAlternatives": 3,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Qxa4",
+              "legalAlternatives": 36,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "blackburne-shilling-gambit",
+      "leadInFenVerified": true,
+      "included": false,
+      "excludedReason": "Existing project study retained for this family.",
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 8,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 6,
+              "canonicalSan": "Be2",
+              "legalAlternatives": 1,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "fishing-pole-trap",
+      "leadInFenVerified": true,
+      "included": false,
+      "excludedReason": "Existing project study retained for this family.",
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 10,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 1,
+              "canonicalSan": "hxg4",
+              "legalAlternatives": 29,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 8,
+              "canonicalSan": "Rxf2",
+              "legalAlternatives": 0,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "stafford-gambit",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 10,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [
+            {
+              "moveIndex": 5,
+              "suppliedSan": "Nxe4!",
+              "canonicalSan": "Nxe4"
+            }
+          ],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 8,
+              "canonicalSan": "Ke2",
+              "legalAlternatives": 0,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        },
+        {
+          "variationIndex": 1,
+          "moves": 10,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [
+            {
+              "moveIndex": 5,
+              "suppliedSan": "Nxe4!",
+              "canonicalSan": "Nxe4"
+            }
+          ],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 8,
+              "canonicalSan": "Kxf2",
+              "legalAlternatives": 1,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "elephant-trap",
+      "leadInFenVerified": true,
+      "included": false,
+      "excludedReason": "Existing project study retained for this family.",
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 8,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Qd2",
+              "legalAlternatives": 0,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 6,
+              "canonicalSan": "Kxd2",
+              "legalAlternatives": 1,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "englund-gambit-trap",
+      "leadInFenVerified": true,
+      "included": false,
+      "excludedReason": "Existing project study retained for this family.",
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 4,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 2,
+              "canonicalSan": "Qxc3",
+              "legalAlternatives": 17,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "lasker-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 8,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [
+            {
+              "moveIndex": 3,
+              "suppliedSan": "fxg1=N+!",
+              "canonicalSan": "fxg1=N+"
+            }
+          ],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Rxg1",
+              "legalAlternatives": 3,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            },
+            {
+              "moveIndex": 6,
+              "canonicalSan": "Ke1",
+              "legalAlternatives": 2,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "noahs-ark-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 10,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 8,
+              "canonicalSan": "Ba4",
+              "legalAlternatives": 43,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "siberian-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 4,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 2,
+              "canonicalSan": "Nxd4",
+              "legalAlternatives": 40,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "kieninger-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 2,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": []
+        }
+      ]
+    },
+    {
+      "sourceId": "caro-kann-smothered-mate",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 2,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": []
+        }
+      ]
+    },
+    {
+      "sourceId": "mortimer-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 6,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 4,
+              "canonicalSan": "Nc3",
+              "legalAlternatives": 7,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "qga-b5-trap",
+      "leadInFenVerified": true,
+      "included": true,
+      "variations": [
+        {
+          "variationIndex": 0,
+          "moves": 4,
+          "legalReplay": true,
+          "defensiveBranches": 1,
+          "corrections": [],
+          "unverifiedForcedClaims": [
+            {
+              "moveIndex": 2,
+              "canonicalSan": "axb5",
+              "legalAlternatives": 29,
+              "resolution": "The source flag is not imported. Forced tactical value requires independent engine evidence."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

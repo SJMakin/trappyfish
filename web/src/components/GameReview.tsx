@@ -18,6 +18,7 @@ export type GameReviewProps = {
 const cp = (value: number) => Math.abs(value) >= 90_000 ? value > 0 ? 'Forced mate' : 'Losing to mate' : `${value > 0 ? '+' : ''}${Math.round(value)} cp`;
 const label = (move: Move) => `${move.before.split(' ')[5]}${move.color === 'w' ? '.' : '…'} ${move.san}`;
 const bookExit: Record<string, string> = {
+  'book-unavailable': 'The imported book was unavailable. You chose to continue with normal search.',
   'no-legal-book-move': 'No compatible book continuation remained.', 'outside-risk': 'The book continuation exceeded the evaluation risk limit.',
   'forced-mate': 'A forced mate took priority over the book.', 'verification-unavailable': 'Book safety verification was unavailable.',
   deviation: 'The played moves left the selected opening lines. The game continued with normal search.',
@@ -94,6 +95,7 @@ function RecordedDecision({ trace, actualMove, onSelectPosition }: { trace: Deci
   ];
   return <article className="recorded-decision">
     <div className="recorded-decision-title"><h3>Why {selected.san}?</h3><span>{provenance?.source === 'opening-book' ? 'Opening book · safety verified' : 'Engine search'}</span></div>
+    {trace.book ? <p className="recorded-book-source">Game book: <strong>{trace.book.name}</strong>. Fingerprint <code>{trace.book.id.slice(0, 12)}</code>. {provenance?.source === 'opening-book' ? 'This move came from the book after the normal risk checks. Book weights supplied no extra ranking bonus.' : 'This move came from normal engine search.'}</p> : null}
     <div className="review-position-preview"><ReviewBoard fen={previewFen} /><div><button type="button" onClick={() => preview(trace.rootFen)}>Before move</button><button type="button" onClick={() => preview(legalLine(trace.rootFen, [selected.move]).fens[1] ?? trace.rootFen)}>After {selected.san}</button></div></div>
     <FreshAnalysisLink fen={previewFen} />
     {openingExit && <p className="game-review-notice">{bookExit[openingExit] ?? openingExit}</p>}

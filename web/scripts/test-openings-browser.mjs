@@ -11,7 +11,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 320, height: 800 }, reducedMotion: 'reduce' });
   page.on('pageerror', (error) => errors.push(error.message));
   let requests = 0;
-  await page.route('https://explorer.lichess.ovh/**', async (route) => {
+  await page.route('https://explorer.lichess.*/**', async (route) => {
     requests++;
     const url = new URL(route.request().url());
     assert.equal(url.searchParams.get('speeds'), 'rapid');
@@ -40,7 +40,7 @@ try {
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, '4');
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
-  assert.match(await library.locator('.opening-preview-navigation').innerText(), /Ply 4 \/ 11/);
+  assert.match(await library.locator('.opening-preview-navigation').innerText(), /Ply 4 \/ 15/);
   assert.equal(await library.getByRole('img', { name: 'Opening preview, White to move' }).count(), 1);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'Opening library fits 320 px');
   await library.locator('.opening-statistics > summary').click();

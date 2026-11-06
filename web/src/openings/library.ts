@@ -1,7 +1,7 @@
 import { Chess } from 'chess.js';
 import catalogue from './catalogue.json';
 import provenance from './provenance.json';
-import { curatedTrapOpenings } from './trapRepertoire';
+import { allTrapStudies, curatedTrapOpenings } from './trapLibrary';
 
 export interface Opening {
   id: string;
@@ -22,11 +22,13 @@ export interface OpeningSession {
 export const openingProvenance = provenance;
 export const allOpenings: readonly Opening[] = [...catalogue, ...curatedTrapOpenings];
 const byId = new Map(allOpenings.map((opening) => [opening.id, opening]));
+const trapsById = new Map(allTrapStudies.map((study) => [study.id, study]));
 const favouriteKey = 'trappy.opening-favourites.v1';
 let memoryFavourites: string[] = [];
 let favouritesDirty = false;
 
 export function getOpening(id: string): Opening | undefined { return byId.get(id); }
+export function getTrapStudy(id: string) { return trapsById.get(id); }
 
 export function loadFavouriteIds(): string[] {
   if (!favouritesDirty) {
@@ -60,10 +62,14 @@ export function matchingBookMoves(history: readonly string[], ids: readonly stri
 }
 
 export function searchOpenings(query: string, favouriteIds?: readonly string[]): Opening[] {
-  const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const normalized = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+  const terms = normalized(query).trim().split(/\s+/).filter(Boolean);
   const favourites = favouriteIds && new Set(favouriteIds);
-  return allOpenings.filter((opening) => (!favourites || favourites.has(opening.id))
-    && terms.every((term) => `${opening.name} ${opening.eco} ${opening.pgn}`.toLocaleLowerCase().includes(term)));
+  return allOpenings.filter((opening) => {
+    const trap = trapsById.get(opening.id);
+    const text = normalized(`${opening.name} ${opening.eco} ${opening.pgn} ${trap?.motif ?? ''} ${trap?.explanation ?? ''}`);
+    return (!favourites || favourites.has(opening.id)) && terms.every((term) => text.includes(term));
+  });
 }
 
 export function openingAtPly(opening: Opening, ply: number): { fen: string; history: string[]; san: string[] } {

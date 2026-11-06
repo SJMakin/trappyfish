@@ -1,0 +1,5 @@
+# These are exact, hash-pinned upstream artifacts.
+chess-coach-traps.json -text
+chess-coach-LICENSE.txt -text
+python-chess-polyglot.py -text
+python-chess-LICENSE.txt -text

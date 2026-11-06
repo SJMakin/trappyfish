@@ -5,6 +5,7 @@ import { removeDecisionTraces, retainDecisionTraces } from './decisionTraces';
 
 export type GameOpening = {
   id: string; name: string; eco?: string; startPly?: number; bookIds?: string[]; bookExitReason?: string;
+  source?: 'polyglot'; bookId?: string;
 };
 export type GameResult = {
   reason: 'resigned' | 'unfinished' | 'checkmate' | 'draw'; winner?: Color;
@@ -111,6 +112,9 @@ function cleanPosition(input: unknown): { entry?: SavedPosition; repaired?: bool
     if (typeof input.opening.startPly === 'number' && Number.isSafeInteger(input.opening.startPly) && input.opening.startPly >= 0 && input.opening.startPly <= 1000) entry.opening.startPly = input.opening.startPly;
     if (Array.isArray(input.opening.bookIds)) entry.opening.bookIds = [...new Set(input.opening.bookIds.filter((id): id is string => typeof id === 'string' && id.length <= 160))];
     if (typeof input.opening.bookExitReason === 'string') entry.opening.bookExitReason = cleanName(input.opening.bookExitReason, 'Opening line left');
+    if (input.opening.source === 'polyglot' && typeof input.opening.bookId === 'string' && /^[a-f0-9]{64}$/.test(input.opening.bookId)) {
+      entry.opening.source = 'polyglot'; entry.opening.bookId = input.opening.bookId;
+    }
   }
   if (input.kind === 'game' && record(input.result) && ['resigned', 'unfinished', 'checkmate', 'draw'].includes(String(input.result.reason))) {
     entry.result = { reason: input.result.reason as GameResult['reason'] };

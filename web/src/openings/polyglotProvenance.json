@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/niklasf/python-chess",
+  "revision": "0c6bdaccfcb3b09cdbe94b0f81e948cb2a356015",
+  "license": "GPL-3.0-or-later",
+  "sourceUrl": "https://github.com/niklasf/python-chess/blob/0c6bdaccfcb3b09cdbe94b0f81e948cb2a356015/chess/polyglot.py",
+  "sourceSha256": "a76e41c5c3003e945603cb7aa1df94d4cf50617f1daf690292ad485f44c2d060",
+  "licenseSha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+  "testVectorsUrl": "https://github.com/niklasf/python-chess/blob/0c6bdaccfcb3b09cdbe94b0f81e948cb2a356015/test.py",
+  "formatUrl": "https://python-chess.readthedocs.io/en/latest/polyglot.html",
+  "constants": 781
+}

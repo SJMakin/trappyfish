@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "repository": "https://github.com/jcabiles/chess-coach",
+  "revision": "de21fd8bf93641840bda9df7875759f7c1124e00",
+  "sourceFile": "data/traps.json",
+  "sourceSha256": "6c1d0ecaf6b75795064ddff657272969247957ab881d45923a5ce409f068dcfa",
+  "license": "MIT",
+  "licenseSha256": "53aa072a9a9f29ee4aefa7877ab031391bdfc774def04ee1fb773179e1a5050b",
+  "sourceUrl": "https://github.com/jcabiles/chess-coach/blob/de21fd8bf93641840bda9df7875759f7c1124e00/data/traps.json",
+  "licenseUrl": "https://github.com/jcabiles/chess-coach/blob/de21fd8bf93641840bda9df7875759f7c1124e00/LICENSE",
+  "licenseLocalPath": "source/chess-coach-LICENSE.txt",
+  "sourceCount": 19,
+  "importedStudies": 15,
+  "originalStudies": 5,
+  "excludedSourceFamilies": [
+    "legal-mate",
+    "blackburne-shilling-gambit",
+    "fishing-pole-trap",
+    "elephant-trap",
+    "englund-gambit-trap"
+  ],
+  "annotationPolicy": "Original neutral project summaries; upstream forced/result/commonness/engineNote assertions are not copied as verified facts. Canonical SAN is derived from legal UCI replay.",
+  "studiesSha256": "b4eb7391d40c89e661c70c4d83c412e5d85346f0c86d4ce134e4d075a5a58d4e"
+}

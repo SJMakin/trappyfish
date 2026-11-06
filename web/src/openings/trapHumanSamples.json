@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "createdAt": "2026-11-02T22:58:51.948Z",
+  "source": "https://lichess.org/api#tag/Opening-Explorer",
+  "endpoint": "https://explorer.lichess.org/lichess",
+  "sourceSha256": "23f7df4e15ac9d12c81794c40ee3a1c1977b9b0905c1525f03504427c717f8b8",
+  "ratings": [
+    1000,
+    1200,
+    1400,
+    1600
+  ],
+  "speeds": [
+    "rapid"
+  ],
+  "method": "Conditional frequency among all rated games at the position after the bait, for rating buckets 1000/1200/1400/1600 (1000–1799) and rapid. Twelve most common moves are requested. A missing reply has unknown count, never zero. No child-position totals are substituted. These samples do not estimate how often a game reaches the setup or whether a player will take the bait.",
+  "attribution": "Lichess Opening Explorer API, with request timestamps and filters. No separate CC0 redistribution claim is made for these API responses.",
+  "rawResponsesSha256": "687075c19301c73fa8078a412e956c383daf9af939e354d72550a637ea07a03f",
+  "positions": [
+    {
+      "id": "trap-legal",
+      "fen": "r2qkbnr/ppp2ppp/2np4/4N2b/2B1P3/2N4P/PPPP1PP1/R1BQK2R b KQkq - 0 6",
+      "mistake": "h5d1",
+      "fetchedAt": "2026-11-02T22:58:52.137Z",
+      "status": "unavailable",
+      "reason": "Lichess returned HTTP 401. Remaining requests are skipped; no credentials are read.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-blackburne",
+      "fen": "r1bqkbnr/pppp1ppp/8/4p3/2BnP3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "mistake": "f3e5",
+      "fetchedAt": "2026-11-02T22:58:52.139Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-fishing-pole",
+      "fen": "r1bqkb1r/pppp1pp1/2n5/1B2p2p/4P1n1/5N1P/PPPP1PP1/RNBQ1RK1 w kq - 0 6",
+      "mistake": "h3g4",
+      "fetchedAt": "2026-11-02T22:58:52.140Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-englund",
+      "fen": "r1b1kbnr/pppp1ppp/2n5/4P3/1q3B2/5N2/PPP1PPPP/RN1QKB1R w KQkq - 5 5",
+      "mistake": "f4d2",
+      "fetchedAt": "2026-11-02T22:58:52.142Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-elephant",
+      "fen": "r1bqkb1r/pppn1ppp/5n2/3p2B1/3P4/2N5/PP2PPPP/R2QKBNR w KQkq - 0 6",
+      "mistake": "c3d5",
+      "fetchedAt": "2026-11-02T22:58:52.143Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-fried-liver-attack",
+      "fen": "r1bqkb1r/ppp2ppp/2n2n2/3Pp1N1/2B5/8/PPPP1PPP/RNBQK2R b KQkq - 0 5",
+      "mistake": "f6d5",
+      "fetchedAt": "2026-11-02T22:58:52.145Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-petrov-queen-trap",
+      "fen": "rnbqkb1r/pppp1ppp/8/4N3/4n3/8/PPPPQPPP/RNB1KB1R b KQkq - 1 4",
+      "mistake": "e4f6",
+      "fetchedAt": "2026-11-02T22:58:52.146Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-damiano-defense-trap",
+      "fen": "rnbqkbnr/pppp2pp/5p2/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+      "mistake": "f6e5",
+      "fetchedAt": "2026-11-02T22:58:52.147Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-scholars-mate",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
+      "mistake": "g8f6",
+      "fetchedAt": "2026-11-02T22:58:52.148Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-tennison-gambit-scandi",
+      "fen": "rnbqkb1r/ppp1pppp/5n2/6N1/8/3B4/PPP2PPP/RNBQK2R b KQkq - 0 5",
+      "mistake": "h7h6",
+      "fetchedAt": "2026-11-02T22:58:52.150Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-london-qxb2-trap",
+      "fen": "rnb1kbnr/pp2pppp/1q6/2pp4/3P1B2/2N1P3/PPP2PPP/R2QKBNR b KQkq - 2 4",
+      "mistake": "b6b2",
+      "fetchedAt": "2026-11-02T22:58:52.151Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-stafford-gambit-1",
+      "fen": "r1bqk2r/ppp2ppp/2p5/2b3B1/4n3/3P4/PPP2PPP/RN1QKB1R w KQkq - 0 7",
+      "mistake": "g5d8",
+      "fetchedAt": "2026-11-02T22:58:52.152Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-stafford-gambit-2",
+      "fen": "r1bqk2r/ppp2ppp/2p5/2b5/4n3/3P3P/PPP2PP1/RNBQKB1R w KQkq - 0 7",
+      "mistake": "d3e4",
+      "fetchedAt": "2026-11-02T22:58:52.153Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-lasker-trap",
+      "fen": "rnbqk1nr/ppp2ppp/8/4P3/1bP5/4p3/PP1B1PPP/RN1QKBNR w KQkq - 0 6",
+      "mistake": "d2b4",
+      "fetchedAt": "2026-11-02T22:58:52.155Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-noahs-ark-trap",
+      "fen": "r1bqkbnr/2p2ppp/p2p4/1p6/3pP3/1B6/PPP2PPP/RNBQK2R w KQkq - 0 8",
+      "mistake": "d1d4",
+      "fetchedAt": "2026-11-02T22:58:52.156Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-siberian-trap",
+      "fen": "r1b1kb1r/ppqp1ppp/2n1p3/8/2B1P1n1/2N2N2/PP2QPPP/R1B2RK1 w kq - 6 9",
+      "mistake": "h2h3",
+      "fetchedAt": "2026-11-02T22:58:52.158Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-kieninger-trap",
+      "fen": "r1b1k2r/ppppqppp/2n5/4n3/1bP2B2/P4N2/1P1NPPPP/R2QKB1R w KQkq - 0 8",
+      "mistake": "a3b4",
+      "fetchedAt": "2026-11-02T22:58:52.160Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-caro-kann-smothered-mate",
+      "fen": "r1bqkbnr/pp1npppp/2p5/8/3PN3/8/PPP1QPPP/R1B1KBNR b KQkq - 2 5",
+      "mistake": "g8f6",
+      "fetchedAt": "2026-11-02T22:58:52.162Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-mortimer-trap",
+      "fen": "r1bqkb1r/ppppnppp/5n2/1B2p3/4P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 1 5",
+      "mistake": "f3e5",
+      "fetchedAt": "2026-11-02T22:58:52.163Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    },
+    {
+      "id": "trap-import-qga-b5-trap",
+      "fen": "rnbqkbnr/p3pppp/8/1p6/2pP4/2N2N2/1P2PPPP/R1BQKB1R b KQkq - 1 6",
+      "mistake": "a7a6",
+      "fetchedAt": "2026-11-02T22:58:52.165Z",
+      "status": "unavailable",
+      "reason": "Lichess required authorization at 2026-11-02T22:58:52.137Z; no further request was made. This script never reads credentials.",
+      "gamesAtPosition": null,
+      "mistakeGames": null,
+      "mistakeFrequency": null
+    }
+  ]
+}
